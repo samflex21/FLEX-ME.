@@ -306,8 +306,7 @@
             justify-content: center; /* Center the logo */
             width: 100%; /* Full width */
             margin-bottom: 20px; /* Space between navbar and content */
-            background-color: dark 
-            (17, 17, 17, 0.95); /* Background color for navbar */
+
             padding: 10px 20px; /* Padding for navbar */
         }
 
@@ -396,9 +395,10 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Store login state
+                    // Store login state and user details
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userDetails', JSON.stringify(data.user)); // Store user details
                     
                     // Redirect to main page
                     window.location.href = 'main.html';
