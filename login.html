@@ -69,10 +69,8 @@
 
         .toggle-container {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
+            bottom: 20px;
+            left: 20px;
         }
 
         .toggle {
@@ -305,7 +303,7 @@
         .navbar {
             display: flex;
             align-items: center;
-            justify-content: center; /* Center the navbar content */
+            justify-content: center; /* Center the logo */
             width: 100%; /* Full width */
             margin-bottom: 20px; /* Space between navbar and content */
             background-color: rgba(17, 17, 17, 0.95); /* Background color for navbar */
@@ -313,6 +311,8 @@
         }
 
         .navbar-nav {
+            position: absolute; /* Positioning for left alignment */
+            left: 20px; /* Align to the left */
             display: flex;
             gap: 20px; /* Space between buttons */
         }
@@ -327,27 +327,16 @@
         .nav-link:hover {
             color: #ff357a; /* Change color on hover */
         }
-
-        /* Toggle button styles */
-        .toggle-container {
-            position: absolute;
-            top: 20px; /* Position the toggle button at the top */
-            left: 20px; /* Align to the left */
-        }
     </style>
 </head>
 <body>
-    <div class="toggle-container">
-        <div class="toggle" id="themeToggle"></div>
-    </div>
-
     <nav class="navbar">
-        <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="navbar-nav">
             <a class="nav-link" href="index.html">Home</a>
             <a class="nav-link" href="about.html">About Us</a>
             <a class="nav-link" href="contact.html">Contact Us</a>
         </div>
+        <h1 class="website-name">Flex <span>Me</span></h1>
     </nav>
 
     <div class="ring">
@@ -371,6 +360,10 @@
                 <a href="register.html">Sign up</a>
             </div>
         </div>
+    </div>
+
+    <div class="toggle-container">
+        <div class="toggle" id="themeToggle"></div>
     </div>
 
     <footer>
