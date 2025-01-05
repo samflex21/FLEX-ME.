@@ -305,8 +305,11 @@
         .navbar {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-between; /* Space between logo and toggle */
+            width: 100%; /* Full width */
             margin-bottom: 20px; /* Space between navbar and content */
+            background-color: rgba(17, 17, 17, 0.95); /* Background color for navbar */
+            padding: 10px 20px; /* Padding for navbar */
         }
 
         .navbar-nav {
@@ -331,10 +334,8 @@
         <div class="toggle" id="themeToggle"></div>
     </div>
 
-    <h1 class="website-name">Flex <span>Me</span></h1>
-
-    <!-- Navigation Links Added Here -->
     <nav class="navbar">
+        <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="navbar-nav">
             <a class="nav-link" href="index.html">Home</a>
             <a class="nav-link" href="about.html">About Us</a>
