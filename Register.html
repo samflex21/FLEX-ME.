@@ -57,42 +57,39 @@
         .navbar {
             display: flex;
             align-items: center;
-            justify-content: center; /* Center the title */
-            width: 100%; /* Full width */
-            margin-bottom: 20px; /* Space between navbar and content */
-            padding: 10px 20px; /* Padding for navbar */
-            position: relative; /* Position relative for absolute positioning of nav links */
-        }
-
-        .navbar-nav {
-            position: absolute; /* Positioning to allow centering of title */
-            right: 20px; /* Align nav links to the right */
-            display: flex; /* Ensure items are in a row */
-            gap: 15px; /* Space between buttons */
-        }
-
-        .nav-link {
-            color: white; /* White text color */
-            text-decoration: none; /* Remove underline */
-            font-weight: 500; /* Similar to Sign Up button */
-            transition: color 0.3s; /* Smooth color transition */
-            padding: 8px 12px; /* Add padding to buttons */
-            white-space: nowrap; /* Prevent text from wrapping */
-        }
-
-        .nav-link:hover {
-            color: #ff357a; /* Change color on hover */
+            justify-content: flex-start;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px 20px;
         }
 
         .website-name {
-            margin: 0; /* Remove margin */
-            font-size: 2.5em; /* Adjust font size */
-            text-align: center;
+            margin-right: 20px;
+            font-size: 2.5em;
+            text-align: left;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 700;
             position: relative;
             text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #ff357a;
         }
 
         .website-name span {
@@ -364,17 +361,14 @@
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <nav class="navbar">
-            <h1 class="website-name">Flex <span>Me</span></h1>
-            <div class="navbar-nav">
-                <a class="nav-link" href="index.html">Home</a>
-                <a class="nav-link" href="about.html">About Us</a>
-                <a class="nav-link" href="contact.html">Contact Us</a>
-            </div>
-        </nav>
-    </header>
-
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="about.html">About Us</a>
+            <a class="nav-link" href="contact.html">Contact Us</a>
+        </div>
+        <h1 class="website-name">Flex <span>Me</span></h1>
+    </nav>
     <!-- Background Animation -->
     <div class="bg-animation">
         <div></div>
