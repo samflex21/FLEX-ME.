@@ -5,23 +5,362 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flex Me - Join Our Community</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/register.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #f68b1e;
+            --secondary-color: #ff6b6b;
+            --success: #00ff0a;
+            --warning: #fffd44;
+            --danger: #ff0057;
+            --dark: #111;
+            --light: #fff;
+            --gradient-1: linear-gradient(45deg, #f68b1e, #ff6b6b);
+            --gradient-2: linear-gradient(45deg, #00ff0a, #f68b1e);
+            --shadow-1: 0 10px 20px rgba(0,0,0,0.1);
+            --shadow-2: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--dark);
+            color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+            flex-direction: column; /* Added for header and footer layout */
+            
+        }
+
+        /* Header Styles */
+        header {
+            width: 100%;
+            background: rgba(17, 17, 17, 0.95);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar-nav {
+    display: flex;
+    gap: 20px; /* Space between buttons */
+}
+
+
+
+.website-name span {
+    background: linear-gradient(45deg, #ff357a, #fff172);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    position: relative;
+}
+
+
+        /* Footer Styles */
+        footer {
+            width: 100%;
+            background: rgba(17, 17, 17, 0.95);
+            color: var(--light);
+            text-align: center;
+            padding: 1rem 0;
+            position: relative;
+            bottom: 0;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation div {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            animation: float 15s infinite;
+            opacity: 0.1;
+        }
+
+        .bg-animation div:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .bg-animation div:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            right: -200px;
+            animation-delay: 5s;
+        }
+
+        .bg-animation div:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: 30%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-100px) rotate(180deg);
+            }
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+            margin-top: 80px; /* Added margin to avoid overlap with header */
+        }
+
+        /* Left Side - Information */
+        .info-side {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .website-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .trust-levels {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .trust-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .trust-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .trust-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Form Side */
+        .form-side {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-1);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+        }
+
+        .form-step.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 10px rgba(246, 139, 30, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(246, 139, 30, 0.3);
+        }
+
+        /* Back Home Link */
+        .back-home {
+            display: block;
+            margin-top: 1rem;
+            color: var(--primary-color);
+            text-align: center;
+            text-decoration: none; /* No underline */
+            font-size: 1.1em;
+        }
+
+        .back-home:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .info-side {
+                text-align: center;
+            }
+
+            .website-logo {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .info-content h1 {
+                font-size: 2rem;
+            }
+
+            .form-side {
+                padding: 1.5rem;
+            }
+        }
+        /* Navbar styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the logo */
+    width: 100%; /* Full width */
+    margin-bottom: 20px; /* Space between navbar and content */
+    padding: 10px 20px; /* Padding for navbar */
+}
+
+.navbar-nav {
+    position: absolute; /* Positioning for left alignment */
+    left: 20px; /* Align to the left */
+    display: flex;
+    gap: 20px; /* Space between buttons */
+}
+
+.nav-link {
+    color: white; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-weight: 500; /* Similar to Sign Up button */
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+.nav-link:hover {
+    color: #ff357a; /* Change color on hover */
+}
+
+    </style>
 </head>
 <body>
-     <!-- Navigation -->
-     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-
+    <!-- Header -->
+    <header>
+        <div class="header-container"> <!-- Header container -->
             <nav class="navbar">
                 <div class="navbar-nav">
-                    <a class="nav-link" href="home page.html">Home</a>
+                    <a class="nav-link" href="index.html">Home</a>
                     <a class="nav-link" href="about.html">About Us</a>
                     <a class="nav-link" href="contact.html">Contact Us</a>
                 </div>
                 <h1 class="website-name">Flex <span>Me</span></h1>
-                
             </nav>
-    </nav>
+        </div>
+    </header>
+
     <!-- Background Animation -->
     <div class="bg-animation">
         <div></div>
@@ -33,8 +372,8 @@
         <!-- Left Side - Information -->
         <div class="info-side">
             
+
             <div class="info-content">
-                <div class="info-side"></div>
                 <h1>Join Our Community</h1>
                 <p>Connect with people who care. Help others achieve their goals and get help when you need it.</p>
             </div>
