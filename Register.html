@@ -59,7 +59,21 @@
     gap: 20px; /* Space between buttons */
 }
 
+       .website-name {
+    font-size: 3em;
+    color: #fff; /* Default text color for dark theme */
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 20px;
+    position: relative;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
 
+.light-theme .website-name {
+    color: #111; /* Dark text for light theme */
+}
 
 .website-name span {
     background: linear-gradient(45deg, #ff357a, #fff172);
@@ -322,15 +336,15 @@
     align-items: center;
     justify-content: center; /* Center the logo */
     width: 100%; /* Full width */
-    margin-bottom: 20px; /* Space between navbar and content */
+    margin-bottom: 0px; /* Space between navbar and content */
     padding: 10px 20px; /* Padding for navbar */
 }
 
 .navbar-nav {
     position: absolute; /* Positioning for left alignment */
-    left: 20px; /* Align to the left */
-    display: flex;
+    flex-direction: row; /* Ensures items are arranged in a row */
     gap: 20px; /* Space between buttons */
+    left: 20px; /* Align to the left */
 }
 
 .nav-link {
