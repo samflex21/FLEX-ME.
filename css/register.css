@@ -13,17 +13,7 @@
     --shadow-1: 0 10px 20px rgba(0,0,0,0.1);
     --shadow-2: 0 5px 15px rgba(0,0,0,0.05);
 }
-/* Main Content Styles */
-.main-content {
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
-    color: white; /* Text color for better visibility */
-    padding: 2rem; /* Add some padding */
-    border-radius: 10px; /* Optional: rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Optional: shadow for depth */
-    width: 80%; /* Optional: set a width */
-    max-width: 800px; /* Optional: maximum width */
-    margin: 2rem auto; /* Center the content with margin */
-}
+
 
 * {
     margin: 0;
@@ -34,7 +24,7 @@
 
 body {
     min-height: 100vh;
-    background: var(--dark);
+    background: #2b2b2b; /* Light dark shade */
     color: var(--light);
     display: flex;
     justify-content: center;
@@ -42,7 +32,7 @@ body {
     padding: 2rem;
     position: relative;
     overflow-x: hidden;
-    flex-direction: column; /* Added for header and footer layout */
+    flex-direction: column;
 }
 
   /* Navbar styles */
@@ -133,12 +123,12 @@ footer {
     overflow: hidden;
 }
 
-.bg-animation div {
+..bg-animation div {
     position: absolute;
     border-radius: 50%;
     background: var(--gradient-1);
     animation: float 15s infinite;
-    opacity: 0.1;
+    opacity: 0.3; /* Increased visibility against lighter dark background */
 }
 
 .bg-animation div:nth-child(1) {
@@ -356,3 +346,4 @@ footer {
         padding: 1.5rem;
     }
 }
+
