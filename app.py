@@ -1,9 +1,14 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
 from db import verify_user, create_user
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static', template_folder='templates')
 app.secret_key = os.urandom(24)  # for session management
+
+# Add this route for direct CSS testing
+@app.route('/test-css')
+def test_css():
+    return send_from_directory('static/css', 'login.css')
 
 # Main routes
 @app.route('/')
@@ -23,7 +28,13 @@ def register():
         return jsonify({"success": success, "message": message})
     return render_template('Register.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+
+@app.route('/login')
+def loginMain():
+    return render_template('login.html')
+
+
+@app.route('/login-post', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         data = request.get_json()
@@ -36,7 +47,7 @@ def login():
             }
             return jsonify({"success": True, "redirect": url_for('dashboard')})
         return jsonify({"success": False, "message": "Invalid credentials"})
-    return render_template('Login.html')
+    return render_template('login.html')
 
 @app.route('/logout')
 def logout():

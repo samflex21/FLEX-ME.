@@ -12,21 +12,21 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #222; /* Default dark gray background */
+    background: #222;
     width: 100%;
     overflow: hidden;
     flex-direction: column;
-    transition: background 0.3s ease, color 0.3s ease; /* Smooth transition for background and text color */
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .light-theme {
-    background: #f0f0f0; /* Light gray background */
-    color: #111; /* Dark text for light theme */
+    background: #f0f0f0;
+    color: #111;
 }
 
 .website-name {
     font-size: 3em;
-    color: #fff; /* Default text color for dark theme */
+    color: #fff;
     text-align: center;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -36,65 +36,35 @@ body {
     text-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
 
-.light-theme .website-name {
-    color: #111; /* Dark text for light theme */
-}
-
-.website-name span {
-    background: linear-gradient(45deg, #ff357a, #fff172);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-    position: relative;
-}
-
-.website-name span::after {
-    content: '';
-    position: absolute;
+/* Navbar styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(45deg, #ff357a, #fff172);
-    bottom: -5px;
-    left: 0;
-    border-radius: 2px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
 }
 
-.toggle-container {
+.navbar-nav {
     position: absolute;
-    bottom: 20px;
     left: 20px;
+    display: flex;
+    gap: 20px;
 }
 
-.toggle {
-    width: 50px;
-    height: 25px;
-    background: #ccc;
-    border-radius: 25px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.3s ease;
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
-.toggle::before {
-    content: '';
-    position: absolute;
-    width: 21px;
-    height: 21px;
-    background: white;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.3s ease;
+.nav-link:hover {
+    color: #ff357a;
 }
 
-.toggle.active {
-    background: #4caf50; /* Green when active */
-}
-
-.toggle.active::before {
-    transform: translateX(25px); /* Move the toggle switch */
-}
-
+/* Ring and Login Form Styles */
 .ring {
     position: relative;
     width: 500px;
@@ -126,11 +96,6 @@ body {
     animation: animate2 10s linear infinite;
 }
 
-.ring:hover i {
-    border: 6px solid var(--clr);
-    filter: drop-shadow(0 0 20px var(--clr));
-}
-
 @keyframes animate {
     0% {
         transform: rotate(0deg);
@@ -149,10 +114,10 @@ body {
     }
 }
 
+/* Login Form Styles */
 .login {
     position: absolute;
     width: 300px;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -162,89 +127,93 @@ body {
 
 .login h2 {
     font-size: 2em;
-    color: #fff; /* Default text color for dark theme */
+    color: #fff;
 }
 
-.light-theme .login h2 {
-    color: #111; /* Dark text for light theme */
-}
-
-.login .inputBx {
+.inputBx {
     position: relative;
     width: 100%;
 }
 
-.login .inputBx input {
+.inputBx input {
     position: relative;
     width: 100%;
     padding: 12px 20px;
     background: transparent;
-    border: 2px solid #fff; /* Default border color for dark theme */
+    border: 2px solid #fff;
     border-radius: 40px;
     font-size: 1.2em;
-    color: #fff; /* Default text color for dark theme */
+    color: #fff;
     box-shadow: none;
     outline: none;
     transition: 0.5s;
 }
 
-.light-theme .login .inputBx input {
-    border: 2px solid #111; /* Dark border for light theme */
-    color: #111; /* Dark text for light theme */
-    background: rgba(255, 255, 255, 0.9); /* Light background for input */
-}
-
-.login .inputBx input:hover,
-.login .inputBx input:focus {
-    border-color: var(--clr, #0078ff);
-    box-shadow: 0 0 10px var(--clr, #0078ff);
-}
-
-.login .inputBx input[type="submit"] {
-    width: 100%;
+.inputBx input[type="submit"] {
     background: linear-gradient(45deg, #ff357a, #fff172);
     border: none;
     cursor: pointer;
-    font-weight: 600;
 }
 
-.login .inputBx input[type="submit"]:hover {
+.inputBx input[type="submit"]:hover {
     background: linear-gradient(45deg, #fff172, #ff357a);
 }
 
-.login .inputBx input::placeholder {
-    color: rgba(255, 255, 255, 0.75); /* Placeholder color for dark theme */
-}
-
-.light-theme .login .inputBx input::placeholder {
-    color: rgba(0, 0, 0, 0.5); /* Placeholder color for light theme */
-}
-
-.login .links {
+.links {
     position: relative;
     width: 100%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
     padding: 0 20px;
 }
 
-.login .links a {
-    color: #fff; /* Default link color for dark theme */
+.links a {
+    color: #fff;
     text-decoration: none;
-    font-weight: 500;
-    transition: 0.5s;
 }
 
-.light-theme .login .links a {
-    color: #111; /* Dark link color for light theme */
+.links a:hover {
+    color: #ff357a;
 }
 
-.login .links a:hover {
-    color: var(--clr, #0078ff);
-    text-shadow: 0 0 10px var(--clr, #0078ff);
+/* Theme Toggle Styles */
+.toggle-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
 }
 
+.toggle {
+    width: 50px;
+    height: 25px;
+    background: #ccc;
+    border-radius: 25px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle::before {
+    content: '';
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+}
+
+.toggle.active {
+    background: #4caf50;
+}
+
+.toggle.active::before {
+    transform: translateX(25px);
+}
+
+/* Error Message Styles */
 .error-message {
     color: #ff357a;
     text-align: center;
@@ -259,62 +228,10 @@ body {
 
 /* Footer Styles */
 footer {
-    margin-top: auto; /* Push footer to the bottom */
+    margin-top: auto;
     padding: 1rem;
     color: #fff;
     text-align: center;
     width: 100%;
     background: rgba(17, 17, 17, 0.95);
-}
-
-@media (max-width: 500px) {
-    .ring {
-        width: 300px;
-        height: 300px;
-    }
-
-    .website-name {
-        font-size: 2em;
-    }
-
-    .login {
-        width: 250px;
-    }
-
-    .login h2 {
-        font-size: 1.5em;
-    }
-
-    .login .inputBx input {
-        font-size: 1em;
-        padding: 10px 15px;
-    }
-}
-
-/* Navbar styles */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center the logo */
-    width: 100%; /* Full width */
-    margin-bottom: 20px; /* Space between navbar and content */
-    padding: 10px 20px; /* Padding for navbar */
-}
-
-.navbar-nav {
-    position: absolute; /* Positioning for left alignment */
-    left: 20px; /* Align to the left */
-    display: flex;
-    gap: 20px; /* Space between buttons */
-}
-
-.nav-link {
-    color: white; /* White text color */
-    text-decoration: none; /* Remove underline */
-    font-weight: 500; /* Similar to Sign Up button */
-    transition: color 0.3s; /* Smooth color transition */
-}
-
-.nav-link:hover {
-    color: #ff357a; /* Change color on hover */
 }
