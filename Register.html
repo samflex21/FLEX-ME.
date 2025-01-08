@@ -538,6 +538,44 @@
 
             showStep(currentStep);
         });
+        <script>
+// Add this to your existing script section
+function checkAuthStatus() {
+    // Check if user is logged in (you can use localStorage or session storage)
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    // Get all elements
+    const authHideElements = document.querySelectorAll('.auth-hide');
+    const authShowElements = document.querySelectorAll('.auth-show');
+    
+    if (isLoggedIn) {
+        // Hide login/register buttons
+        authHideElements.forEach(el => el.style.display = 'none');
+        // Show dashboard/profile/logout buttons
+        authShowElements.forEach(el => el.style.display = 'block');
+    } else {
+        // Show login/register buttons
+        authHideElements.forEach(el => el.style.display = 'block');
+        // Hide dashboard/profile/logout buttons
+        authShowElements.forEach(el => el.style.display = 'none');
+    }
+}
+
+// Handle logout
+document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    // Clear authentication status
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    // Update UI
+    checkAuthStatus();
+    // You might want to redirect to home or show a message
+    alert('Successfully logged out!');
+});
+
+// Check auth status when page loads
+document.addEventListener('DOMContentLoaded', checkAuthStatus);
+</script>
     </script>
 </body>
 </html>

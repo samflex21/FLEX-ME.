@@ -501,34 +501,124 @@
                 justify-content: center;
             }
         }
+        /* styles.css */
+
+/* Header Container */
+.header-container {
+    width: 100%; /* Full width */
+    background-color: rgba(0, 0, 0, 0.8); /* Background color for the header */
+}
+
+//* Navbar styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center all items */
+    width: 100%;
+    padding: 10px 20px;
+    position: relative; /* For absolute positioning of navbar-nav */
+}
+
+/* Align navbar items */
+.navbar-nav {
+    display: flex; /* Use flexbox for horizontal alignment of navigation links */
+    flex-direction: row; /* Ensures items are arranged in a row */
+    gap: 20px; /* Space between buttons */
+    margin-right: auto; /* Pushes the logo to the center */
+}
+
+.nav-link {
+    color: white; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-weight: 500; /* Similar to Sign Up button */
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+.nav-link:hover {
+    color: #ff357a; /* Change color on hover */
+}
+
+.website-name {
+    font-size: 3em;
+    color: #fff; /* Default text color for dark theme */
+    text-align: center; /* Center the logo text */
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin: 0; /* Remove margin to keep it centered */
+    position: relative;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    flex-grow: 1; /* Allow the logo to take up remaining space */
+}
+.website-name span {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+.website-name span::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
+        }
+/* Add these to your existing styles section */
+.auth-show {
+    display: none;
+}
+
+#auth-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+/* Style for the new navigation links */
+#auth-buttons .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+#auth-buttons .nav-link:hover {
+    color: #ff357a;
+}
+
+#logoutBtn {
+    color: #ff357a;
+}
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <div class="logo-icon">F</div>
-                <div class="logo-text">Flex Me</div>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="trust-levels.html">Trust Levels</a></li>
-                    <li class="nav-item"><a class="nav-link" href="success-stories.html">Success Stories</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                </ul>
-                <div class="nav-buttons">
-                    <a href="login.html" class="btn btn-outline-light" id="loginButton">Login</a>
-                    <a href="register.html" class="btn btn-primary" id="signupButton">Sign Up</a>
+   <!-- Navigation -->
+<header>
+    <div class="header-container">
+        <nav class="navbar">
+            <div class="navbar-nav">
+                <a class="nav-link" href="about.html">About Us</a>
+                <a class="nav-link" href="contact.html">Contact Us</a>
+                <!-- Add auth check buttons -->
+                <div id="auth-buttons">
+                    <!-- These will be shown when user is NOT logged in -->
+                    <a class="nav-link auth-hide" href="login.html" id="loginBtn">Login</a>
+                    <a class="nav-link auth-hide" href="register.html" id="registerBtn">Register</a>
+                    
+                    <!-- These will be shown when user IS logged in -->
+                    <a class="nav-link auth-show" href="dashboard.html" id="dashboardBtn" style="display: none;">Dashboard</a>
+                    <a class="nav-link auth-show" href="profile.html" id="profileBtn" style="display: none;">Profile</a>
+                    <a class="nav-link auth-show" href="#" id="logoutBtn" style="display: none;">Logout</a>
                 </div>
             </div>
-        </div>
-    </nav>
+            <h1 class="website-name">Flex <span>Me</span></h1>
+        </nav>
+    </div>
+</header>
 
     <!-- Slider Section -->
     <section class="slider-section">
@@ -776,6 +866,43 @@
             slider.addEventListener('mouseenter', pauseSlideShow);
             slider.addEventListener('mouseleave', startSlideShow);
         });
+
+// Add this to your existing script section
+function checkAuthStatus() {
+    // Check if user is logged in (you can use localStorage or session storage)
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    // Get all elements
+    const authHideElements = document.querySelectorAll('.auth-hide');
+    const authShowElements = document.querySelectorAll('.auth-show');
+    
+    if (isLoggedIn) {
+        // Hide login/register buttons
+        authHideElements.forEach(el => el.style.display = 'none');
+        // Show dashboard/profile/logout buttons
+        authShowElements.forEach(el => el.style.display = 'block');
+    } else {
+        // Show login/register buttons
+        authHideElements.forEach(el => el.style.display = 'block');
+        // Hide dashboard/profile/logout buttons
+        authShowElements.forEach(el => el.style.display = 'none');
+    }
+}
+
+// Handle logout
+document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    // Clear authentication status
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    // Update UI
+    checkAuthStatus();
+    // You might want to redirect to home or show a message
+    alert('Successfully logged out!');
+});
+
+// Check auth status when page loads
+document.addEventListener('DOMContentLoaded', checkAuthStatus);
     </script>
 </body>
 </html>
