@@ -116,7 +116,23 @@
             right: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ff357a;
         }
 
         .profile-pic {
@@ -161,31 +177,80 @@
             margin-bottom: 20px;
         }
 
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
+        .user-stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
-        .sidebar-menu li {
-            margin-bottom: 10px;
+        .level-info {
+            text-align: center;
+            margin-bottom: 15px;
         }
 
-        .sidebar-menu a {
-            color: var(--light);
-            text-decoration: none;
+        .level-info h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .user-level {
+            color: #cd7f32;
+            font-weight: bold;
+        }
+
+        .level-progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .level-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .points-info {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .donation-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
             display: flex;
             align-items: center;
+            gap: 10px;
             padding: 10px;
-            border-radius: 5px;
-            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
         }
 
-        .sidebar-menu a:hover {
-            background: var(--primary);
+        .stat-item i {
+            font-size: 1.2rem;
+            color: #ff357a;
         }
 
-        .sidebar-menu i {
-            margin-right: 10px;
+        .stat-details h4 {
+            margin: 0;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .stat-details p {
+            margin: 2px 0 0;
+            font-weight: bold;
+            color: #fff;
         }
 
         .main-content {
@@ -194,7 +259,98 @@
             width: calc(100% - 250px);
             display: grid;
             grid-template-columns: 2fr 1fr;
+            grid-template-rows: 1fr auto;
             gap: 20px;
+        }
+
+        .campaign-list {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .live-feed {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .ad-section {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .ad-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .ad-card {
+            min-width: 300px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            scroll-snap-align: start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .ad-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .ad-content {
+            flex: 1;
+        }
+
+        .ad-content h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .ad-content p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .ad-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .special-offer {
+            background: linear-gradient(135deg, #ff357a, #fff172);
+            color: white;
+        }
+
+        .special-offer .ad-content h3,
+        .special-offer .ad-content p {
+            color: white;
         }
 
         .helped-section {
@@ -451,20 +607,114 @@
             border-color: #ff357a;
             outline: none;
         }
+
+        .footer {
+            background: rgba(17, 17, 17, 0.95);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #ff357a;
+        }
+
+        .campaign-amount {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .amount-raised {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .amount-left {
+            color: #ff357a;
+            font-weight: bold;
+        }
+
+        .campaign-completed {
+            opacity: 0.8;
+            position: relative;
+        }
+
+        .campaign-completed::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .campaign-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .campaign-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .amount-target {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .pay-button:disabled {
+            background: #28a745;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="home page.html">Home</a>
-            <a class="nav-link" href="about.html">About Us</a>
-            <a class="nav-link" href="contact.html">Contact Us</a>
+            <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="#"><i class="fas fa-users"></i> Profile</a>
+            <a class="nav-link" href="#"><i class="fas fa-hand-holding-heart"></i> Create Campaign</a>
+            <a class="nav-link" href="#"><i class="fas fa-history"></i> History</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
             <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
             <span class="user-name">John Doe</span>
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -474,12 +724,31 @@
             <div class="sidebar-header">
                 <h3>Dashboard</h3>
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="#"><i class="fas fa-users"></i> Profile</a></li>
-                <li><a href="#"><i class="fas fa-hand-holding-heart"></i>create campaign</a></li>
-                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
-                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
+            <div class="user-stats">
+                <div class="level-info">
+                    <h3>Level: <span class="user-level">Bronze</span></h3>
+                    <div class="level-progress">
+                        <div class="level-bar"></div>
+                    </div>
+                    <p class="points-info">Points: <span class="user-points">0</span> / <span class="next-level-points">1000</span></p>
+                </div>
+                <div class="donation-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <div class="stat-details">
+                            <h4>Total Donated</h4>
+                            <p>$<span class="total-donated">0</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-details">
+                            <h4>People Helped</h4>
+                            <p><span class="people-helped">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -494,8 +763,44 @@
                     <!-- Feed items will be added dynamically -->
                 </div>
             </div>
+
+            <!-- Advertisement Section -->
+            <div class="ad-section">
+                <h2>Special Offers</h2>
+                <div class="ad-container">
+                    <div class="ad-card special-offer">
+                        <span class="ad-badge">Featured</span>
+                        <img src="https://via.placeholder.com/80" alt="Double Points" class="ad-image">
+                        <div class="ad-content">
+                            <h3>Double Your Impact!</h3>
+                            <p>Get 2x points on all donations today!</p>
+                        </div>
+                    </div>
+                    <div class="ad-card">
+                        <span class="ad-badge">New</span>
+                        <img src="https://via.placeholder.com/80" alt="Referral Bonus" class="ad-image">
+                        <div class="ad-content">
+                            <h3>Refer a Friend</h3>
+                            <p>Get 500 bonus points for each referral</p>
+                        </div>
+                    </div>
+                    <div class="ad-card">
+                        <img src="https://via.placeholder.com/80" alt="Level Up" class="ad-image">
+                        <div class="ad-content">
+                            <h3>Level Up Fast</h3>
+                            <p>Complete 3 donations to unlock Gold status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact Us</a>
+    </footer>
 
     <!-- Payment Modal -->
     <div class="modal" id="paymentModal">
@@ -513,12 +818,208 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        // Track unique donors per campaign
+        const campaignDonors = new Map(); // Map to store unique donors per campaign
+        let totalDonated = 0;
+        let peopleHelped = 0;
+        let userPoints = 0;
+        const POINTS_PER_DONATION = 50; // Points earned per donation
+
+        // Add user history tracking
+        const userDonationHistory = {
+            completedCampaigns: [],
+            donations: []
+        };
+
+        function addToHistory(campaign, amount) {
+            userDonationHistory.donations.push({
+                campaignId: campaign.id,
+                campaignTitle: campaign.title,
+                creator: campaign.creator,
+                amount: amount,
+                date: new Date().toISOString(),
+                helped: !campaignDonors.get(campaign.id)?.has(currentUser.id)
+            });
+
+            // If campaign is completed, add to completed campaigns
+            if (campaign.amount_raised >= campaign.amount_needed && 
+                !userDonationHistory.completedCampaigns.find(c => c.id === campaign.id)) {
+                userDonationHistory.completedCampaigns.push({
+                    id: campaign.id,
+                    title: campaign.title,
+                    creator: campaign.creator,
+                    totalRaised: campaign.amount_raised,
+                    completedDate: new Date().toISOString()
+                });
+            }
+        }
+
+        function updateUserStats(campaignId, donorId, amount) {
+            // Update total donated
+            totalDonated += amount;
+            document.querySelector('.total-donated').textContent = totalDonated;
+
+            // Check if this donor has already donated to this campaign
+            if (!campaignDonors.has(campaignId)) {
+                campaignDonors.set(campaignId, new Set());
+            }
+            
+            // Only increment peopleHelped if this is a new donor for this campaign
+            if (!campaignDonors.get(campaignId).has(donorId)) {
+                campaignDonors.get(campaignId).add(donorId);
+                peopleHelped++;
+                document.querySelector('.people-helped').textContent = peopleHelped;
+            }
+
+            // Always update points regardless of whether it's a new or returning donor
+            userPoints += POINTS_PER_DONATION;
+            document.querySelector('.user-points').textContent = userPoints;
+
+            // Update progress bar
+            updateLevelProgress();
+        }
+
+        function updateLevelProgress() {
+            const pointsNeeded = {
+                'Bronze': 1000,
+                'Silver': 2500,
+                'Gold': 5000,
+                'Platinum': 10000
+            };
+
+            let currentLevel = 'Bronze';
+            let nextLevel = 'Silver';
+            let nextLevelPoints = pointsNeeded['Silver'];
+
+            // Determine current level and next level
+            if (userPoints >= pointsNeeded['Platinum']) {
+                currentLevel = 'Platinum';
+                nextLevel = 'Platinum';
+                nextLevelPoints = pointsNeeded['Platinum'];
+            } else if (userPoints >= pointsNeeded['Gold']) {
+                currentLevel = 'Gold';
+                nextLevel = 'Platinum';
+                nextLevelPoints = pointsNeeded['Platinum'];
+            } else if (userPoints >= pointsNeeded['Silver']) {
+                currentLevel = 'Silver';
+                nextLevel = 'Gold';
+                nextLevelPoints = pointsNeeded['Gold'];
+            }
+
+            // Update level display
+            document.querySelector('.user-level').textContent = currentLevel;
+            document.querySelector('.next-level-points').textContent = nextLevelPoints;
+
+            // Update progress bar
+            const progressBar = document.querySelector('.level-bar');
+            const progress = (userPoints / nextLevelPoints) * 100;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+        }
+
+        // Example of how to handle a donation
+        function processDonation(campaignId, donorId, amount) {
+            updateUserStats(campaignId, donorId, amount);
+            
+            // Update campaign specific progress
+            updateCampaignProgress(campaignId, amount);
+        }
+
+        function updateCampaignProgress(campaignId, amount) {
+            const campaignElement = document.querySelector(`[data-campaign-id="${campaignId}"]`);
+            if (campaignElement) {
+                const progressBar = campaignElement.querySelector('.progress-fill');
+                const currentAmount = parseFloat(campaignElement.dataset.currentAmount || 0);
+                const targetAmount = parseFloat(campaignElement.dataset.targetAmount);
+                
+                const newAmount = currentAmount + amount;
+                const amountLeft = targetAmount - newAmount;
+                const progress = (newAmount / targetAmount) * 100;
+                
+                progressBar.style.width = Math.min(progress, 100) + '%';
+                campaignElement.dataset.currentAmount = newAmount;
+                
+                // Update campaign amount displays
+                const amountDisplay = campaignElement.querySelector('.campaign-amount');
+                if (amountDisplay) {
+                    amountDisplay.innerHTML = `
+                        <span class="amount-target">Target: $${targetAmount.toFixed(2)}</span>
+                        <span class="amount-raised">Raised: $${newAmount.toFixed(2)}</span>
+                        <span class="amount-left">Left: $${amountLeft.toFixed(2)}</span>
+                    `;
+                }
+
+                // Check if campaign is completed
+                if (newAmount >= targetAmount) {
+                    // Add completion class for styling
+                    campaignElement.classList.add('campaign-completed');
+                    
+                    // Update campaign status
+                    const statusElement = campaignElement.querySelector('.campaign-status');
+                    if (statusElement) {
+                        statusElement.textContent = 'Completed!';
+                        statusElement.classList.add('status-completed');
+                    }
+
+                    // Disable donate button
+                    const donateButton = campaignElement.querySelector('.pay-button');
+                    if (donateButton) {
+                        donateButton.disabled = true;
+                        donateButton.textContent = 'Completed';
+                    }
+
+                    // After a delay, remove the campaign card
+                    setTimeout(() => {
+                        campaignElement.style.animation = 'fadeOut 0.5s ease';
+                        setTimeout(() => {
+                            campaignElement.remove();
+                        }, 500);
+                    }, 3000);
+
+                    // Add to feed
+                    addFeedItem(`${campaign.creator}'s campaign has been fully funded!`);
+                }
+            }
+        }
+
+        function createCampaignCard(campaign) {
+            const isCompleted = campaign.amount_raised >= campaign.amount_needed;
+            const amountLeft = campaign.amount_needed - campaign.amount_raised;
+            const progressPercentage = (campaign.amount_raised / campaign.amount_needed) * 100;
+
+            return `
+                <div class="campaign-card ${isCompleted ? 'campaign-completed' : ''}" 
+                     data-campaign-id="${campaign.id}" 
+                     data-current-amount="${campaign.amount_raised}" 
+                     data-target-amount="${campaign.amount_needed}">
+                    <div class="campaign-info">
+                        <div class="campaign-header">
+                            <h3>${campaign.title}</h3>
+                            <span class="campaign-status ${isCompleted ? 'status-completed' : ''}">${isCompleted ? 'Completed!' : 'Active'}</span>
+                        </div>
+                        <p>${campaign.description}</p>
+                        <div class="campaign-amount">
+                            <span class="amount-target">Target: $${campaign.amount_needed.toFixed(2)}</span>
+                            <span class="amount-raised">Raised: $${campaign.amount_raised.toFixed(2)}</span>
+                            <span class="amount-left">Left: $${amountLeft.toFixed(2)}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    </div>
+                    <button class="pay-button" onclick="openPaymentModal(${campaign.id})" ${isCompleted ? 'disabled' : ''}>
+                        ${isCompleted ? 'Completed' : 'Donate'}
+                    </button>
+                </div>
+            `;
+        }
+
         // Sample data structure for campaigns
         let campaigns = [
             {
                 id: 1,
                 creator: "Samuel Olumide Adebimpe",
-                product: "iPhone 14 Pro",
+                title: "Help me fund my education",
+                description: "I need help funding my education",
                 amount_needed: 1200,
                 amount_raised: 400
             }
@@ -527,7 +1028,6 @@
         // Check authentication status on page load
         window.onload = function() {
             updateCampaignList(campaigns);
-            // Add some initial feed items
             addFeedItem("John Doe just created a new campaign!");
             addFeedItem("Sarah helped fund Mike's laptop campaign!");
         };
@@ -542,32 +1042,17 @@
             }
 
             campaigns.forEach(campaign => {
-                const progressPercentage = (campaign.amount_raised / campaign.amount_needed) * 100;
-                const amountLeft = campaign.amount_needed - campaign.amount_raised;
-                
                 const card = document.createElement('div');
-                card.className = 'campaign-card';
-                card.innerHTML = `
-                    <div class="campaign-info">
-                        <h3>${campaign.creator}</h3>
-                        <p>Product: ${campaign.product}</p>
-                        <p>Amount Needed: $${campaign.amount_needed}</p>
-                        <p>Amount Left: $${amountLeft.toFixed(2)}</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
-                        </div>
-                    </div>
-                    <button class="pay-button" onclick="openPayModal('${campaign.id}', '${campaign.creator}', ${amountLeft})">Pay</button>
-                `;
-                
+                card.innerHTML = createCampaignCard(campaign);
                 campaignList.appendChild(card);
             });
         }
 
-        function openPayModal(campaignId, campaignCreator, amountLeft) {
+        function openPaymentModal(campaignId) {
             const modal = document.getElementById('paymentModal');
-            document.getElementById('modal-campaign-name').textContent = `Campaign by: ${campaignCreator}`;
-            document.getElementById('modal-amount-left').textContent = `Amount Left: $${amountLeft.toFixed(2)}`;
+            const campaign = campaigns.find(c => c.id === campaignId);
+            document.getElementById('modal-campaign-name').textContent = `Campaign by: ${campaign.creator}`;
+            document.getElementById('modal-amount-left').textContent = `Amount Left: $${(campaign.amount_needed - campaign.amount_raised).toFixed(2)}`;
             modal.dataset.campaignId = campaignId;
             modal.classList.add('active');
         }
@@ -588,6 +1073,13 @@
                 return;
             }
 
+            // Check if donation amount exceeds user's level limit
+            const maxDonation = 1000; // Replace with actual max donation limit
+            if (amount > maxDonation) {
+                alert(`Your current level only allows donations up to $${maxDonation}. Level up to donate more!`);
+                return;
+            }
+
             const campaign = campaigns.find(c => c.id == campaignId);
             const amountLeft = campaign.amount_needed - campaign.amount_raised;
 
@@ -596,9 +1088,15 @@
                 return;
             }
 
+            // Update campaign
             campaign.amount_raised += amount;
 
+            // Update user stats
+            processDonation(campaignId, "John Doe", amount);
+            addToHistory(campaign, amount);
+
             addFeedItem(`Someone just donated $${amount} to ${campaign.creator}'s campaign!`);
+            addFeedItem(`You earned ${POINTS_PER_DONATION} points!`);
 
             if (campaign.amount_raised >= campaign.amount_needed) {
                 addFeedItem(`${campaign.creator}'s campaign has been fully funded!`);
