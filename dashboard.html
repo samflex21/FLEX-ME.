@@ -379,15 +379,34 @@
             padding: 15px;
             margin-bottom: 15px;
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: 120px 1fr auto;
             gap: 15px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #e0e0e0;
         }
 
-        .campaign-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .campaign-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .campaign-deadline {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .campaign-deadline i {
+            color: #ff357a;
+        }
+
+        .deadline-urgent {
+            color: #dc3545;
         }
 
         .campaign-info h3 {
@@ -707,7 +726,7 @@
         <div class="navbar-nav">
             <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
             <a class="nav-link" href="#"><i class="fas fa-users"></i> Profile</a>
-            <a class="nav-link" href="#"><i class="fas fa-hand-holding-heart"></i> Create Campaign</a>
+            <a class="nav-link" href="create-campaign.html"><i class="fas fa-hand-holding-heart"></i> Create Campaign</a>
             <a class="nav-link" href="#"><i class="fas fa-history"></i> History</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
@@ -986,11 +1005,18 @@
             const amountLeft = campaign.amount_needed - campaign.amount_raised;
             const progressPercentage = (campaign.amount_raised / campaign.amount_needed) * 100;
 
+            // Calculate days left
+            const deadline = new Date(campaign.deadline);
+            const today = new Date();
+            const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+            const isUrgent = daysLeft <= 3;
+
             return `
                 <div class="campaign-card ${isCompleted ? 'campaign-completed' : ''}" 
                      data-campaign-id="${campaign.id}" 
                      data-current-amount="${campaign.amount_raised}" 
                      data-target-amount="${campaign.amount_needed}">
+                    <img src="${campaign.image || 'https://via.placeholder.com/120'}" alt="${campaign.title}" class="campaign-image">
                     <div class="campaign-info">
                         <div class="campaign-header">
                             <h3>${campaign.title}</h3>
@@ -1004,6 +1030,10 @@
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                        <div class="campaign-deadline ${isUrgent ? 'deadline-urgent' : ''}">
+                            <i class="fas fa-clock"></i>
+                            <span>${daysLeft > 0 ? `${daysLeft} days left` : 'Deadline passed'}</span>
                         </div>
                     </div>
                     <button class="pay-button" onclick="openPaymentModal(${campaign.id})" ${isCompleted ? 'disabled' : ''}>
@@ -1021,7 +1051,9 @@
                 title: "Help me fund my education",
                 description: "I need help funding my education",
                 amount_needed: 1200,
-                amount_raised: 400
+                amount_raised: 400,
+                image: "https://via.placeholder.com/120",
+                deadline: "2025-02-09" // One month from now
             }
         ];
 

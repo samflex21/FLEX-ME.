@@ -4,33 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Campaign - Flex Me</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
         :root {
-            --primary: #ff357a;
-            --dark: #1a1a1a;
-            --light: #ffffff;
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --primary: #f68b1e;
+            --secondary: #ff6b6b;
+            --dark: #111;
+            --light: #fff;
+            --gray: #f5f5f5;
+            --gradient: linear-gradient(45deg, #f68b1e, #ff6b6b);
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: #f4f6f8;
-            min-height: 100vh;
-            padding-top: 80px;
+            background: #e8e9eb;
+            color: var(--dark);
+            line-height: 1.6;
         }
 
+        /* Navigation */
         .navbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             width: 100%;
+            margin-bottom: 20px;
             padding: 10px 20px;
             position: fixed;
             top: 0;
@@ -42,7 +50,10 @@
         }
 
         .navbar-nav {
+            position: absolute;
+            left: 20px;
             display: flex;
+            flex-direction: row;
             align-items: center;
             gap: 20px;
         }
@@ -61,53 +72,112 @@
         }
 
         .website-name {
-            font-size: 2em;
+            font-size: 3em;
             color: #fff;
             text-align: center;
             letter-spacing: 3px;
-            margin: 0;
             text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         .website-name span {
-            color: #ff357a;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+
+        .website-name span::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
         }
 
         .user-profile {
+            position: absolute;
+            right: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            transition: background 0.3s ease;
         }
 
-        .user-profile:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .user-info {
+        .logout-btn {
+            color: white;
+            text-decoration: none;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ff357a;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ff357a;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+        }
+
+        .user-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 60px);
+            background: var(--dark);
+            padding: 20px;
+            color: var(--light);
+            position: fixed;
+            top: 60px;
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
         }
 
         .user-stats {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 0 15px;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
         .level-info {
             text-align: center;
+            margin-bottom: 15px;
         }
 
         .level-info h3 {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             color: #fff;
         }
 
@@ -117,11 +187,10 @@
         }
 
         .level-progress {
-            width: 100px;
-            height: 4px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin: 5px 0;
+            border-radius: 4px;
+            margin: 10px 0;
             overflow: hidden;
         }
 
@@ -134,45 +203,40 @@
 
         .points-info {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .donation-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
         }
 
         .stat-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 5px 10px;
+            gap: 10px;
+            padding: 10px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
+            border-radius: 8px;
         }
 
         .stat-item i {
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: #ff357a;
         }
 
         .stat-details h4 {
             margin: 0;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: rgba(255, 255, 255, 0.7);
         }
 
         .stat-details p {
-            margin: 0;
+            margin: 2px 0 0;
             font-weight: bold;
             color: #fff;
-            font-size: 0.9rem;
-        }
-
-        .sidebar {
-            width: 250px;
-            height: calc(100vh - 80px);
-            background: var(--dark);
-            position: fixed;
-            top: 80px;
-            left: 0;
-            padding: 20px;
-            color: var(--light);
         }
 
         .main-content {
@@ -311,9 +375,9 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="dashboard.html"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
             <a class="nav-link" href="#"><i class="fas fa-users"></i> Profile</a>
-            <a class="nav-link" href="create-campaign.html"><i class="fas fa-hand-holding-heart"></i> Create Campaign</a>
+            <a class="nav-link" href="dashboard.html"><i class="fas fa-hand-holding-heart"></i> Dashboard</a>
             <a class="nav-link" href="#"><i class="fas fa-history"></i> History</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
@@ -328,7 +392,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h3>Dashboard</h3>
+                <h4>Create Campaign</h4>
             </div>
             <div class="user-stats">
                 <div class="level-info">
