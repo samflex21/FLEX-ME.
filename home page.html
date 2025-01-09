@@ -532,12 +532,12 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About Us</a>
-            <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a>
+            <a class="nav-link" href="About.html"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
             <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
             <a class="nav-link" href="register.html"><i class="fas fa-user-plus"></i> Register</a>
         </div>
-        <h1 class="website-name">Flex <span>Me</span></h1>
+        <h1 class="website-name"><span>Flex</span> Me</h1>
     </nav>
 
     <!-- Slider Section -->
@@ -819,6 +819,64 @@ document.getElementById('logoutBtn').addEventListener('click', function(e) {
 
 // Check auth status when page loads
 document.addEventListener('DOMContentLoaded', checkAuthStatus);
+
+        // Function to update navigation based on login status
+        function updateNavigation() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const navbar = document.querySelector('.navbar-nav');
+            
+            if (isLoggedIn) {
+                navbar.innerHTML = `
+                    <a class="nav-link" href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                    <a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                    <a class="nav-link" href="About.html"><i class="fas fa-info-circle"></i> About</a>
+                    <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                `;
+                // Add user profile section
+                if (!document.querySelector('.user-profile')) {
+                    const userProfile = document.createElement('div');
+                    userProfile.className = 'user-profile';
+                    userProfile.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3" alt="Profile Picture" class="profile-pic">
+                        <span class="user-name">John Doe</span>
+                        <a href="#" class="logout-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    `;
+                    document.querySelector('.navbar').appendChild(userProfile);
+                }
+            } else {
+                navbar.innerHTML = `
+                    <a class="nav-link" href="About.html"><i class="fas fa-info-circle"></i> About</a>
+                    <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                    <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a class="nav-link" href="register.html"><i class="fas fa-user-plus"></i> Register</a>
+                `;
+                // Remove user profile if exists
+                const userProfile = document.querySelector('.user-profile');
+                if (userProfile) {
+                    userProfile.remove();
+                }
+            }
+        }
+
+        // Function to handle logout
+        function logout() {
+            localStorage.setItem('isLoggedIn', 'false');
+            updateNavigation();
+            window.location.href = 'login.html';
+        }
+
+        // Update navigation when page loads
+        document.addEventListener('DOMContentLoaded', updateNavigation);
+
+        // Listen for login status changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'isLoggedIn') {
+                updateNavigation();
+            }
+        });
     </script>
 </body>
 </html>
