@@ -1032,7 +1032,7 @@
             <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
             <a class="nav-link active" href="profile.html"><i class="fas fa-users"></i> Profile</a>
             <a class="nav-link" href="dashboard.html"><i class="fas fa-hand-holding-heart"></i> Dashboard</a>
-            <a class="nav-link" href="#"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="history.html"><i class="fas fa-history"></i> History</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
@@ -1051,21 +1051,6 @@
             <div class="user-stats">
                 <div class="level-info">
                     <h3>Level: <span class="user-level">Bronze</span></h3>
-                    <div class="level-tooltip">
-                        <h4>Bronze Level Benefits</h4>
-                        <div class="level-benefits">
-                            • Can request up to <span class="level-limit">$1,000</span> in campaigns
-                            • Can donate up to <span class="level-limit">$1,000</span> per donation
-                        </div>
-                        <div class="next-level">
-                            <h4>Next Level: Silver</h4>
-                            <div class="level-benefits">
-                                • Request up to <span class="level-limit">$5,000</span> in campaigns
-                                • Donate up to <span class="level-limit">$5,000</span> per donation
-                                • 25 XP needed to level up
-                            </div>
-                        </div>
-                    </div>
                     <div class="level-progress">
                         <div class="level-bar"></div>
                     </div>
@@ -1296,158 +1281,159 @@
                 <p>&copy; 2025 Flex Me. All rights reserved.</p>
             </div>
         </footer>
+    </div>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script>
-            // Initialize the level bar
-            document.addEventListener('DOMContentLoaded', function() {
-                const levelBar = document.querySelector('.level-bar');
-                if (levelBar) {
-                    levelBar.style.width = '75%';
-                }
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        // Initialize the level bar
+        document.addEventListener('DOMContentLoaded', function() {
+            const levelBar = document.querySelector('.level-bar');
+            if (levelBar) {
+                levelBar.style.width = '75%';
+            }
 
-                // Handle editable fields
-                const editableFields = document.querySelectorAll('.editable-field');
-                let hasChanges = false;
+            // Handle editable fields
+            const editableFields = document.querySelectorAll('.editable-field');
+            let hasChanges = false;
 
-                editableFields.forEach(field => {
-                    const input = field.querySelector('.form-control');
-                    const editIcon = field.querySelector('.edit-icon');
+            editableFields.forEach(field => {
+                const input = field.querySelector('.form-control');
+                const editIcon = field.querySelector('.edit-icon');
 
-                    editIcon.addEventListener('click', () => {
-                        input.readOnly = !input.readOnly;
-                        input.classList.toggle('editing');
-                        if (!input.readOnly) {
-                            input.focus();
-                        }
-                        hasChanges = true;
-                    });
-
-                    input.addEventListener('blur', () => {
-                        if (!input.readOnly) {
-                            input.readOnly = true;
-                            input.classList.remove('editing');
-                        }
-                    });
-                });
-
-                // Handle profile picture upload
-                document.querySelector('.edit-picture').addEventListener('click', function() {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    
-                    input.onchange = function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(event) {
-                                document.querySelector('.profile-picture').src = event.target.result;
-                                document.querySelector('.profile-pic').src = event.target.result;
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    };
-                    
-                    input.click();
-                });
-
-                // Password change functionality
-                const changePasswordCheckbox = document.getElementById('changePassword');
-                const passwordFields = document.querySelector('.password-fields');
-                const passwordInputs = document.querySelectorAll('.password-input-group input');
-                const togglePasswordButtons = document.querySelectorAll('.toggle-password');
-
-                // Toggle password change fields
-                changePasswordCheckbox.addEventListener('change', function() {
-                    passwordFields.classList.toggle('visible');
-                    if (!this.checked) {
-                        // Clear password fields when unchecked
-                        passwordInputs.forEach(input => input.value = '');
+                editIcon.addEventListener('click', () => {
+                    input.readOnly = !input.readOnly;
+                    input.classList.toggle('editing');
+                    if (!input.readOnly) {
+                        input.focus();
                     }
+                    hasChanges = true;
                 });
 
-                // Toggle password visibility
-                togglePasswordButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        const targetId = this.getAttribute('data-target');
-                        const input = document.getElementById(targetId);
-                        const type = input.type === 'password' ? 'text' : 'password';
-                        input.type = type;
-                        this.classList.toggle('fa-eye');
-                        this.classList.toggle('fa-eye-slash');
-                    });
-                });
-
-                // Form submission
-                document.querySelector('.profile-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (changePasswordCheckbox.checked) {
-                        const currentPassword = document.getElementById('currentPassword').value;
-                        const newPassword = document.getElementById('newPassword').value;
-                        const confirmPassword = document.getElementById('confirmPassword').value;
-
-                        // Validate passwords
-                        if (!currentPassword) {
-                            alert('Please enter your current password');
-                            return;
-                        }
-                        if (newPassword !== confirmPassword) {
-                            alert('New passwords do not match');
-                            return;
-                        }
-                        if (newPassword.length < 8) {
-                            alert('New password must be at least 8 characters long');
-                            return;
-                        }
-                        // Add more password validation as needed
+                input.addEventListener('blur', () => {
+                    if (!input.readOnly) {
+                        input.readOnly = true;
+                        input.classList.remove('editing');
                     }
-
-                    // Proceed with form submission
-                    alert('Profile updated successfully!');
-                });
-
-                // Add show/hide password icons
-                const securityAnswers = document.querySelectorAll('.security-questions input[type="password"]');
-                securityAnswers.forEach(input => {
-                    const showPasswordIcon = document.createElement('i');
-                    showPasswordIcon.className = 'fas fa-eye show-password';
-                    input.parentElement.appendChild(showPasswordIcon);
-
-                    showPasswordIcon.addEventListener('click', function() {
-                        if (input.type === 'password') {
-                            input.type = 'text';
-                            this.className = 'fas fa-eye-slash show-password';
-                        } else {
-                            input.type = 'password';
-                            this.className = 'fas fa-eye show-password';
-                        }
-                    });
-                });
-
-                // Handle edit functionality
-                const securityFields = document.querySelectorAll('.security-questions .editable-field');
-                securityFields.forEach(field => {
-                    const editIcon = field.querySelector('.edit-icon');
-                    const select = field.querySelector('select');
-                    const input = field.querySelector('input');
-
-                    editIcon.addEventListener('click', function() {
-                        if (select.hasAttribute('readonly')) {
-                            select.removeAttribute('readonly');
-                            input.removeAttribute('readonly');
-                            input.value = ''; // Clear the password field
-                            editIcon.className = 'fas fa-save edit-icon';
-                        } else {
-                            select.setAttribute('readonly', true);
-                            input.setAttribute('readonly', true);
-                            input.value = '********';
-                            editIcon.className = 'fas fa-pencil-alt edit-icon';
-                        }
-                    });
                 });
             });
-        </script>
-    </body>
+
+            // Handle profile picture upload
+            document.querySelector('.edit-picture').addEventListener('click', function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            document.querySelector('.profile-picture').src = event.target.result;
+                            document.querySelector('.profile-pic').src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                
+                input.click();
+            });
+
+            // Password change functionality
+            const changePasswordCheckbox = document.getElementById('changePassword');
+            const passwordFields = document.querySelector('.password-fields');
+            const passwordInputs = document.querySelectorAll('.password-input-group input');
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+            // Toggle password change fields
+            changePasswordCheckbox.addEventListener('change', function() {
+                passwordFields.classList.toggle('visible');
+                if (!this.checked) {
+                    // Clear password fields when unchecked
+                    passwordInputs.forEach(input => input.value = '');
+                }
+            });
+
+            // Toggle password visibility
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const type = input.type === 'password' ? 'text' : 'password';
+                    input.type = type;
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            });
+
+            // Form submission
+            document.querySelector('.profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (changePasswordCheckbox.checked) {
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    // Validate passwords
+                    if (!currentPassword) {
+                        alert('Please enter your current password');
+                        return;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        alert('New passwords do not match');
+                        return;
+                    }
+                    if (newPassword.length < 8) {
+                        alert('New password must be at least 8 characters long');
+                        return;
+                    }
+                    // Add more password validation as needed
+                }
+
+                // Proceed with form submission
+                alert('Profile updated successfully!');
+            });
+
+            // Add show/hide password icons
+            const securityAnswers = document.querySelectorAll('.security-questions input[type="password"]');
+            securityAnswers.forEach(input => {
+                const showPasswordIcon = document.createElement('i');
+                showPasswordIcon.className = 'fas fa-eye show-password';
+                input.parentElement.appendChild(showPasswordIcon);
+
+                showPasswordIcon.addEventListener('click', function() {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.className = 'fas fa-eye-slash show-password';
+                    } else {
+                        input.type = 'password';
+                        this.className = 'fas fa-eye show-password';
+                    }
+                });
+            });
+
+            // Handle edit functionality
+            const securityFields = document.querySelectorAll('.security-questions .editable-field');
+            securityFields.forEach(field => {
+                const editIcon = field.querySelector('.edit-icon');
+                const select = field.querySelector('select');
+                const input = field.querySelector('input');
+
+                editIcon.addEventListener('click', function() {
+                    if (select.hasAttribute('readonly')) {
+                        select.removeAttribute('readonly');
+                        input.removeAttribute('readonly');
+                        input.value = ''; // Clear the password field
+                        editIcon.className = 'fas fa-save edit-icon';
+                    } else {
+                        select.setAttribute('readonly', true);
+                        input.setAttribute('readonly', true);
+                        input.value = '********';
+                        editIcon.className = 'fas fa-pencil-alt edit-icon';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
 </html>
