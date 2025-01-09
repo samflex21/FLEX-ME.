@@ -158,8 +158,8 @@
         }
 
         .member-image {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             margin: 0 auto 20px;
             overflow: hidden;
@@ -186,17 +186,27 @@
 
         .member-social {
             display: flex;
-            justify-content: center;
             gap: 15px;
+            justify-content: center;
         }
 
         .member-social a {
-            color: #666;
-            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .member-social a:hover {
-            color: #ff357a;
+            background: #ff357a;
+            color: #fff;
+            transform: translateY(-3px);
         }
 
         /* Navigation */
@@ -417,8 +427,8 @@
             }
 
             .member-image {
-                width: 120px;
-                height: 120px;
+                width: 40px;
+                height: 40px;
             }
 
             .main-content {
@@ -501,32 +511,10 @@
             <div class="team-grid">
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3" alt="John Smith">
+                        <img src="image/samuel.jpg" alt="Samuel Olumide Adebimpe">
                     </div>
-                    <h3>John Smith</h3>
+                    <h3>Samuel Olumide Adebimpe</h3>
                     <p>Founder & CEO</p>
-                    <div class="member-social">
-                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <div class="team-member">
-                    <div class="member-image">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3" alt="Sarah Johnson">
-                    </div>
-                    <h3>Sarah Johnson</h3>
-                    <p>Head of Operations</p>
-                    <div class="member-social">
-                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <div class="team-member">
-                    <div class="member-image">
-                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3" alt="Mike Wilson">
-                    </div>
-                    <h3>Mike Wilson</h3>
-                    <p>Technical Lead</p>
                     <div class="member-social">
                         <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
