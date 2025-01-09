@@ -173,23 +173,19 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #ff357a;
+            border: 4px solid #4a90e2;
         }
 
         .edit-picture {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: #ff357a;
+            right: -10px;
+            bottom: -10px;
+            background: #4a90e2;
             color: white;
-            width: 35px;
-            height: 35px;
+            padding: 8px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .edit-picture:hover {
@@ -217,49 +213,191 @@
             gap: 20px;
         }
 
+        .form-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section h3 {
+            font-size: 24px;
+            color: #4a90e2;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            color: #2c3e50;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
             font-weight: 500;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-control {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
+            padding: 12px 20px;
+            background: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            color: #333;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #ff357a;
+        .form-control:focus {
+            border-color: #4a90e2;
+            background: #ffffff;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 53, 122, 0.2);
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
         }
 
-        .save-button {
-            background: linear-gradient(45deg, #ff357a, #fff172);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 500;
+        .form-control[readonly] {
+            background: #f8f9fa;
+            border-color: #e9ecef;
+            color: #666;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .security-password-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .security-questions,
+        .password-section {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .security-questions .form-group {
+            background: #ffffff;
+            margin-bottom: 25px;
+            padding: 25px;
+        }
+
+        .security-questions select.form-control {
+            margin-bottom: 15px;
+            background: #ffffff;
+        }
+
+        .security-questions input[type="password"],
+        .security-questions input[type="text"] {
+            background: #ffffff;
+        }
+
+        .editable-field {
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .edit-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a90e2;
+            font-size: 16px;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            grid-column: 1 / -1;
-            justify-self: center;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 50%;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
         }
 
-        .save-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+        .edit-icon:hover {
+            background: #4a90e2;
+            color: #ffffff;
+            border-color: #4a90e2;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a90e2;
+            font-size: 16px;
+            cursor: pointer;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 50%;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .show-password:hover {
+            background: #4a90e2;
+            color: #ffffff;
+            border-color: #4a90e2;
+        }
+
+        .section-divider {
+            margin: 40px 0;
+            padding: 30px 0;
+            border-top: 2px solid #3a3a3a;
+            border-bottom: 2px solid #3a3a3a;
+        }
+
+        .section-divider h3 {
+            font-size: 24px;
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+
+        .section-description {
+            color: #ffffff;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .security-password-container {
+                flex-direction: column;
+                gap: 20px;
+            }
         }
 
         .stats-grid {
@@ -500,34 +638,25 @@
             color: #ff357a;
         }
 
-        .editable-field {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .edit-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
+        .save-button {
+            background: linear-gradient(45deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto 0;
+            width: auto;
+            min-width: 150px;
         }
 
-        .editable-field:hover .edit-icon {
-            opacity: 1;
-        }
-
-        .form-control[readonly] {
-            background-color: #fff;
-            cursor: default;
-        }
-
-        .form-control.editing {
-            border-color: #ff357a;
-            box-shadow: 0 0 0 0.2rem rgba(255, 53, 122, 0.25);
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
         }
 
         .save-changes {
@@ -535,7 +664,7 @@
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background: linear-gradient(45deg, #ff357a, #fff172);
+            background: linear-gradient(45deg, #4a90e2, #357abd);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -553,7 +682,7 @@
 
         .save-changes:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
         }
 
         @keyframes slideIn {
@@ -562,62 +691,58 @@
         }
 
         .password-section {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-
-        .password-section h3 {
-            margin-bottom: 15px;
-            color: var(--dark);
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 1px solid #e9ecef;
         }
 
         .password-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .password-toggle input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .password-fields {
-            display: none;
-        }
-
-        .password-fields.visible {
-            display: block;
-            animation: fadeIn 0.3s ease;
+        .password-toggle label {
+            color: #333;
+            font-size: 16px;
+            margin-left: 10px;
         }
 
         .password-requirements {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 5px;
+            color: #4a90e2;
+            font-size: 14px;
+            margin-top: 10px;
+            line-height: 1.4;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Profile Picture Section */
+        .profile-picture-section {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .password-input-group {
-            position: relative;
-            margin-bottom: 15px;
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #4a90e2;
+            object-fit: cover;
         }
 
-        .password-input-group .toggle-password {
+        .edit-picture {
             position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: -10px;
+            bottom: -10px;
+            background: #4a90e2;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
             cursor: pointer;
-            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .edit-picture:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -689,110 +814,204 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="profile-section" id="personal-info">
-                <h2 class="section-title">Personal Information</h2>
-                <div class="profile-header">
-                    <div class="profile-picture-section">
-                        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
-                        <div class="edit-picture">
-                            <i class="fas fa-camera"></i>
+                <div class="form-container">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="profile-header">
+                            <div class="profile-picture-section">
+                                <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
+                                <div class="edit-picture">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-name">John Doe</div>
+                                <div class="profile-email">johndoe@example.com</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="profile-info">
-                        <div class="profile-name">John Doe</div>
-                        <div class="profile-email">johndoe@example.com</div>
+
+                        <form class="profile-form">
+                            <div class="form-group editable-field">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" class="form-control" value="John" readonly>
+                                <i class="fas fa-pencil-alt edit-icon"></i>
+                            </div>
+                            
+                            <div class="form-group editable-field">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" class="form-control" value="Doe" readonly>
+                                <i class="fas fa-pencil-alt edit-icon"></i>
+                            </div>
+
+                            <div class="form-group editable-field">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="form-control" value="johndoe@example.com" readonly>
+                                <i class="fas fa-pencil-alt edit-icon"></i>
+                            </div>
+
+                            <div class="form-group editable-field">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" class="form-control" value="+1234567890" readonly>
+                                <i class="fas fa-pencil-alt edit-icon"></i>
+                            </div>
+
+                            <div class="form-group editable-field">
+                                <label for="street">Street Address</label>
+                                <input type="text" id="street" class="form-control" value="123 Main Street" readonly>
+                                <i class="fas fa-pencil-alt edit-icon"></i>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6 editable-field">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" class="form-control" value="City" readonly>
+                                    <i class="fas fa-pencil-alt edit-icon"></i>
+                                </div>
+                                <div class="form-group col-md-6 editable-field">
+                                    <label for="state">State/Province</label>
+                                    <input type="text" id="state" class="form-control" value="State" readonly>
+                                    <i class="fas fa-pencil-alt edit-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6 editable-field">
+                                    <label for="country">Country</label>
+                                    <select id="country" class="form-control" readonly>
+                                        <option value="">Select Country</option>
+                                        <option value="AF">Afghanistan</option>
+                                        <option value="AL">Albania</option>
+                                        <option value="DZ">Algeria</option>
+                                        <option value="NG">Nigeria</option>
+                                        <option value="US">United States</option>
+                                        <option value="GB">United Kingdom</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="FR">France</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="IT">Italy</option>
+                                        <option value="ES">Spain</option>
+                                        <option value="PT">Portugal</option>
+                                        <option value="NL">Netherlands</option>
+                                        <option value="BE">Belgium</option>
+                                        <option value="CH">Switzerland</option>
+                                        <option value="AT">Austria</option>
+                                        <option value="GR">Greece</option>
+                                        <option value="SE">Sweden</option>
+                                        <option value="NO">Norway</option>
+                                        <option value="DK">Denmark</option>
+                                        <option value="FI">Finland</option>
+                                        <option value="IE">Ireland</option>
+                                        <option value="IS">Iceland</option>
+                                    </select>
+                                    <i class="fas fa-pencil-alt edit-icon"></i>
+                                </div>
+                                <div class="form-group col-md-6 editable-field">
+                                    <label for="postal">Postal/ZIP Code</label>
+                                    <input type="text" id="postal" class="form-control" value="12345" readonly>
+                                    <i class="fas fa-pencil-alt edit-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="timezone">Timezone</label>
+                                <select id="timezone">
+                                    <option value="est">Eastern Time</option>
+                                    <option value="cst">Central Time</option>
+                                    <option value="pst">Pacific Time</option>
+                                </select>
+                            </div>
+
+                            <!-- Security Questions Section -->
+                            <div class="section-divider">
+                                <h3>Security Questions</h3>
+                                <p class="section-description">Your security questions help protect your account. You can view and update them here.</p>
+                            </div>
+
+                            <div class="security-password-container">
+                                <div class="security-questions">
+                                    <div class="form-group editable-field">
+                                        <label>Security Question 1</label>
+                                        <select id="security_question1" class="form-control" readonly>
+                                            <option value="pet">What was your first pet's name?</option>
+                                            <option value="school">What was the name of your first school?</option>
+                                            <option value="city">In which city were you born?</option>
+                                            <option value="mother">What is your mother's maiden name?</option>
+                                            <option value="car">What was your first car?</option>
+                                        </select>
+                                        <input type="password" id="security_answer1" class="form-control" value="********" readonly>
+                                        <i class="fas fa-pencil-alt edit-icon"></i>
+                                    </div>
+
+                                    <div class="form-group editable-field">
+                                        <label>Security Question 2</label>
+                                        <select id="security_question2" class="form-control" readonly>
+                                            <option value="street">What street did you grow up on?</option>
+                                            <option value="book">What is your favorite book?</option>
+                                            <option value="food">What is your favorite food?</option>
+                                            <option value="teacher">Who was your favorite teacher?</option>
+                                            <option value="friend">What is the name of your best childhood friend?</option>
+                                        </select>
+                                        <input type="password" id="security_answer2" class="form-control" value="********" readonly>
+                                        <i class="fas fa-pencil-alt edit-icon"></i>
+                                    </div>
+
+                                    <div class="form-group editable-field">
+                                        <label>Security Question 3</label>
+                                        <select id="security_question3" class="form-control" readonly>
+                                            <option value="hero">Who was your childhood hero?</option>
+                                            <option value="job">What was your first job?</option>
+                                            <option value="sport">What sport did you play as a child?</option>
+                                            <option value="movie">What is your favorite movie?</option>
+                                            <option value="vacation">Where was your first vacation?</option>
+                                        </select>
+                                        <input type="password" id="security_answer3" class="form-control" value="********" readonly>
+                                        <i class="fas fa-pencil-alt edit-icon"></i>
+                                    </div>
+                                </div>
+
+                                <div class="password-section">
+                                    <h3>Change Password</h3>
+                                    <div class="password-toggle">
+                                        <input type="checkbox" id="changePassword">
+                                        <label for="changePassword">I want to change my password</label>
+                                    </div>
+                                    
+                                    <div class="password-fields">
+                                        <div class="form-group">
+                                            <label for="currentPassword">Current Password</label>
+                                            <div class="password-input-group">
+                                                <input type="password" id="currentPassword" class="form-control">
+                                                <i class="fas fa-eye toggle-password" data-target="currentPassword"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="newPassword">New Password</label>
+                                            <div class="password-input-group">
+                                                <input type="password" id="newPassword" class="form-control">
+                                                <i class="fas fa-eye toggle-password" data-target="newPassword"></i>
+                                            </div>
+                                            <div class="password-requirements">
+                                                Password must be at least 8 characters long and include uppercase, lowercase, number, and special character
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="confirmPassword">Confirm New Password</label>
+                                            <div class="password-input-group">
+                                                <input type="password" id="confirmPassword" class="form-control">
+                                                <i class="fas fa-eye toggle-password" data-target="confirmPassword"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="save-button">Save Changes</button>
+                        </form>
                     </div>
                 </div>
-
-                <form class="profile-form">
-                    <div class="form-group editable-field">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" class="form-control" value="John" readonly>
-                        <i class="fas fa-pencil-alt edit-icon"></i>
-                    </div>
-                    
-                    <div class="form-group editable-field">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" class="form-control" value="Doe" readonly>
-                        <i class="fas fa-pencil-alt edit-icon"></i>
-                    </div>
-
-                    <div class="form-group editable-field">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" value="johndoe@example.com" readonly>
-                        <i class="fas fa-pencil-alt edit-icon"></i>
-                    </div>
-
-                    <div class="form-group editable-field">
-                        <label for="phone">Phone</label>
-                        <input type="tel" id="phone" class="form-control" value="+1234567890" readonly>
-                        <i class="fas fa-pencil-alt edit-icon"></i>
-                    </div>
-
-                    <div class="form-group editable-field">
-                        <label for="address">Address</label>
-                        <textarea id="address" class="form-control" rows="3" readonly>123 Main Street
-City, State 12345
-Country</textarea>
-                        <i class="fas fa-pencil-alt edit-icon"></i>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <select id="country">
-                            <option value="us">United States</option>
-                            <option value="uk">United Kingdom</option>
-                            <option value="ca">Canada</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="timezone">Timezone</label>
-                        <select id="timezone">
-                            <option value="est">Eastern Time</option>
-                            <option value="cst">Central Time</option>
-                            <option value="pst">Pacific Time</option>
-                        </select>
-                    </div>
-
-                    <div class="password-section">
-                        <h3>Change Password</h3>
-                        <div class="password-toggle">
-                            <input type="checkbox" id="changePassword">
-                            <label for="changePassword">I want to change my password</label>
-                        </div>
-                        
-                        <div class="password-fields">
-                            <div class="form-group">
-                                <label for="currentPassword">Current Password</label>
-                                <div class="password-input-group">
-                                    <input type="password" id="currentPassword" class="form-control">
-                                    <i class="fas fa-eye toggle-password" data-target="currentPassword"></i>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="newPassword">New Password</label>
-                                <div class="password-input-group">
-                                    <input type="password" id="newPassword" class="form-control">
-                                    <i class="fas fa-eye toggle-password" data-target="newPassword"></i>
-                                </div>
-                                <div class="password-requirements">
-                                    Password must be at least 8 characters long and include uppercase, lowercase, number, and special character
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="confirmPassword">Confirm New Password</label>
-                                <div class="password-input-group">
-                                    <input type="password" id="confirmPassword" class="form-control">
-                                    <i class="fas fa-eye toggle-password" data-target="confirmPassword"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="save-button">Save Changes</button>
-                </form>
             </div>
 
             <button class="save-changes" id="saveChanges">Save Changes</button>
@@ -914,6 +1133,46 @@ Country</textarea>
 
                 // Proceed with form submission
                 alert('Profile updated successfully!');
+            });
+
+            // Add show/hide password icons
+            const securityAnswers = document.querySelectorAll('.security-questions input[type="password"]');
+            securityAnswers.forEach(input => {
+                const showPasswordIcon = document.createElement('i');
+                showPasswordIcon.className = 'fas fa-eye show-password';
+                input.parentElement.appendChild(showPasswordIcon);
+
+                showPasswordIcon.addEventListener('click', function() {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.className = 'fas fa-eye-slash show-password';
+                    } else {
+                        input.type = 'password';
+                        this.className = 'fas fa-eye show-password';
+                    }
+                });
+            });
+
+            // Handle edit functionality
+            const securityFields = document.querySelectorAll('.security-questions .editable-field');
+            securityFields.forEach(field => {
+                const editIcon = field.querySelector('.edit-icon');
+                const select = field.querySelector('select');
+                const input = field.querySelector('input');
+
+                editIcon.addEventListener('click', function() {
+                    if (select.hasAttribute('readonly')) {
+                        select.removeAttribute('readonly');
+                        input.removeAttribute('readonly');
+                        input.value = ''; // Clear the password field
+                        editIcon.className = 'fas fa-save edit-icon';
+                    } else {
+                        select.setAttribute('readonly', true);
+                        input.setAttribute('readonly', true);
+                        input.value = '********';
+                        editIcon.className = 'fas fa-pencil-alt edit-icon';
+                    }
+                });
             });
         });
     </script>

@@ -66,6 +66,7 @@
             width: 100%;
             margin-bottom: 0px;
             padding: 10px 20px;
+            position: relative;
         }
 
         .navbar-nav {
@@ -75,6 +76,14 @@
             flex-direction: row;
             align-items: center;
             gap: 20px;
+        }
+
+        .user-profile {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .nav-link {
@@ -370,32 +379,32 @@
             }
         }
         /* Navbar styles */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center the logo */
-    width: 100%; /* Full width */
-    margin-bottom: 0px; /* Space between navbar and content */
-    padding: 10px 20px; /* Padding for navbar */
-}
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the logo */
+            width: 100%; /* Full width */
+            margin-bottom: 0px; /* Space between navbar and content */
+            padding: 10px 20px; /* Padding for navbar */
+        }
 
-.navbar-nav {
-    position: absolute; /* Positioning for left alignment */
-    flex-direction: row; /* Ensures items are arranged in a row */
-    gap: 20px; /* Space between buttons */
-    left: 20px; /* Align to the left */
-}
+        .navbar-nav {
+            position: absolute; /* Positioning for left alignment */
+            flex-direction: row; /* Ensures items are arranged in a row */
+            gap: 20px; /* Space between buttons */
+            left: 20px; /* Align to the left */
+        }
 
-.nav-link {
-    color: white; /* White text color */
-    text-decoration: none; /* Remove underline */
-    font-weight: 500; /* Similar to Sign Up button */
-    transition: color 0.3s; /* Smooth color transition */
-}
+        .nav-link {
+            color: white; /* White text color */
+            text-decoration: none; /* Remove underline */
+            font-weight: 500; /* Similar to Sign Up button */
+            transition: color 0.3s; /* Smooth color transition */
+        }
 
-.nav-link:hover {
-    color: #ff357a; /* Change color on hover */
-}
+        .nav-link:hover {
+            color: #ff357a; /* Change color on hover */
+        }
 
         /* Step Navigation Styles */
         .steps {
@@ -583,6 +592,47 @@
             margin-top: 5px;
             display: none;
         }
+
+        /* Form row styling */
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Select styling */
+        select.form-control {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            cursor: pointer;
+        }
+
+        select.form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 10px rgba(246, 139, 30, 0.3);
+        }
+
+        select.form-control option {
+            background: var(--dark);
+            color: var(--light);
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
@@ -659,8 +709,64 @@
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" required>
+                        <input type="email" id="email" name="email" required>
                     </div>
+
+                    <!-- Address Fields -->
+                    <div class="form-group">
+                        <label for="street">Street Address</label>
+                        <input type="text" id="street" name="street" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="state">State/Province</label>
+                            <input type="text" id="state" name="state" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" class="form-control" required>
+                                <option value="">Select Country</option>
+                                <option value="AF">Afghanistan</option>
+                                <option value="AL">Albania</option>
+                                <option value="DZ">Algeria</option>
+                                <option value="NG">Nigeria</option>
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="FR">France</option>
+                                <option value="DE">Germany</option>
+                                <option value="IT">Italy</option>
+                                <option value="ES">Spain</option>
+                                <option value="PT">Portugal</option>
+                                <option value="NL">Netherlands</option>
+                                <option value="BE">Belgium</option>
+                                <option value="CH">Switzerland</option>
+                                <option value="AT">Austria</option>
+                                <option value="GR">Greece</option>
+                                <option value="SE">Sweden</option>
+                                <option value="NO">Norway</option>
+                                <option value="DK">Denmark</option>
+                                <option value="FI">Finland</option>
+                                <option value="IE">Ireland</option>
+                                <option value="IS">Iceland</option>
+                                <!-- Add more countries as needed -->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="postal">Postal/ZIP Code</label>
+                            <input type="text" id="postal" name="postal" required>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
                         <div class="phone-group">
