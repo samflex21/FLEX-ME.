@@ -333,16 +333,63 @@
             display: flex;
             justify-content: center;
             gap: 20px;
+            flex-direction: column;
         }
 
-        .footer a {
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-section h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .footer-section a {
             color: white;
             text-decoration: none;
             transition: color 0.3s;
         }
 
-        .footer a:hover {
+        .footer-section a:hover {
             color: #ff357a;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-links a {
+            font-size: 1.2rem;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ff357a;
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .error-message {
@@ -474,8 +521,30 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact Us</a>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
     </footer>
 
     <!-- Success Message -->

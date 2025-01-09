@@ -658,27 +658,94 @@
             outline: none;
         }
 
+        /* Footer Styles */
         .footer {
             background: rgba(17, 17, 17, 0.95);
-            padding: 20px;
+            padding: 40px 20px 20px;
             color: white;
-            text-align: center;
-            position: fixed;
-            bottom: 0;
+            margin-top: auto;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
         }
 
-        .footer a {
-            color: white;
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             transition: color 0.3s;
+            font-size: 14px;
         }
 
-        .footer a:hover {
+        .footer-section a:hover {
             color: #ff357a;
+        }
+
+        .footer-section p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .social-links a:hover {
+            background: #ff357a;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                text-align: center;
+                gap: 30px;
+            }
         }
 
         .campaign-amount {
@@ -863,8 +930,30 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact Us</a>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
     </footer>
 
     <!-- Payment Modal -->

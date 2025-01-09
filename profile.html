@@ -30,6 +30,11 @@
             background: #e8e9eb;
             color: var(--dark);
             line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 250px; /* Height of footer */
         }
 
         /* Navigation */
@@ -476,6 +481,7 @@
             display: flex;
             margin-top: 60px;
             background: #e8e9eb;
+            min-height: calc(100vh - 310px); /* Viewport height minus navbar and footer */
         }
 
         .sidebar {
@@ -602,32 +608,142 @@
         }
 
         .main-content {
+            flex: 1;
             margin-left: 250px;
             padding: 20px;
             width: calc(100% - 250px);
         }
 
         .footer {
-            background: rgba(17, 17, 17, 0.95);
-            padding: 20px;
+            background: #1a1a1a;
+            padding: 40px 0 20px;
             color: white;
-            text-align: center;
-            position: fixed;
-            bottom: 0;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
         }
 
-        .footer a {
-            color: white;
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 40px;
+            height: 2px;
+            background: #ff357a;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             transition: color 0.3s;
+            font-size: 14px;
+            display: inline-block;
         }
 
-        .footer a:hover {
+        .footer-section a:hover {
             color: #ff357a;
+            transform: translateX(5px);
+        }
+
+        .footer-section p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-section p i {
+            color: #ff357a;
+            width: 16px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .social-links a:hover {
+            background: #ff357a;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 30px;
+            }
+
+            .footer-section {
+                align-items: center;
+            }
+
+            .footer-section h4::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer-section p {
+                justify-content: center;
+            }
+
+            .footer-section a:hover {
+                transform: translateX(0) scale(1.05);
+            }
         }
 
         /* Save Button Container */
@@ -858,6 +974,53 @@
             .two-column-layout {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 400px; /* Increased footer height for mobile */
+            }
+
+            .dashboard-container {
+                flex-direction: column;
+                min-height: calc(100vh - 460px);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 30px;
+                padding: 0 20px;
+            }
+
+            .footer-section {
+                align-items: center;
+            }
+
+            .footer-section h4::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer-section p {
+                justify-content: center;
+            }
+
+            .social-links {
+                justify-content: center;
             }
         }
     </style>
@@ -1108,8 +1271,30 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <a href="about.html">About Us</a>
-            <a href="contact.html">Contact Us</a>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Flex Me. All rights reserved.</p>
+            </div>
         </footer>
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
