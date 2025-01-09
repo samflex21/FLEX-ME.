@@ -1,5 +1,7 @@
+/* Import Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* Variables */
 :root {
     --primary: #f68b1e;
     --secondary: #ff6b6b;
@@ -10,6 +12,7 @@
     --shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* Reset Styles */
 * {
     margin: 0;
     padding: 0;
@@ -21,14 +24,18 @@ body {
     background: #e8e9eb;
     color: var(--dark);
     line-height: 1.6;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
+}
+
+.page-wrapper {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Navigation */
+/* Navigation Bar */
 .navbar {
     position: fixed;
     top: 0;
@@ -47,7 +54,7 @@ body {
 .navbar-nav {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 25px;
     align-items: center;
 }
 
@@ -58,17 +65,19 @@ body {
     transition: color 0.3s;
     display: flex;
     align-items: center;
-    gap: 5px;
-}
-
-.nav-link:hover {
-    color: #ff357a;
+    gap: 8px;
+    white-space: nowrap;
 }
 
 .nav-link i {
     font-size: 1.1em;
 }
 
+.nav-link:hover {
+    color: #ff357a;
+}
+
+/* Website Logo */
 .website-name {
     font-size: 2em;
     color: #fff;
@@ -85,6 +94,7 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+/* User Profile in Nav */
 .user-profile {
     display: flex;
     align-items: center;
@@ -97,6 +107,12 @@ body {
     border-radius: 50%;
     border: 2px solid #ff357a;
     object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
 }
 
 .user-name {
@@ -124,7 +140,7 @@ body {
 .main-content {
     flex: 1;
     padding: 20px;
-    margin-top: 80px;
+    margin-top: 60px;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
@@ -204,6 +220,7 @@ body {
 
 .mission-item p {
     color: #666;
+    font-size: 1em;
     line-height: 1.6;
 }
 
@@ -243,10 +260,10 @@ body {
 }
 
 .member-image {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
+    width: 150px;
+    height: 150px;
     margin: 0 auto 20px;
+    border-radius: 50%;
     overflow: hidden;
     border: 3px solid #ff357a;
 }
@@ -259,38 +276,37 @@ body {
 
 .team-member h3 {
     color: #333;
-    font-size: 1.3em;
-    margin-bottom: 10px;
+    font-size: 1.5em;
+    margin-bottom: 5px;
 }
 
 .team-member p {
     color: #666;
-    font-size: 0.9em;
+    font-size: 1em;
     margin-bottom: 15px;
 }
 
 .member-social {
     display: flex;
-    gap: 15px;
     justify-content: center;
+    gap: 15px;
 }
 
 .member-social a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    background: #f1f1f1;
-    color: #333;
-    text-decoration: none;
+    background: rgba(255, 53, 122, 0.1);
+    color: #ff357a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
 }
 
 .member-social a:hover {
     background: #ff357a;
-    color: #fff;
+    color: white;
     transform: translateY(-3px);
 }
 
@@ -305,31 +321,36 @@ body {
 }
 
 .footer-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-}
-
-.footer-section {
-    margin: 20px;
-    min-width: 250px;
 }
 
 .footer-section h4 {
     color: #fff;
     margin-bottom: 20px;
     font-size: 18px;
-    font-weight: 600;
+    position: relative;
+}
+
+.footer-section h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 40px;
+    height: 2px;
+    background: #ff357a;
 }
 
 .footer-section a {
-    color: #fff;
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     display: block;
-    margin: 8px 0;
+    margin-bottom: 10px;
     transition: color 0.3s;
 }
 
@@ -338,7 +359,8 @@ body {
 }
 
 .footer-section p {
-    margin: 8px 0;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -347,44 +369,56 @@ body {
 .social-links {
     display: flex;
     gap: 15px;
-    margin-top: 15px;
 }
 
 .social-links a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 35px;
     height: 35px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
 }
 
 .social-links a:hover {
     background: #ff357a;
-    color: #fff;
+    color: white;
     transform: translateY(-3px);
 }
 
 .footer-bottom {
     text-align: center;
     padding-top: 20px;
-    margin-top: 40px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 30px;
 }
 
 .footer-bottom p {
+    color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
 }
 
 /* Responsive Design */
 @media (max-width: 992px) {
+    .mission-grid,
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
     .navbar {
-        padding: 15px 20px;
+        padding: 10px;
+    }
+
+    .navbar-nav {
+        display: none;
     }
 
     .website-name {
@@ -394,9 +428,7 @@ body {
     .user-name {
         display: none;
     }
-}
 
-@media (max-width: 768px) {
     .about-hero h1 {
         font-size: 2em;
     }
@@ -411,46 +443,20 @@ body {
     }
 
     .footer-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+        grid-template-columns: 1fr;
+        gap: 30px;
     }
 
     .footer-section {
-        margin: 10px 0;
-        min-width: auto;
-        width: 100%;
+        text-align: center;
+    }
+
+    .footer-section h4::after {
+        left: 50%;
+        transform: translateX(-50%);
     }
 
     .social-links {
         justify-content: center;
-    }
-}
-
-@media (max-width: 576px) {
-    .navbar {
-        padding: 10px;
-    }
-
-    .navbar-nav {
-        gap: 10px;
-    }
-
-    .nav-link {
-        font-size: 0.9em;
-    }
-
-    .nav-link span {
-        display: none;
-    }
-
-    .member-image {
-        width: 150px;
-        height: 150px;
-    }
-
-    .mission-section,
-    .team-section {
-        padding: 20px;
     }
 }
