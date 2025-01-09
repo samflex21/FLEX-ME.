@@ -661,39 +661,40 @@
         /* Footer Styles */
         .footer {
             background: rgba(17, 17, 17, 0.95);
-            padding: 40px 20px 20px;
-            color: white;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            color: #fff;
+            padding: 40px 0 20px;
             margin-top: auto;
-            width: 100%;
         }
 
         .footer-content {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding-bottom: 20px;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            gap: 30px;
         }
 
         .footer-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            margin: 20px;
+            min-width: 250px;
         }
 
         .footer-section h4 {
             color: #fff;
+            margin-bottom: 20px;
             font-size: 18px;
             font-weight: 600;
-            margin-bottom: 10px;
         }
 
         .footer-section a {
-            color: rgba(255, 255, 255, 0.7);
+            color: #fff;
             text-decoration: none;
+            display: block;
+            margin: 8px 0;
             transition: color 0.3s;
-            font-size: 14px;
         }
 
         .footer-section a:hover {
@@ -701,50 +702,65 @@
         }
 
         .footer-section p {
-            color: rgba(255, 255, 255, 0.7);
-            margin: 0;
-            font-size: 14px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .social-links {
             display: flex;
             gap: 15px;
+            margin-top: 15px;
         }
 
         .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             width: 35px;
             height: 35px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            color: #fff;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .social-links a:hover {
             background: #ff357a;
-            color: white;
+            color: #fff;
             transform: translateY(-3px);
         }
 
         .footer-bottom {
             text-align: center;
             padding-top: 20px;
+            margin-top: 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-bottom p {
-            color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
-            margin: 0;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         @media (max-width: 768px) {
             .footer-content {
+                flex-direction: column;
+                align-items: center;
                 text-align: center;
-                gap: 30px;
+                padding: 0 10px;
+            }
+
+            .footer-section {
+                margin: 10px 0;
+                min-width: auto;
+                width: 100%;
+            }
+
+            .social-links {
+                justify-content: center;
             }
         }
 
@@ -823,15 +839,15 @@
     <nav class="navbar">
         <div class="navbar-nav">
             <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="#"><i class="fas fa-users"></i> Profile</a>
-            <a class="nav-link" href="create-campaign.html"><i class="fas fa-hand-holding-heart"></i> Create Campaign</a>
-            <a class="nav-link" href="#"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="history.html"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
-            <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
             <span class="user-name">John Doe</span>
-            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <img src="profile-pic.jpg" alt="Profile Picture" class="profile-pic">
+            <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -944,10 +960,10 @@
             <div class="footer-section">
                 <h4>Connect With Us</h4>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>

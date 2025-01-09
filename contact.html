@@ -201,74 +201,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
-            background: white;
+            background: #fff;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .contact-info {
-            padding-right: 40px;
-            border-right: 1px solid #eee;
-        }
-
-        .info-item {
-            margin-bottom: 30px;
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-        }
-
-        .info-item i {
-            font-size: 24px;
-            color: #ff357a;
-            width: 24px;
-        }
-
-        .info-details h3 {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .info-details p {
-            color: #666;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .contact-social {
-            margin-top: 40px;
-        }
-
-        .contact-social h3 {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #333;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: #ff357a;
-            color: white;
-            transform: translateY(-3px);
+            box-shadow: var(--shadow);
         }
 
         .contact-form {
@@ -278,191 +214,119 @@
         }
 
         .form-group {
-            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 8px;
             color: #333;
             font-weight: 500;
         }
 
-        .form-control {
-            width: 100%;
+        .form-group input,
+        .form-group textarea {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            font-size: 1em;
+            transition: border-color 0.3s;
         }
 
-        .form-control:focus {
+        .form-group input:focus,
+        .form-group textarea:focus {
             border-color: #ff357a;
-            box-shadow: 0 0 0 2px rgba(255, 53, 122, 0.1);
             outline: none;
         }
 
-        textarea.form-control {
-            min-height: 150px;
+        .form-group textarea {
             resize: vertical;
+            min-height: 120px;
         }
 
         .submit-btn {
-            background: linear-gradient(45deg, #ff357a, #fff172);
+            background: #ff357a;
             color: white;
+            padding: 12px 24px;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 1em;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            align-self: flex-start;
-            margin-top: 10px;
+            transition: background 0.3s;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+            background: #e61e61;
         }
 
-        /* Dashboard Container and Sidebar Styles */
-        .dashboard-container {
+        .contact-info {
             display: flex;
-            margin-top: 60px;
-            background: #e8e9eb;
-            min-height: calc(100vh - 310px);
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .sidebar {
-            width: 250px;
-            height: calc(100vh - 60px);
-            background: var(--dark);
-            padding: 20px;
-            color: var(--light);
-            position: fixed;
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
         }
 
-        .sidebar-header {
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-
-        .user-stats {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .level-info {
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .level-tooltip {
-            display: none;
-            position: absolute;
-            background: rgba(255, 255, 255, 0.98);
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            width: 250px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 1000;
-            left: 100%;
-            top: 0;
-            margin-left: 10px;
-        }
-
-        .level-info:hover .level-tooltip {
-            display: block;
-        }
-
-        .level-limit {
+        .info-item i {
+            font-size: 1.5em;
             color: #ff357a;
-            font-weight: bold;
+            width: 24px;
         }
 
-        .next-level {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
+        .info-item .content h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.2em;
         }
 
-        .level-benefits {
-            margin-top: 5px;
-            font-size: 0.9em;
+        .info-item .content p {
             color: #666;
+            line-height: 1.6;
         }
 
-        .user-level {
-            color: #cd7f32;
-            font-weight: bold;
-        }
-
-        .level-progress {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .level-bar {
-            height: 100%;
-            background: linear-gradient(45deg, #ff357a, #fff172);
-            width: 75%;
-            transition: width 0.3s ease;
-        }
-
-        .points-info {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .donation-stats {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .stat-item {
+        .social-links {
             display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            color: #333;
+            font-size: 1.2em;
+            transition: all 0.3s;
         }
 
-        .stat-item i {
-            font-size: 1.2rem;
-            color: #ff357a;
+        .social-links a:hover {
+            background: #ff357a;
+            color: white;
+            transform: translateY(-3px);
         }
 
-        .stat-details h4 {
-            margin: 0;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
+        @media (max-width: 768px) {
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
 
-        .stat-details p {
-            margin: 2px 0 0;
-            font-weight: bold;
-            color: #fff;
-        }
+            .contact-container {
+                margin-top: 60px;
+                padding: 20px;
+            }
 
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 20px;
-            width: calc(100% - 250px);
+            .contact-header h1 {
+                font-size: 2em;
+            }
         }
 
         /* Footer */
@@ -553,19 +417,6 @@
         }
 
         @media (max-width: 768px) {
-            .contact-content {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                padding: 30px;
-            }
-
-            .contact-info {
-                padding-right: 0;
-                border-right: none;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 40px;
-            }
-
             .footer-content {
                 flex-direction: column;
                 align-items: center;
@@ -579,22 +430,6 @@
             .social-links {
                 justify-content: center;
             }
-
-            .dashboard-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 15px;
-            }
         }
     </style>
 </head>
@@ -603,142 +438,80 @@
     <nav class="navbar">
         <div class="navbar-nav">
             <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Profile</a>
-            <a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a class="nav-link" href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a class="nav-link" href="history.html"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About</a>
         </div>
-        <h1 class="website-name">Flex <span>Me</span></h1>
+        <h1 class="website-name"><span>Flex</span> Me</h1>
         <div class="user-profile">
-            <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3" alt="Profile Picture" class="profile-pic">
             <span class="user-name">John Doe</span>
-            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
         </div>
     </nav>
 
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h3>Profile</h3>
-            </div>
-            <div class="user-stats">
-                <div class="level-info">
-                    <h3>Level: <span class="user-level">Bronze</span></h3>
-                    <div class="level-tooltip">
-                        <h4>Bronze Level Benefits</h4>
-                        <div class="level-benefits">
-                            • Can request up to <span class="level-limit">$1,000</span> in campaigns
-                            • Can donate up to <span class="level-limit">$1,000</span> per donation
-                        </div>
-                        <div class="next-level">
-                            <h4>Next Level: Silver</h4>
-                            <div class="level-benefits">
-                                • Request up to <span class="level-limit">$5,000</span> in campaigns
-                                • Donate up to <span class="level-limit">$5,000</span> per donation
-                                • 25 XP needed to level up
-                            </div>
-                        </div>
-                    </div>
-                    <div class="level-progress">
-                        <div class="level-bar"></div>
-                    </div>
-                    <p class="points-info">Points: <span class="user-points">0</span> / <span class="next-level-points">1000</span></p>
-                </div>
-                <div class="donation-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-hand-holding-heart"></i>
-                        <div class="stat-details">
-                            <h4>Total Donated</h4>
-                            <p>$<span class="total-donated">0</span></p>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-users"></i>
-                        <div class="stat-details">
-                            <h4>People Helped</h4>
-                            <p><span class="people-helped">0</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>Get in Touch</h1>
+            <p>Have questions or need assistance? We're here to help! Fill out the form below and we'll get back to you as soon as possible.</p>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="contact-container">
-                <div class="contact-header">
-                    <h1>Get in Touch</h1>
-                    <p>Have questions or need assistance? We're here to help! Fill out the form below and we'll get back to you as soon as possible.</p>
+        <div class="contact-content">
+            <div class="contact-form">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-
-                <div class="contact-content">
-                    <div class="contact-info">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div class="info-details">
-                                <h3>Our Location</h3>
-                                <p>123 Flex Street, Silicon Valley<br>California, CA 94025</p>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
-                            <i class="fas fa-phone"></i>
-                            <div class="info-details">
-                                <h3>Phone Number</h3>
-                                <p>+1 (555) 123-4567</p>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <div class="info-details">
-                                <h3>Email Address</h3>
-                                <p>support@flexme.com</p>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
-                            <i class="fas fa-clock"></i>
-                            <div class="info-details">
-                                <h3>Working Hours</h3>
-                                <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM</p>
-                            </div>
-                        </div>
-
-                        <div class="contact-social">
-                            <h3>Connect With Us</h3>
-                            <div class="social-links">
-                                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </div>
+            <div class="contact-info">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="content">
+                        <h3>Our Location</h3>
+                        <p>123 Business Street<br>San Francisco, CA 94111</p>
                     </div>
-
-                    <form class="contact-form">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input type="text" id="subject" class="form-control" placeholder="Enter message subject" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" class="form-control" placeholder="Enter your message" required></textarea>
-                        </div>
-
-                        <button type="submit" class="submit-btn">Send Message</button>
-                    </form>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="content">
+                        <h3>Phone Number</h3>
+                        <p>+1 (555) 123-4567<br>+1 (555) 987-6543</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="content">
+                        <h3>Email Address</h3>
+                        <p>support@flexme.com<br>info@flexme.com</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="content">
+                        <h3>Working Hours</h3>
+                        <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM</p>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
@@ -750,7 +523,6 @@
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <a href="about.html">About Us</a>
-                <a href="contact.html">Contact Us</a>
             </div>
             <div class="footer-section">
                 <h4>Contact Info</h4>

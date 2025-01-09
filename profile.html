@@ -1030,15 +1030,16 @@
     <nav class="navbar">
         <div class="navbar-nav">
             <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link active" href="profile.html"><i class="fas fa-users"></i> Profile</a>
-            <a class="nav-link" href="dashboard.html"><i class="fas fa-hand-holding-heart"></i> Dashboard</a>
+            <a class="nav-link" href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a class="nav-link" href="history.html"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
-            <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
             <span class="user-name">John Doe</span>
-            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <img src="images/profile-pic.jpg" alt="Profile Picture" class="profile-pic">
+            <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -1084,10 +1085,11 @@
                         <div class="profile-info">
                             <div class="profile-header">
                                 <div class="profile-picture-section">
-                                    <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
-                                    <div class="edit-picture">
+                                    <img src="images/profile-pic.jpg" alt="Profile Picture" class="profile-picture">
+                                    <label for="profile-upload" class="edit-picture">
                                         <i class="fas fa-camera"></i>
-                                    </div>
+                                    </label>
+                                    <input type="file" id="profile-upload" accept="image/*" style="display: none;">
                                 </div>
                             </div>
 
