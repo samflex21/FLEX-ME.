@@ -187,12 +187,43 @@
         .level-info {
             text-align: center;
             margin-bottom: 15px;
+            position: relative;
         }
 
-        .level-info h3 {
-            margin: 0;
-            font-size: 1.1rem;
-            color: #fff;
+        .level-tooltip {
+            display: none;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            width: 250px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+            left: 100%;
+            top: 0;
+            margin-left: 10px;
+        }
+
+        .level-info:hover .level-tooltip {
+            display: block;
+        }
+
+        .level-limit {
+            color: #ff357a;
+            font-weight: bold;
+        }
+
+        .next-level {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .level-benefits {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #666;
         }
 
         .user-level {
@@ -746,6 +777,21 @@
             <div class="user-stats">
                 <div class="level-info">
                     <h3>Level: <span class="user-level">Bronze</span></h3>
+                    <div class="level-tooltip">
+                        <h4>Bronze Level Benefits</h4>
+                        <div class="level-benefits">
+                            • Can request up to <span class="level-limit">$1,000</span> in campaigns
+                            • Can donate up to <span class="level-limit">$1,000</span> per donation
+                        </div>
+                        <div class="next-level">
+                            <h4>Next Level: Silver</h4>
+                            <div class="level-benefits">
+                                • Request up to <span class="level-limit">$5,000</span> in campaigns
+                                • Donate up to <span class="level-limit">$5,000</span> per donation
+                                • 25 XP needed to level up
+                            </div>
+                        </div>
+                    </div>
                     <div class="level-progress">
                         <div class="level-bar"></div>
                     </div>
@@ -1053,7 +1099,8 @@
                 amount_needed: 1200,
                 amount_raised: 400,
                 image: "https://via.placeholder.com/120",
-                deadline: "2025-02-09" // One month from now
+                deadline: "2025-02-09", // One month from now
+                maxAmount: getMaxAmountForLevel('Bronze') // Set max amount based on creator's level
             }
         ];
 
@@ -1105,8 +1152,8 @@
                 return;
             }
 
-            // Check if donation amount exceeds user's level limit
-            const maxDonation = 1000; // Replace with actual max donation limit
+            // Get max donation based on user level
+            const maxDonation = getMaxAmountForLevel(document.querySelector('.user-level').textContent);
             if (amount > maxDonation) {
                 alert(`Your current level only allows donations up to $${maxDonation}. Level up to donate more!`);
                 return;
@@ -1137,6 +1184,31 @@
 
             updateCampaignList(campaigns);
             closePayModal();
+        }
+
+        // Function to get maximum amount based on user level
+        function getMaxAmountForLevel(level) {
+            const maxAmounts = {
+                'Bronze': 1000,
+                'Silver': 5000,
+                'Gold': 10000,
+                'Platinum': 50000
+            };
+            return maxAmounts[level] || 1000; // Default to Bronze limit if level not found
+        }
+
+        // Function to validate campaign amount based on user level
+        function validateCampaignAmount(amount) {
+            const userLevel = document.querySelector('.user-level').textContent;
+            const maxAmount = getMaxAmountForLevel(userLevel);
+            
+            if (amount > maxAmount) {
+                return {
+                    valid: false,
+                    message: `Your ${userLevel} level can only request up to $${maxAmount}. Level up to request more!`
+                };
+            }
+            return { valid: true };
         }
 
         function addFeedItem(message) {
@@ -1185,6 +1257,58 @@
             if (feedContainer.children.length > 10) {
                 feedContainer.removeChild(feedContainer.lastChild);
             }
+        }
+
+        const levelInfo = {
+            'Bronze': {
+                maxAmount: 1000,
+                nextLevel: 'Silver',
+                xpNeeded: 100,
+                benefits: ['Can request up to $1,000 in campaigns', 'Can donate up to $1,000 per donation']
+            },
+            'Silver': {
+                maxAmount: 5000,
+                nextLevel: 'Gold',
+                xpNeeded: 250,
+                benefits: ['Can request up to $5,000 in campaigns', 'Can donate up to $5,000 per donation']
+            },
+            'Gold': {
+                maxAmount: 10000,
+                nextLevel: 'Platinum',
+                xpNeeded: 500,
+                benefits: ['Can request up to $10,000 in campaigns', 'Can donate up to $10,000 per donation']
+            },
+            'Platinum': {
+                maxAmount: 50000,
+                nextLevel: null,
+                xpNeeded: null,
+                benefits: ['Can request up to $50,000 in campaigns', 'Can donate up to $50,000 per donation', 'Maximum level achieved!']
+            }
+        };
+
+        function updateLevelDisplay(level, xp) {
+            const levelData = levelInfo[level];
+            const nextLevelData = levelData.nextLevel ? levelInfo[levelData.nextLevel] : null;
+            
+            const levelInfo = document.querySelector('.level-info');
+            const tooltip = levelInfo.querySelector('.level-tooltip');
+            
+            // Update current level benefits
+            tooltip.innerHTML = `
+                <h4>${level} Level Benefits</h4>
+                <div class="level-benefits">
+                    ${levelData.benefits.map(benefit => `• ${benefit}`).join('<br>')}
+                </div>
+                ${nextLevelData ? `
+                    <div class="next-level">
+                        <h4>Next Level: ${levelData.nextLevel}</h4>
+                        <div class="level-benefits">
+                            ${nextLevelData.benefits.map(benefit => `• ${benefit}`).join('<br>')}
+                            • ${levelData.xpNeeded - xp} XP needed to level up
+                        </div>
+                    </div>
+                ` : ''}
+            `;
         }
     </script>
 </body>

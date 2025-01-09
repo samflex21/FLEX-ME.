@@ -516,6 +516,40 @@
             }
         }
 
+        function getMaxAmountForLevel(level) {
+            const maxAmounts = {
+                'Bronze': 1000,
+                'Silver': 5000,
+                'Gold': 10000,
+                'Platinum': 50000
+            };
+            return maxAmounts[level] || 1000; // Default to Bronze limit if level not found
+        }
+
+        function validateAmount() {
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value);
+            const userLevel = document.querySelector('.user-level').textContent;
+            const maxAmount = getMaxAmountForLevel(userLevel);
+            
+            if (amount > maxAmount) {
+                alert(`Your ${userLevel} level can only request up to $${maxAmount}. Level up to request more!`);
+                amountInput.value = maxAmount;
+                return false;
+            }
+            return true;
+        }
+
+        // Add event listener to amount input
+        document.getElementById('amount').addEventListener('change', validateAmount);
+        
+        // Validate form before submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!validateAmount()) {
+                e.preventDefault();
+            }
+        });
+
         function handleSubmit(event) {
             event.preventDefault();
             
