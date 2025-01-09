@@ -359,6 +359,192 @@
     color: #ff357a; /* Change color on hover */
 }
 
+        /* Step Navigation Styles */
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding: 10px;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: #666;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step.active .step-number {
+            background: #ff357a;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-title {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .step.active .step-title {
+            color: #ff357a;
+            font-weight: bold;
+        }
+
+        .step-line {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ddd;
+            z-index: 1;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .phone-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .country-code {
+            width: 120px;
+        }
+
+        .country-code select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        .phone-number {
+            flex: 1;
+        }
+
+        .phone-number input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn-next, .btn-prev {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next {
+            background: #ff357a;
+            color: white;
+        }
+
+        .btn-prev {
+            background: #666;
+            color: white;
+        }
+
+        .btn-next:hover, .btn-prev:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-field .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-navigation .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-navigation .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+        }
+
+        .form-navigation .btn-secondary {
+            background: linear-gradient(45deg, #666, #999);
+        }
+
+        .password-requirements {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .password-match {
+            font-size: 0.85em;
+            color: #28a745;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-mismatch {
+            font-size: 0.85em;
+            color: #dc3545;
+            margin-top: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -416,6 +602,23 @@
             </div>
 
             <form id="registrationForm">
+                <!-- Step Navigation -->
+                <div class="steps">
+                    <div class="step-line"></div>
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Basic Information</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Security</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Verification</div>
+                    </div>
+                </div>
+
                 <!-- Step 1: Basic Information -->
                 <div class="form-step active" data-step="1">
                     <h3>Basic Information</h3>
@@ -428,12 +631,30 @@
                         <input type="text" id="lastName" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email Address</label>
+                        <label for="email">Email</label>
                         <input type="email" id="email" required>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" required>
+                        <div class="phone-group">
+                            <div class="country-code">
+                                <select id="countryCode" required>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+234">🇳🇬 +234</option>
+                                    <option value="+91">🇮🇳 +91</option>
+                                    <option value="+86">🇨🇳 +86</option>
+                                    <option value="+81">🇯🇵 +81</option>
+                                    <option value="+49">🇩🇪 +49</option>
+                                    <option value="+33">🇫🇷 +33</option>
+                                    <option value="+61">🇦🇺 +61</option>
+                                    <option value="+27">🇿🇦 +27</option>
+                                </select>
+                            </div>
+                            <div class="phone-number">
+                                <input type="tel" id="phoneNumber" placeholder="Phone number" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -442,11 +663,39 @@
                     <h3>Security</h3>
                     <div class="form-group">
                         <label for="password">Create Password</label>
-                        <input type="password" id="password" required>
+                        <div class="password-field">
+                            <input type="password" id="password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                        <div class="password-requirements">
+                            Password must be at least 8 characters long and include uppercase, lowercase, number, and special character
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" required>
+                        <div class="password-field">
+                            <input type="password" id="confirmPassword" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                        <div class="password-match">Passwords match!</div>
+                        <div class="password-mismatch">Passwords do not match</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="securityQuestion">Security Question</label>
+                        <select id="securityQuestion" class="form-control" required>
+                            <option value="">Select a security question</option>
+                            <option value="pet">What was the name of your first pet?</option>
+                            <option value="school">What was the name of your first school?</option>
+                            <option value="city">In which city were you born?</option>
+                            <option value="mother">What is your mother's maiden name?</option>
+                            <option value="car">What was your first car?</option>
+                            <option value="food">What is your favorite childhood food?</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="securityAnswer">Security Answer</label>
+                        <input type="text" id="securityAnswer" class="form-control" placeholder="Enter your answer" required>
+                        <small class="form-text text-muted">Remember this answer in case you need to reset your password</small>
                     </div>
                 </div>
 
@@ -455,13 +704,13 @@
                     <h3>Final Step</h3>
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="terms" required>
-                            I agree to the Terms & Conditions
+                            <input type="checkbox" required>
+                            I agree to the Terms and Conditions
                         </label>
                     </div>
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="privacy" required>
+                            <input type="checkbox" required>
                             I agree to the Privacy Policy
                         </label>
                     </div>
@@ -471,7 +720,7 @@
                 <div class="form-navigation">
                     <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">Previous</button>
                     <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">Create Account</button>
+                    <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">Create Account</button>
                 </div>
             </form>
 
@@ -505,25 +754,74 @@
             }
 
             function showStep(step) {
+                console.log('Showing step:', step);
                 steps.forEach(s => {
-                    s.classList.remove('active');
                     s.style.display = 'none';
+                    s.classList.remove('active');
                 });
-                
-                const currentStepElement = document.querySelector(`[data-step="${step}"]`);
-                currentStepElement.classList.add('active');
-                currentStepElement.style.display = 'block';
 
-                prevBtn.style.display = step === 1 ? 'none' : 'block';
-                nextBtn.style.display = step === totalSteps ? 'none' : 'block';
-                submitBtn.style.display = step === totalSteps ? 'block' : 'none';
+                const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+                console.log('Current step element:', currentStepElement);
 
-                updateProgress();
+                if (currentStepElement) {
+                    currentStepElement.style.display = 'block';
+                    currentStepElement.classList.add('active');
+
+                    prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
+                    if (step === totalSteps) {
+                        nextBtn.style.display = 'none';
+                        submitBtn.style.display = 'inline-block';
+                    } else {
+                        nextBtn.style.display = 'inline-block';
+                        submitBtn.style.display = 'none';
+                    }
+
+                    updateProgress();
+                }
+            }
+
+            function validateStep(step) {
+                const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+                if (!currentStepElement) {
+                    console.log('Step element not found:', step);
+                    return false;
+                }
+
+                const requiredInputs = currentStepElement.querySelectorAll('input[required], select[required]');
+                let isValid = true;
+
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('invalid');
+                        input.style.borderColor = '#dc3545';
+                    } else {
+                        input.classList.remove('invalid');
+                        input.style.borderColor = '';
+                    }
+                });
+
+                // Check password matching if we're on the password step
+                if (currentStepElement.contains(document.getElementById('password')) && currentStepElement.contains(document.getElementById('confirmPassword'))) {
+                    const password = document.getElementById('password');
+                    const confirmPassword = document.getElementById('confirmPassword');
+                    if (password.value !== confirmPassword.value) {
+                        isValid = false;
+                        alert('Passwords do not match!');
+                    }
+                }
+
+                return isValid;
             }
 
             nextBtn.addEventListener('click', () => {
-                currentStep++;
-                showStep(currentStep);
+                console.log('Next button clicked. Current step:', currentStep);
+                if (validateStep(currentStep)) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    alert('Please fill in all required fields');
+                }
             });
 
             prevBtn.addEventListener('click', () => {
@@ -533,49 +831,115 @@
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // Handle form submission logic here
+                if (validateStep(currentStep)) {
+                    const countryCode = document.getElementById('countryCode').value;
+                    const phoneNumber = document.getElementById('phoneNumber').value;
+                    const fullPhoneNumber = countryCode + phoneNumber;
+
+                    alert('Registration successful!');
+                } else {
+                    alert('Please fill in all required fields');
+                }
             });
 
-            showStep(currentStep);
+            // Initialize the first step
+            showStep(1);
+
+            // Password toggle functionality
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const passwordField = this.previousElementSibling;
+                    const type = passwordField.type === 'password' ? 'text' : 'password';
+                    passwordField.type = type;
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            });
+
+            // Password matching validation
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const matchMessage = document.querySelector('.password-match');
+            const mismatchMessage = document.querySelector('.password-mismatch');
+
+            function validatePasswords() {
+                if (password.value && confirmPassword.value) {
+                    if (password.value === confirmPassword.value) {
+                        matchMessage.style.display = 'block';
+                        mismatchMessage.style.display = 'none';
+                        return true;
+                    } else {
+                        matchMessage.style.display = 'none';
+                        mismatchMessage.style.display = 'block';
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            password.addEventListener('input', validatePasswords);
+            confirmPassword.addEventListener('input', validatePasswords);
         });
-        <script>
-// Add this to your existing script section
-function checkAuthStatus() {
-    // Check if user is logged in (you can use localStorage or session storage)
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    
-    // Get all elements
-    const authHideElements = document.querySelectorAll('.auth-hide');
-    const authShowElements = document.querySelectorAll('.auth-show');
-    
-    if (isLoggedIn) {
-        // Hide login/register buttons
-        authHideElements.forEach(el => el.style.display = 'none');
-        // Show dashboard/profile/logout buttons
-        authShowElements.forEach(el => el.style.display = 'block');
-    } else {
-        // Show login/register buttons
-        authHideElements.forEach(el => el.style.display = 'block');
-        // Hide dashboard/profile/logout buttons
-        authShowElements.forEach(el => el.style.display = 'none');
-    }
-}
-
-// Handle logout
-document.getElementById('logoutBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    // Clear authentication status
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
-    // Update UI
-    checkAuthStatus();
-    // You might want to redirect to home or show a message
-    alert('Successfully logged out!');
-});
-
-// Check auth status when page loads
-document.addEventListener('DOMContentLoaded', checkAuthStatus);
-</script>
     </script>
+    <style>
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .form-navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #ff357a;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </body>
 </html>
