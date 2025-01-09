@@ -304,6 +304,162 @@
       color: #ff357a;
     }
 
+    /* Password Recovery Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: #fff;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            transform: translateY(-100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.3s;
+    }
+
+    .close-modal:hover {
+        color: #ff357a;
+    }
+
+    .modal h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .recovery-step {
+        display: none;
+    }
+
+    .recovery-step.active {
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .form-group select,
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus {
+        border-color: #ff357a;
+        outline: none;
+    }
+
+    .recovery-btn {
+        background: linear-gradient(45deg, #ff357a, #fff172);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: transform 0.3s, box-shadow 0.3s;
+        width: 100%;
+    }
+
+    .recovery-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+    }
+
+    .recovery-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .password-display {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .password-display p {
+        margin: 0;
+        color: #333;
+        font-size: 18px;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    /* Light theme adjustments for modal */
+    .light-theme .modal-content {
+        background: #fff;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .light-theme .modal h2 {
+        color: #333;
+    }
+
+    .light-theme .form-group label {
+        color: #555;
+    }
+
+    .light-theme .password-display {
+        background: #f0f0f0;
+    }
+
     @media (max-width: 500px) {
       .ring {
         width: 300px;
@@ -356,9 +512,45 @@
         <input type="submit" value="Sign in" onClick="login()" />
       </div>
       <div class="links">
-        <a href="#">Forgot Password?</a>
+        <a href="#" class="forgot-password">Forgot Password?</a>
         <a href="register.html">Sign up</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Password Recovery Modal -->
+  <div id="recoveryModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Password Recovery</h2>
+        
+        <!-- Step 1: Security Question -->
+        <div class="recovery-step active" id="step1">
+            <div class="form-group">
+                <label for="securityQuestion">Select Your Security Question</label>
+                <select id="securityQuestion" required>
+                    <option value="">Choose a question...</option>
+                    <option value="pet">What was your first pet's name?</option>
+                    <option value="school">What was the name of your first school?</option>
+                    <option value="city">In which city were you born?</option>
+                    <option value="mother">What is your mother's maiden name?</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="securityAnswer">Your Answer</label>
+                <input type="text" id="securityAnswer" required>
+                <div class="error-message" id="answerError">Incorrect answer. Please try again.</div>
+            </div>
+            <button class="recovery-btn" onclick="verifySecurityAnswer()">Submit</button>
+        </div>
+        
+        <!-- Step 2: Password Display -->
+        <div class="recovery-step" id="step2">
+            <div class="password-display">
+                <p>Your password is: <strong id="recoveredPassword"></strong></p>
+            </div>
+            <button class="recovery-btn" onclick="closeModal()">Close</button>
+        </div>
     </div>
   </div>
 
@@ -454,6 +646,62 @@
         document.getElementById("errorMessage").style.display = "none";
       });
     });
+
+    // Password Recovery Modal Functions
+    const modal = document.getElementById('recoveryModal');
+    const closeBtn = document.querySelector('.close-modal');
+    const forgotPasswordLink = document.querySelector('.forgot-password');
+    
+    // Sample user data (in real application, this would come from a database)
+    const userData = {
+        username: "johndoe",
+        password: "SecurePass123",
+        securityQuestion: "pet",
+        securityAnswer: "fluffy"
+    };
+
+    // Show modal when clicking "Forgot Password"
+    forgotPasswordLink.onclick = function(e) {
+        e.preventDefault();
+        modal.style.display = "block";
+        document.getElementById('step1').classList.add('active');
+        document.getElementById('step2').classList.remove('active');
+        clearForm();
+    }
+
+    // Close modal when clicking (X) or outside
+    closeBtn.onclick = closeModal;
+    window.onclick = function(e) {
+        if (e.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        clearForm();
+    }
+
+    function clearForm() {
+        document.getElementById('securityQuestion').value = "";
+        document.getElementById('securityAnswer').value = "";
+        document.getElementById('answerError').style.display = "none";
+    }
+
+    function verifySecurityAnswer() {
+        const question = document.getElementById('securityQuestion').value;
+        const answer = document.getElementById('securityAnswer').value.toLowerCase();
+        const errorMsg = document.getElementById('answerError');
+
+        // In a real application, this would verify against a database
+        if (question === userData.securityQuestion && answer === userData.securityAnswer) {
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('recoveredPassword').textContent = userData.password;
+        } else {
+            errorMsg.style.display = "block";
+        }
+    }
   </script>
 </body>
 </html>
