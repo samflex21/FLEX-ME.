@@ -54,36 +54,72 @@
             top: 0;
             left: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
+
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 0px;
+            padding: 10px 20px;
+        }
+
         .navbar-nav {
-    display: flex;
-    gap: 20px; /* Space between buttons */
-}
+            position: absolute;
+            left: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
 
-       .website-name {
-    font-size: 3em;
-    color: #fff; /* Default text color for dark theme */
-    text-align: center;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: 700;
-    margin-bottom: 20px;
-    position: relative;
-    text-shadow: 0 0 10px rgba(255,255,255,0.3);
-}
+        .nav-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
 
-.light-theme .website-name {
-    color: #111; /* Dark text for light theme */
-}
+        .nav-link:hover {
+            color: #ff357a;
+        }
 
-.website-name span {
-    background: linear-gradient(45deg, #ff357a, #fff172);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-    position: relative;
-}
+        .website-name {
+            font-size: 3em;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
 
+        .website-name span {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+
+        .website-name span::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
+        }
 
         /* Footer Styles */
         footer {
@@ -208,21 +244,37 @@
             box-shadow: var(--shadow-1);
         }
 
-        /* Progress Bar */
-        .progress-bar {
+        /* Step tracking styles */
+        .steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-bottom: 2rem;
-            overflow: hidden;
+            max-width: 400px;
+            margin: 0 auto 30px;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-1);
-            width: 0;
-            transition: width 0.3s ease;
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #444;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step.active {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            transform: scale(1.1);
+            transition: all 0.3s ease;
         }
 
         /* Form Steps */
@@ -287,20 +339,6 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(246, 139, 30, 0.3);
-        }
-
-        /* Back Home Link */
-        .back-home {
-            display: block;
-            margin-top: 1rem;
-            color: var(--primary-color);
-            text-align: center;
-            text-decoration: none; /* No underline */
-            font-size: 1.1em;
-        }
-
-        .back-home:hover {
-            text-decoration: underline; /* Underline on hover */
         }
 
         /* Responsive Design */
@@ -550,14 +588,17 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="header-container"> <!-- Header container -->
+        <div class="header-container">
             <nav class="navbar">
                 <div class="navbar-nav">
-                    <a class="nav-link" href="home page.html">Home</a>
-                    <a class="nav-link" href="about.html">About Us</a>
-                    <a class="nav-link" href="contact.html">Contact Us</a>
+                    <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
+                    <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About Us</a>
+                    <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a>
                 </div>
                 <h1 class="website-name">Flex <span>Me</span></h1>
+                <div class="user-profile">
+                    <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </div>
             </nav>
         </div>
     </header>
@@ -597,26 +638,12 @@
 
         <!-- Right Side - Registration Form -->
         <div class="form-side">
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-
             <form id="registrationForm">
                 <!-- Step Navigation -->
                 <div class="steps">
-                    <div class="step-line"></div>
-                    <div class="step active" data-step="1">
-                        <div class="step-number">1</div>
-                        <div class="step-title">Basic Information</div>
-                    </div>
-                    <div class="step" data-step="2">
-                        <div class="step-number">2</div>
-                        <div class="step-title">Security</div>
-                    </div>
-                    <div class="step" data-step="3">
-                        <div class="step-number">3</div>
-                        <div class="step-title">Verification</div>
-                    </div>
+                    <div class="step active" data-step="1">1</div>
+                    <div class="step" data-step="2">2</div>
+                    <div class="step" data-step="3">3</div>
                 </div>
 
                 <!-- Step 1: Basic Information -->
@@ -723,9 +750,6 @@
                     <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">Create Account</button>
                 </div>
             </form>
-
-            <!-- Back Home Link -->
-            <a href="home page.html" class="back-home">Back Home</a>
         </div>
     </div>
 
@@ -739,34 +763,38 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registrationForm');
-            const steps = document.querySelectorAll('.form-step');
-            const progressFill = document.querySelector('.progress-fill');
+            const formSteps = document.querySelectorAll('.form-step');
+            const stepIndicators = document.querySelectorAll('.steps .step');
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
             const submitBtn = document.getElementById('submitBtn');
 
             let currentStep = 1;
-            const totalSteps = steps.length;
+            const totalSteps = formSteps.length;
 
-            function updateProgress() {
-                const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
-                progressFill.style.width = `${progress}%`;
+            function updateStepIndicators(step) {
+                stepIndicators.forEach(indicator => {
+                    const stepNum = parseInt(indicator.dataset.step);
+                    if (stepNum <= step) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
             }
 
             function showStep(step) {
-                console.log('Showing step:', step);
-                steps.forEach(s => {
+                formSteps.forEach(s => {
                     s.style.display = 'none';
                     s.classList.remove('active');
                 });
 
                 const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
-                console.log('Current step element:', currentStepElement);
-
                 if (currentStepElement) {
                     currentStepElement.style.display = 'block';
                     currentStepElement.classList.add('active');
 
+                    // Update navigation buttons
                     prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
                     if (step === totalSteps) {
                         nextBtn.style.display = 'none';
@@ -776,42 +804,9 @@
                         submitBtn.style.display = 'none';
                     }
 
-                    updateProgress();
+                    // Update step indicators
+                    updateStepIndicators(step);
                 }
-            }
-
-            function validateStep(step) {
-                const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
-                if (!currentStepElement) {
-                    console.log('Step element not found:', step);
-                    return false;
-                }
-
-                const requiredInputs = currentStepElement.querySelectorAll('input[required], select[required]');
-                let isValid = true;
-
-                requiredInputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        isValid = false;
-                        input.classList.add('invalid');
-                        input.style.borderColor = '#dc3545';
-                    } else {
-                        input.classList.remove('invalid');
-                        input.style.borderColor = '';
-                    }
-                });
-
-                // Check password matching if we're on the password step
-                if (currentStepElement.contains(document.getElementById('password')) && currentStepElement.contains(document.getElementById('confirmPassword'))) {
-                    const password = document.getElementById('password');
-                    const confirmPassword = document.getElementById('confirmPassword');
-                    if (password.value !== confirmPassword.value) {
-                        isValid = false;
-                        alert('Passwords do not match!');
-                    }
-                }
-
-                return isValid;
             }
 
             nextBtn.addEventListener('click', () => {
@@ -880,6 +875,40 @@
 
             password.addEventListener('input', validatePasswords);
             confirmPassword.addEventListener('input', validatePasswords);
+
+            function validateStep(step) {
+                const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+                if (!currentStepElement) {
+                    console.log('Step element not found:', step);
+                    return false;
+                }
+
+                const requiredInputs = currentStepElement.querySelectorAll('input[required], select[required]');
+                let isValid = true;
+
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('invalid');
+                        input.style.borderColor = '#dc3545';
+                    } else {
+                        input.classList.remove('invalid');
+                        input.style.borderColor = '';
+                    }
+                });
+
+                // Check password matching if we're on the password step
+                if (currentStepElement.contains(document.getElementById('password')) && currentStepElement.contains(document.getElementById('confirmPassword'))) {
+                    const password = document.getElementById('password');
+                    const confirmPassword = document.getElementById('confirmPassword');
+                    if (password.value !== confirmPassword.value) {
+                        isValid = false;
+                        alert('Passwords do not match!');
+                    }
+                }
+
+                return isValid;
+            }
         });
     </script>
     <style>
@@ -889,22 +918,6 @@
 
         .form-step.active {
             display: block;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 5px;
-            background: #ddd;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(45deg, #ff357a, #fff172);
-            width: 0;
-            transition: width 0.3s ease;
         }
 
         .form-navigation {
