@@ -143,100 +143,10 @@
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function handleImageUpload(event) {
-            const preview = document.getElementById('image-preview');
-            preview.innerHTML = '';
-            preview.style.display = 'flex';
-
-            Array.from(event.target.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '100px';
-                    img.style.height = '100px';
-                    img.style.objectFit = 'cover';
-                    img.style.borderRadius = '5px';
-                    preview.appendChild(img);
-                }
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function getMaxAmountForLevel(level) {
-            const maxAmounts = {
-                'Bronze': 1000,
-                'Silver': 5000,
-                'Gold': 10000,
-                'Platinum': 50000
-            };
-            return maxAmounts[level] || 1000;
-        }
-
-        function validateAmount() {
-            const amount = document.getElementById('amount').value;
-            const userLevel = document.querySelector('.user-level').textContent;
-            const maxAmount = getMaxAmountForLevel(userLevel);
-            
-            if (amount > maxAmount) {
-                alert(`Your current level (${userLevel}) only allows campaigns up to $${maxAmount}`);
-                return false;
-            }
-            return true;
-        }
-
-        // Add event listener to amount input
-        document.getElementById('amount').addEventListener('change', validateAmount);
-        
-        // Validate form before submission
-        document.querySelector('form').addEventListener('submit', function(e) {
-            if (!validateAmount()) {
-                e.preventDefault();
-            }
-        });
-
-        function handleSubmit(event) {
-            event.preventDefault();
-            
-            // Validate form
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-            const amount = document.getElementById('amount').value;
-            const deadline = document.getElementById('deadline').value;
-            const images = document.getElementById('images').files;
-
-            let isValid = true;
-
-            // Show error messages if fields are empty
-            document.querySelectorAll('.form-control').forEach(input => {
-                if (!input.value) {
-                    input.nextElementSibling.style.display = 'block';
-                    isValid = false;
-                } else {
-                    input.nextElementSibling.style.display = 'none';
-                }
-            });
-
-            if (images.length === 0) {
-                document.querySelector('#images').parentElement.nextElementSibling.nextElementSibling.style.display = 'block';
-                isValid = false;
-            }
-
-            if (!isValid) return false;
-
-            // If form is valid, show success message
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-                // Redirect to dashboard after successful creation
-                window.location.href = 'dashboard.html';
-            }, 2000);
-
-            return false;
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/create-campaign.js"></script>
 </body>
 </html>

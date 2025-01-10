@@ -262,155 +262,25 @@
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/register.js"></script>
     <script>
+        // Initialize form validation on page load
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registrationForm');
-            const formSteps = document.querySelectorAll('.form-step');
-            const stepIndicators = document.querySelectorAll('.steps .step');
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const submitBtn = document.getElementById('submitBtn');
-
-            let currentStep = 1;
-            const totalSteps = formSteps.length;
-
-            function updateStepIndicators(step) {
-                stepIndicators.forEach(indicator => {
-                    const stepNum = parseInt(indicator.dataset.step);
-                    if (stepNum <= step) {
-                        indicator.classList.add('active');
-                    } else {
-                        indicator.classList.remove('active');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (validateRegistration()) {
+                        // Form is valid, show success message
+                        showSuccess('Registration successful! Redirecting to dashboard...');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
                     }
                 });
-            }
-
-            function showStep(step) {
-                formSteps.forEach(s => {
-                    s.style.display = 'none';
-                    s.classList.remove('active');
-                });
-
-                const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
-                if (currentStepElement) {
-                    currentStepElement.style.display = 'block';
-                    currentStepElement.classList.add('active');
-
-                    // Update navigation buttons
-                    prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
-                    if (step === totalSteps) {
-                        nextBtn.style.display = 'none';
-                        submitBtn.style.display = 'inline-block';
-                    } else {
-                        nextBtn.style.display = 'inline-block';
-                        submitBtn.style.display = 'none';
-                    }
-
-                    // Update step indicators
-                    updateStepIndicators(step);
-                }
-            }
-
-            nextBtn.addEventListener('click', () => {
-                console.log('Next button clicked. Current step:', currentStep);
-                if (validateStep(currentStep)) {
-                    currentStep++;
-                    showStep(currentStep);
-                } else {
-                    alert('Please fill in all required fields');
-                }
-            });
-
-            prevBtn.addEventListener('click', () => {
-                currentStep--;
-                showStep(currentStep);
-            });
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (validateStep(currentStep)) {
-                    const countryCode = document.getElementById('countryCode').value;
-                    const phoneNumber = document.getElementById('phoneNumber').value;
-                    const fullPhoneNumber = countryCode + phoneNumber;
-
-                    alert('Registration successful!');
-                } else {
-                    alert('Please fill in all required fields');
-                }
-            });
-
-            // Initialize the first step
-            showStep(1);
-
-            // Password toggle functionality
-            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
-            togglePasswordButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const passwordField = this.previousElementSibling;
-                    const type = passwordField.type === 'password' ? 'text' : 'password';
-                    passwordField.type = type;
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
-                });
-            });
-
-            // Password matching validation
-            const password = document.getElementById('password');
-            const confirmPassword = document.getElementById('confirmPassword');
-            const matchMessage = document.querySelector('.password-match');
-            const mismatchMessage = document.querySelector('.password-mismatch');
-
-            function validatePasswords() {
-                if (password.value && confirmPassword.value) {
-                    if (password.value === confirmPassword.value) {
-                        matchMessage.style.display = 'block';
-                        mismatchMessage.style.display = 'none';
-                        return true;
-                    } else {
-                        matchMessage.style.display = 'none';
-                        mismatchMessage.style.display = 'block';
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            password.addEventListener('input', validatePasswords);
-            confirmPassword.addEventListener('input', validatePasswords);
-
-            function validateStep(step) {
-                const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
-                if (!currentStepElement) {
-                    console.log('Step element not found:', step);
-                    return false;
-                }
-
-                const requiredInputs = currentStepElement.querySelectorAll('input[required], select[required]');
-                let isValid = true;
-
-                requiredInputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        isValid = false;
-                        input.classList.add('invalid');
-                        input.style.borderColor = '#dc3545';
-                    } else {
-                        input.classList.remove('invalid');
-                        input.style.borderColor = '';
-                    }
-                });
-
-                // Check password matching if we're on the password step
-                if (currentStepElement.contains(document.getElementById('password')) && currentStepElement.contains(document.getElementById('confirmPassword'))) {
-                    const password = document.getElementById('password');
-                    const confirmPassword = document.getElementById('confirmPassword');
-                    if (password.value !== confirmPassword.value) {
-                        isValid = false;
-                        alert('Passwords do not match!');
-                    }
-                }
-
-                return isValid;
             }
         });
     </script>
