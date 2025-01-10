@@ -1,20 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Flex Me</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-    <link rel="stylesheet" href="css/login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flex Me - Login</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Quicksand", sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #222;
+      width: 100%;
+      overflow: hidden;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .light-theme {
+      background: #f0f0f0;
+      color: #111;
+    }
+
+    .website-name {
+      font-size: 3em;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 20px;
+      position: relative;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .light-theme .website-name {
+      color: #111;
+    }
+
+    .website-name span {
+      background: linear-gradient(45deg, #ff357a, #fff172);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+      position: relative;
+    }
+
+    .website-name span::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(45deg, #ff357a, #fff172);
+      bottom: -5px;
+      left: 0;
+      border-radius: 2px;
+    }
+
+    .toggle-container {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+    }
+
+    .toggle {
+      width: 50px;
+      height: 25px;
+      background: #ccc;
+      border-radius: 25px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle::before {
+      content: "";
+      position: absolute;
+      width: 21px;
+      height: 21px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle.active {
+      background: #4caf50;
+    }
+
+    .toggle.active::before {
+      transform: translateX(25px);
+    }
+
+    .ring {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ring i {
+      position: absolute;
+      inset: 0;
+      border: 2px solid #fff;
+      transition: 0.5s;
+    }
+
+    .ring i:nth-child(1) {
+      border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+      animation: animate 6s linear infinite;
+    }
+
+    .ring i:nth-child(2) {
+      border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+      animation: animate 4s linear infinite;
+    }
+
+    .ring i:nth-child(3) {
+      border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+      animation: animate2 10s linear infinite;
+    }
+
+    .ring:hover i {
+      border: 6px solid var(--clr);
+      filter: drop-shadow(0 0 20px var(--clr));
+    }
+
+    @keyframes animate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes animate2 {
+      0% {
+        transform: rotate(360deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    .login {
+      position: absolute;
+      width: 300px;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .login h2 {
+      font-size: 2em;
+      color: #fff;
+    }
+
+    .light-theme .login h2 {
+      color: #111;
+    }
+
+    .login .inputBx {
+      position: relative;
+      width: 100%;
+    }
+
+    .login .inputBx input {
+      position: relative;
+      width: 100%;
+      padding: 12px 20px;
+      background: transparent;
+      border: 2px solid #fff;
+      border-radius: 40px;
+      font-size: 1.2em;
+      color: #fff;
+      box-shadow: none;
+      outline: none;
+      transition: 0.5s;
+    }
+
+    .light-theme .login .inputBx input {
+      border: 2px solid #111;
+      color: #111;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .login .inputBx input:hover,
+    .login .inputBx input:focus {
+      border-color: var(--clr, #0078ff);
+      box-shadow: 0 0 10px var(--clr, #0078ff);
+    }
+
+    .login .inputBx input[type="submit"] {
+      width: 100%;
+      background: linear-gradient(45deg, #ff357a, #fff172);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .login .inputBx input[type="submit"]:hover {
+      background: linear-gradient(45deg, #fff172, #ff357a);
+    }
+
+    .login .inputBx input::placeholder {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .light-theme .login .inputBx input::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    .login .links {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .login .links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.5s;
+    }
+
+    .light-theme .login .links a {
+      color: #111;
+    }
+
+    .login .links a:hover {
+      color: var(--clr, #0078ff);
+      text-shadow: 0 0 10px var(--clr, #0078ff);
+    }
+
+    .error-message {
+      color: #ff357a;
+      text-align: center;
+      display: none;
+      font-size: 0.9em;
+      margin-top: -10px;
+      background: rgba(255, 53, 122, 0.1);
+      padding: 8px;
+      border-radius: 20px;
+      width: 100%;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 1rem;
+      color: #fff;
+      text-align: center;
+      width: 100%;
+      background: rgba(17, 17, 17, 0.95);
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+    }
+
+    .navbar-nav {
+      position: absolute;
+      left: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+      color: #ff357a;
+    }
+
+    /* Password Recovery Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: #fff;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            transform: translateY(-100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.3s;
+    }
+
+    .close-modal:hover {
+        color: #ff357a;
+    }
+
+    .modal h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .recovery-step {
+        display: none;
+    }
+
+    .recovery-step.active {
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .form-group select,
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus {
+        border-color: #ff357a;
+        outline: none;
+    }
+
+    .recovery-btn {
+        background: linear-gradient(45deg, #ff357a, #fff172);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: transform 0.3s, box-shadow 0.3s;
+        width: 100%;
+    }
+
+    .recovery-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+    }
+
+    .recovery-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .password-display {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .password-display p {
+        margin: 0;
+        color: #333;
+        font-size: 18px;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    /* Light theme adjustments for modal */
+    .light-theme .modal-content {
+        background: #fff;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .light-theme .modal h2 {
+        color: #333;
+    }
+
+    .light-theme .form-group label {
+        color: #555;
+    }
+
+    .light-theme .password-display {
+        background: #f0f0f0;
+    }
+
+    @media (max-width: 500px) {
+      .ring {
+        width: 300px;
+        height: 300px;
+      }
+
+      .website-name {
+        font-size: 2em;
+      }
+
+      .login {
+        width: 250px;
+      }
+
+      .login h2 {
+        font-size: 1.5em;
+      }
+
+      .login .inputBx input {
+        font-size: 1em;
+        padding: 10px 15px;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-nav">
-      <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
-      <a class="nav-link" href="About.html"><i class="fas fa-info-circle"></i> About</a>
-      <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+      <a class="nav-link" href="home page.html">Home</a>
+      <a class="nav-link" href="about.html">About Us</a>
+      <a class="nav-link" href="contact.html">Contact Us</a>
     </div>
-    <h1 class="website-name"><span>Flex</span> Me</h1>
+    <h1 class="website-name">Flex <span>Me</span></h1>
   </nav>
 
   <div class="ring">
@@ -43,54 +522,123 @@
   <!-- Password Recovery Modal -->
   <div id="recoveryModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2>Password Recovery</h2>
-      
-      <!-- Step 1: Security Question -->
-      <div class="recovery-step active" id="step1">
-        <div class="form-group">
-          <label for="securityQuestion">Security Question</label>
-          <select id="securityQuestion">
-            <option value="">Select a security question</option>
-            <option value="pet">What was your first pet's name?</option>
-            <option value="school">What was the name of your first school?</option>
-            <option value="city">In which city were you born?</option>
-          </select>
+        <span class="close-modal">&times;</span>
+        <h2>Password Recovery</h2>
+        
+        <!-- Step 1: Security Question -->
+        <div class="recovery-step active" id="step1">
+            <div class="form-group">
+                <label for="securityQuestion">Select Your Security Question</label>
+                <select id="securityQuestion" required>
+                    <option value="">Choose a question...</option>
+                    <option value="pet">What was your first pet's name?</option>
+                    <option value="school">What was the name of your first school?</option>
+                    <option value="city">In which city were you born?</option>
+                    <option value="mother">What is your mother's maiden name?</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="securityAnswer">Your Answer</label>
+                <input type="text" id="securityAnswer" required>
+                <div class="error-message" id="answerError">Incorrect answer. Please try again.</div>
+            </div>
+            <button class="recovery-btn" onclick="verifySecurityAnswer()">Submit</button>
         </div>
-        <div class="form-group">
-          <label for="securityAnswer">Your Answer</label>
-          <input type="text" id="securityAnswer" />
+        
+        <!-- Step 2: Password Display -->
+        <div class="recovery-step" id="step2">
+            <div class="password-display">
+                <p>Your password is: <strong id="recoveredPassword"></strong></p>
+            </div>
+            <button class="recovery-btn" onclick="closeModal()">Close</button>
         </div>
-        <button onclick="verifySecurityAnswer()" class="recovery-btn">Submit</button>
-      </div>
-
-      <!-- Step 2: Password Display -->
-      <div class="recovery-step" id="step2">
-        <div class="password-display">
-          <p>Your password is: <strong id="recoveredPassword"></strong></p>
-        </div>
-        <button onclick="closeModal()" class="recovery-btn">Close</button>
-      </div>
     </div>
   </div>
 
+  <div class="toggle-container">
+    <div class="toggle" id="themeToggle"></div>
+  </div>
+
+  <footer>
+    <p>&copy; 2023 Flex Me. All rights reserved.</p>
+  </footer>
+
   <script>
-    function login() {
+    // Keep the theme toggle code
+    const toggle = document.getElementById("themeToggle");
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("light-theme");
+      toggle.classList.toggle("active");
+    });
+
+    // ======= REPLACE YOUR login() FUNCTION WITH THIS NEW CODE =======
+
+    async function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const errorMessage = document.getElementById("errorMessage");
 
-      // Simple validation
-      if (!email || !password) {
-        errorMessage.textContent = "Please fill in all fields";
-        errorMessage.style.display = "block";
-        return;
-      }
+      try {
+        const response = await fetch("http://localhost:5000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
 
-      // Here you would typically make an API call to verify credentials
-      // For demo purposes, we'll just show an error
-      errorMessage.textContent = "Invalid email or password";
-      errorMessage.style.display = "block";
+        const data = await response.json();
+
+        if (response.ok) {
+          // Store user data in localStorage
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("userEmail", email);
+          localStorage.setItem("userDetails", JSON.stringify(data.user));
+
+          // Create and show welcome popup
+          const popup = document.createElement("div");
+          popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(45deg, #ff357a, #fff172);
+                color: white;
+                padding: 20px 40px;
+                border-radius: 10px;
+                font-size: 1.2em;
+                z-index: 1000;
+                box-shadow: 0 0 20px rgba(0,0,0,0.2);
+                animation: fadeIn 0.3s ease;
+            `;
+          popup.innerHTML = `Welcome back, ${
+            data.user.name || email
+          }! 👋`;
+          document.body.appendChild(popup);
+
+          // Add fade-in animation
+          const style = document.createElement("style");
+          style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translate(-50%, -60%); }
+                    to { opacity: 1; transform: translate(-50%, -50%); }
+                }
+            `;
+          document.head.appendChild(style);
+
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = "home page.html";
+          }, 2000);
+        } else {
+          errorMessage.textContent = data.message || "Login failed";
+          errorMessage.style.display = "block";
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        errorMessage.textContent = "An error occurred. Please try again.";
+        errorMessage.style.display = "block";
+      }
     }
 
     // Keep your existing code that hides error messages on input change
@@ -100,59 +648,61 @@
       });
     });
 
-    // Modal functionality
-    const modal = document.getElementById("recoveryModal");
-    const forgotPasswordLink = document.querySelector(".forgot-password");
-    const closeBtn = document.querySelector(".close-modal");
+    // Password Recovery Modal Functions
+    const modal = document.getElementById('recoveryModal');
+    const closeBtn = document.querySelector('.close-modal');
+    const forgotPasswordLink = document.querySelector('.forgot-password');
+    
+    // Sample user data (in real application, this would come from a database)
+    const userData = {
+        username: "johndoe",
+        password: "SecurePass123",
+        securityQuestion: "pet",
+        securityAnswer: "fluffy"
+    };
 
     // Show modal when clicking "Forgot Password"
     forgotPasswordLink.onclick = function(e) {
-      e.preventDefault();
-      modal.style.display = "block";
-      document.getElementById("step1").classList.add("active");
-      document.getElementById("step2").classList.remove("active");
-    };
+        e.preventDefault();
+        modal.style.display = "block";
+        document.getElementById('step1').classList.add('active');
+        document.getElementById('step2').classList.remove('active');
+        clearForm();
+    }
 
     // Close modal when clicking (X) or outside
     closeBtn.onclick = closeModal;
-
     window.onclick = function(e) {
-      if (e.target == modal) {
-        closeModal();
-      }
-    };
+        if (e.target == modal) {
+            closeModal();
+        }
+    }
 
     function closeModal() {
-      modal.style.display = "none";
-      clearForm();
+        modal.style.display = "none";
+        clearForm();
     }
 
     function clearForm() {
-      document.getElementById("securityQuestion").value = "";
-      document.getElementById("securityAnswer").value = "";
-      document.getElementById("step1").classList.add("active");
-      document.getElementById("step2").classList.remove("active");
+        document.getElementById('securityQuestion').value = "";
+        document.getElementById('securityAnswer').value = "";
+        document.getElementById('answerError').style.display = "none";
     }
 
     function verifySecurityAnswer() {
-      const question = document.getElementById("securityQuestion").value;
-      const answer = document.getElementById("securityAnswer").value;
+        const question = document.getElementById('securityQuestion').value;
+        const answer = document.getElementById('securityAnswer').value.toLowerCase();
+        const errorMsg = document.getElementById('answerError');
 
-      if (!question || !answer) {
-        alert("Please fill in all fields");
-        return;
-      }
-
-      // In a real application, you would verify this against stored data
-      document.getElementById("recoveredPassword").textContent = "********";
-      document.getElementById("step1").classList.remove("active");
-      document.getElementById("step2").classList.add("active");
+        // In a real application, this would verify against a database
+        if (question === userData.securityQuestion && answer === userData.securityAnswer) {
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('recoveredPassword').textContent = userData.password;
+        } else {
+            errorMsg.style.display = "block";
+        }
     }
   </script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/login.js"></script>
 </body>
 </html>
