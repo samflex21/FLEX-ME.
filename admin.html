@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FLEX ME</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="home page.html">FLEX ME</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link">Welcome, Admin</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="home page.html">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#campaigns" data-section="campaigns">
+                                <i class="fas fa-bullhorn"></i> Campaigns
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#users" data-section="users">
+                                <i class="fas fa-users"></i> Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#donations" data-section="donations">
+                                <i class="fas fa-hand-holding-usd"></i> Donations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#reports" data-section="reports">
+                                <i class="fas fa-flag"></i> Reports
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main class="col-md-10 ms-sm-auto px-md-4">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="admin-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1>Dashboard</h1>
+                    </div>
+                    <div id="adminDashboardStats"></div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Recent Campaigns</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentCampaigns" class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Campaign</th>
+                                                    <th>Creator</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Recent Users</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentUsers" class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>User</th>
+                                                    <th>Role</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaigns Section -->
+                <div id="campaignsSection" class="admin-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1>Campaigns</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="input-group me-2">
+                                <input type="text" class="form-control" placeholder="Search campaigns...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="campaignsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllCampaigns"></th>
+                                    <th>Title</th>
+                                    <th>Creator</th>
+                                    <th>Progress</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="usersSection" class="admin-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1>Users</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="input-group me-2">
+                                <input type="text" class="form-control" placeholder="Search users...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="usersTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllUsers"></th>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Donations Section -->
+                <div id="donationsSection" class="admin-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1>Donations</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="input-group me-2">
+                                <input type="text" class="form-control" placeholder="Search donations...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="donationsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Donor</th>
+                                    <th>Campaign</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reportsSection" class="admin-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1>Reports</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="exportCSV">
+                                    <i class="fas fa-file-csv"></i> Export CSV
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="exportPDF">
+                                    <i class="fas fa-file-pdf"></i> Export PDF
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="printReport">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                            </div>
+                            <div class="input-group me-2">
+                                <input type="text" class="form-control" placeholder="Search reports...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="reportsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllReports"></th>
+                                    <th>Type</th>
+                                    <th>Reporter</th>
+                                    <th>Subject</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="js/services/admin.js"></script>
+    <script type="module">
+        import adminService from './js/services/admin.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            adminService.initialize();
+        });
+    </script>
+</body>
+</html>

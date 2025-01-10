@@ -1,3 +1,5 @@
+import campaignFormService from './services/campaignForm.js';
+
 // Handle image upload preview
 function handleImageUpload(event) {
     const preview = document.getElementById('image-preview');
@@ -109,7 +111,11 @@ function initializeCampaignForm() {
 }
 
 // Initialize page
-document.addEventListener('DOMContentLoaded', function() {
-    initializeCampaignForm();
-    checkAuthStatus();
+document.addEventListener('DOMContentLoaded', async () => {
+    // Check if editing existing campaign
+    const urlParams = new URLSearchParams(window.location.search);
+    const campaignId = urlParams.get('id');
+
+    // Initialize form
+    await campaignFormService.initialize(campaignId);
 });
