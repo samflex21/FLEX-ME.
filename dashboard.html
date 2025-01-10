@@ -156,9 +156,13 @@
 
         /* Dashboard specific styles */
         .dashboard-container {
-            display: flex;
+            display: none;
             margin-top: 60px;
             background: #e8e9eb;
+        }
+
+        .authenticated .dashboard-container {
+            display: block;
         }
 
         .sidebar {
@@ -788,12 +792,10 @@
         }
 
         .campaign-completed::after {
-            content: '';
+            content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(255, 255, 255, 0.1);
             pointer-events: none;
         }
@@ -832,6 +834,140 @@
             cursor: not-allowed;
             opacity: 0.7;
         }
+
+        /* Notification Styles */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            padding: 15px;
+            min-width: 300px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification.donation {
+            border-left-color: #2196F3;
+        }
+
+        .notification.success {
+            border-left-color: #4CAF50;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-out;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* Advertisement Styles */
+        .advert-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .advert {
+            text-align: center;
+        }
+
+        .advert h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .advert p {
+            margin-bottom: 15px;
+        }
+
+        /* Level System Styles */
+        .help-statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-item small {
+            color: #888;
+        }
+
+        .level-progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            height: 20px;
+        }
+
+        .level-progress-bar {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .level-progress-text {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -839,17 +975,89 @@
     <nav class="navbar">
         <div class="navbar-nav">
             <a class="nav-link" href="home.html"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Profile</a>
-            <a class="nav-link" href="history.html"><i class="fas fa-history"></i> History</a>
-            <a class="nav-link" href="create-campaign.html"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link auth-required" href="create-campaign.html"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link auth-required" href="history.html"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link auth-required" href="profile.html"><i class="fas fa-user"></i> Profile</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
-        <div class="user-profile">
+        <div class="user-profile auth-required">
             <span class="user-name">John Doe</span>
-            <img src="profile-pic.jpg" alt="Profile Picture" class="profile-pic">
-            <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <img src="image/user.jpg" alt="Profile Picture" class="profile-pic">
+            <a href="#" class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
     </nav>
+
+    <script>
+        // Check authentication when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            loadDashboardData(); // Load dashboard data after authentication check
+        });
+
+        function checkAuthStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Redirect to login page if not authenticated
+                window.location.href = 'login.html?redirect=dashboard.html';
+                return;
+            }
+
+            // Update user name if available
+            const userName = localStorage.getItem('userName') || 'User';
+            document.querySelectorAll('.user-name').forEach(el => {
+                el.textContent = userName;
+            });
+
+            // Show authenticated elements
+            const authElements = document.querySelectorAll('.auth-required');
+            authElements.forEach(element => {
+                element.style.display = element.tagName === 'A' ? 'inline-flex' : 'flex';
+            });
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            window.location.href = 'home.html';
+        }
+
+        function loadDashboardData() {
+            // Check authentication before loading data
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                return;
+            }
+
+            // Here you would typically fetch the user's dashboard data
+            // For now, we'll just show the dashboard content
+            document.querySelector('.dashboard-container').style.display = 'block';
+        }
+
+        // Add event listeners for dashboard interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    // You would typically filter the campaigns here
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    // You would typically filter the campaigns based on search term
+                });
+            }
+        });
+    </script>
 
     <div class="dashboard-container">
         <!-- Sidebar -->
@@ -1105,7 +1313,7 @@
                 const amountLeft = targetAmount - newAmount;
                 const progress = (newAmount / targetAmount) * 100;
                 
-                progressBar.style.width = Math.min(progress, 100) + '%';
+                progressBar.style.width = `${progress}%`;
                 campaignElement.dataset.currentAmount = newAmount;
                 
                 // Update campaign amount displays
@@ -1149,49 +1357,6 @@
                     addFeedItem(`${campaign.creator}'s campaign has been fully funded!`);
                 }
             }
-        }
-
-        function createCampaignCard(campaign) {
-            const isCompleted = campaign.amount_raised >= campaign.amount_needed;
-            const amountLeft = campaign.amount_needed - campaign.amount_raised;
-            const progressPercentage = (campaign.amount_raised / campaign.amount_needed) * 100;
-
-            // Calculate days left
-            const deadline = new Date(campaign.deadline);
-            const today = new Date();
-            const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
-            const isUrgent = daysLeft <= 3;
-
-            return `
-                <div class="campaign-card ${isCompleted ? 'campaign-completed' : ''}" 
-                     data-campaign-id="${campaign.id}" 
-                     data-current-amount="${campaign.amount_raised}" 
-                     data-target-amount="${campaign.amount_needed}">
-                    <img src="${campaign.image || 'https://via.placeholder.com/120'}" alt="${campaign.title}" class="campaign-image">
-                    <div class="campaign-info">
-                        <div class="campaign-header">
-                            <h3>${campaign.title}</h3>
-                            <span class="campaign-status ${isCompleted ? 'status-completed' : ''}">${isCompleted ? 'Completed!' : 'Active'}</span>
-                        </div>
-                        <p>${campaign.description}</p>
-                        <div class="campaign-amount">
-                            <span class="amount-target">Target: $${campaign.amount_needed.toFixed(2)}</span>
-                            <span class="amount-raised">Raised: $${campaign.amount_raised.toFixed(2)}</span>
-                            <span class="amount-left">Left: $${amountLeft.toFixed(2)}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
-                        </div>
-                        <div class="campaign-deadline ${isUrgent ? 'deadline-urgent' : ''}">
-                            <i class="fas fa-clock"></i>
-                            <span>${daysLeft > 0 ? `${daysLeft} days left` : 'Deadline passed'}</span>
-                        </div>
-                    </div>
-                    <button class="pay-button" onclick="openPaymentModal(${campaign.id})" ${isCompleted ? 'disabled' : ''}>
-                        ${isCompleted ? 'Completed' : 'Donate'}
-                    </button>
-                </div>
-            `;
         }
 
         // Sample data structure for campaigns
@@ -1291,31 +1456,7 @@
             closePayModal();
         }
 
-        // Function to get maximum amount based on user level
-        function getMaxAmountForLevel(level) {
-            const maxAmounts = {
-                'Bronze': 1000,
-                'Silver': 5000,
-                'Gold': 10000,
-                'Platinum': 50000
-            };
-            return maxAmounts[level] || 1000; // Default to Bronze limit if level not found
-        }
-
-        // Function to validate campaign amount based on user level
-        function validateCampaignAmount(amount) {
-            const userLevel = document.querySelector('.user-level').textContent;
-            const maxAmount = getMaxAmountForLevel(userLevel);
-            
-            if (amount > maxAmount) {
-                return {
-                    valid: false,
-                    message: `Your ${userLevel} level can only request up to $${maxAmount}. Level up to request more!`
-                };
-            }
-            return { valid: true };
-        }
-
+        // Function to add feed item
         function addFeedItem(message) {
             const feedContainer = document.querySelector('.feed-items');
             const feedItem = document.createElement('div');
@@ -1415,6 +1556,699 @@
                 ` : ''}
             `;
         }
+    </script>
+
+    <script>
+        // User Level and Points System
+        class UserLevelSystem {
+            constructor() {
+                this.levels = {
+                    'Bronze': { minPoints: 0, maxAmount: 1000, color: '#CD7F32' },
+                    'Silver': { minPoints: 1000, maxAmount: 5000, color: '#C0C0C0' },
+                    'Gold': { minPoints: 3000, maxAmount: 10000, color: '#FFD700' },
+                    'Platinum': { minPoints: 10000, maxAmount: 50000, color: '#E5E4E2' }
+                };
+                this.pointRules = {
+                    donation: {
+                        base: 10, // Base points for any donation
+                        perAmount: 0.5 // Additional points per currency unit
+                    },
+                    campaignCreation: 50,
+                    campaignCompletion: 200,
+                    helpReceived: 20,
+                    positiveRating: 30,
+                    referral: 100
+                };
+                this.loadUserData();
+            }
+
+            loadUserData() {
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.userId = userData;
+                this.saveUserData();
+            }
+
+            saveUserData() {
+                localStorage.setItem('userData', JSON.stringify(this.userData));
+                this.updateUI();
+            }
+
+            calculateLevel(points) {
+                let newLevel = 'Bronze';
+                for (const [level, data] of Object.entries(this.levels)) {
+                    if (points >= data.minPoints) {
+                        newLevel = level;
+                    } else {
+                        break;
+                    }
+                }
+                return newLevel;
+            }
+
+            addPoints(amount, reason) {
+                let points = 0;
+                switch(reason) {
+                    case 'donation':
+                        points = this.pointRules.donation.base + 
+                                (amount * this.pointRules.donation.perAmount);
+                        break;
+                    case 'campaignCreation':
+                        points = this.pointRules.campaignCreation;
+                        break;
+                    case 'campaignCompletion':
+                        points = this.pointRules.campaignCompletion;
+                        break;
+                    case 'helpReceived':
+                        points = this.pointRules.helpReceived;
+                        break;
+                    case 'positiveRating':
+                        points = this.pointRules.positiveRating;
+                        break;
+                    case 'referral':
+                        points = this.pointRules.referral;
+                        break;
+                }
+
+                this.userData.points += points;
+                const newLevel = this.calculateLevel(this.userData.points);
+                
+                if (newLevel !== this.userData.level) {
+                    this.userData.level = newLevel;
+                    window.liveUpdate.addNotification(
+                        `Congratulations! You've reached ${newLevel} level!`,
+                        'success'
+                    );
+                }
+
+                this.saveUserData();
+                return points;
+            }
+
+            recordHelp(type, userId, amount, campaignId) {
+                const helpRecord = {
+                    userId,
+                    amount,
+                    campaignId,
+                    timestamp: new Date(),
+                    type
+                };
+
+                if (type === 'given') {
+                    this.userData.helpedUsers.push(helpRecord);
+                    this.addPoints(amount, 'donation');
+                } else {
+                    this.userData.receivedHelp.push(helpRecord);
+                    this.addPoints(amount, 'helpReceived');
+                }
+
+                this.saveUserData();
+            }
+
+            updateUI() {
+                // Update level display
+                const levelDisplay = document.querySelector('.user-level');
+                if (levelDisplay) {
+                    levelDisplay.textContent = this.userData.level;
+                    levelDisplay.style.color = this.levels[this.userData.level].color;
+                }
+
+                // Update points display
+                const pointsDisplay = document.querySelector('.user-points');
+                if (pointsDisplay) {
+                    pointsDisplay.textContent = Math.floor(this.userData.points);
+                }
+
+                // Update progress to next level
+                const currentLevel = this.userData.level;
+                const nextLevel = Object.keys(this.levels)[Object.keys(this.levels).indexOf(currentLevel) + 1];
+                
+                if (nextLevel) {
+                    const progressBar = document.querySelector('.level-progress-bar');
+                    const progressText = document.querySelector('.level-progress-text');
+                    const pointsToNext = this.levels[nextLevel].minPoints - this.userData.points;
+                    
+                    if (progressBar && progressText) {
+                        const progress = ((this.userData.points - this.levels[currentLevel].minPoints) /
+                            (this.levels[nextLevel].minPoints - this.levels[currentLevel].minPoints)) * 100;
+                        
+                        progressBar.style.width = `${progress}%`;
+                        progressText.textContent = `${pointsToNext} points to ${nextLevel}`;
+                    }
+                }
+
+                // Update help statistics
+                this.updateHelpStatistics();
+            }
+
+            updateHelpStatistics() {
+                const statsContainer = document.querySelector('.help-statistics');
+                if (statsContainer) {
+                    const totalHelped = this.userData.helpedUsers.reduce((sum, help) => sum + help.amount, 0);
+                    const totalReceived = this.userData.receivedHelp.reduce((sum, help) => sum + help.amount, 0);
+                    
+                    statsContainer.innerHTML = `
+                        <div class="stat-item">
+                            <h4>Total Help Given</h4>
+                            <p>€${totalHelped}</p>
+                            <small>${this.userData.helpedUsers.length} users helped</small>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Total Help Received</h4>
+                            <p>€${totalReceived}</p>
+                            <small>${this.userData.receivedHelp.length} times helped</small>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Current Level</h4>
+                            <p style="color: ${this.levels[this.userData.level].color}">${this.userData.level}</p>
+                            <small>Max amount: €${this.levels[this.userData.level].maxAmount}</small>
+                        </div>
+                    `;
+                }
+            }
+
+            getHelpHistory() {
+                return {
+                    given: this.userData.helpedUsers.sort((a, b) => b.timestamp - a.timestamp),
+                    received: this.userData.receivedHelp.sort((a, b) => b.timestamp - a.timestamp)
+                };
+            }
+        }
+
+        // Initialize level system when document loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                window.userLevel = new UserLevelSystem();
+            }
+        });
+
+        // Update handleDonation function to include points
+        function handleDonation(campaignId) {
+            const amount = parseFloat(document.querySelector('#donation-amount').value);
+            const donorName = localStorage.getItem('userName') || 'Anonymous';
+
+            if (amount > 0) {
+                // Process the donation
+                window.liveUpdate.processDonation(campaignId, amount, donorName);
+                
+                // Add points and record help
+                window.userLevel.recordHelp('given', campaignId, amount, campaignId);
+                
+                // Update transaction history
+                const transaction = {
+                    type: 'donation',
+                    amount: amount,
+                    campaignId: campaignId,
+                    timestamp: new Date(),
+                    status: 'completed'
+                };
+                
+                // Store transaction in history
+                const history = JSON.parse(localStorage.getItem('transactionHistory') || '[]');
+                history.push(transaction);
+                localStorage.setItem('transactionHistory', JSON.stringify(history));
+                
+                // Close donation modal
+                closePayModal();
+            }
+        }
+    </script>
+
+    <script>
+        // Live Updates and Notifications System
+        class LiveUpdateSystem {
+            constructor() {
+                this.notifications = [];
+                this.campaigns = {};
+                this.updateInterval = null;
+                this.notificationSound = new Audio('notification.mp3'); // Add a notification sound file
+            }
+
+            init() {
+                // Start live updates
+                this.updateInterval = setInterval(() => this.checkForUpdates(), 5000);
+                this.initNotificationContainer();
+            }
+
+            initNotificationContainer() {
+                const container = document.createElement('div');
+                container.className = 'notification-container';
+                document.body.appendChild(container);
+            }
+
+            addNotification(message, type = 'info') {
+                const notification = {
+                    id: Date.now(),
+                    message,
+                    type,
+                    timestamp: new Date()
+                };
+                this.notifications.unshift(notification);
+                this.showNotification(notification);
+                this.updateNotificationBadge();
+            }
+
+            showNotification(notification) {
+                const container = document.querySelector('.notification-container');
+                const notifElement = document.createElement('div');
+                notifElement.className = `notification ${notification.type}`;
+                notifElement.innerHTML = `
+                    <i class="fas fa-bell"></i>
+                    <span>${notification.message}</span>
+                    <span class="notification-time">${this.formatTime(notification.timestamp)}</span>
+                `;
+                container.appendChild(notifElement);
+                this.notificationSound.play();
+
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    notifElement.classList.add('fade-out');
+                    setTimeout(() => notifElement.remove(), 500);
+                }, 5000);
+            }
+
+            updateNotificationBadge() {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.textContent = this.notifications.length;
+                    badge.style.display = this.notifications.length > 0 ? 'block' : 'none';
+                }
+            }
+
+            formatTime(date) {
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+                    .format(-Math.round((Date.now() - date) / 1000), 'second');
+            }
+
+            // Handle donation updates
+            processDonation(campaignId, amount, donorName) {
+                const campaign = this.campaigns[campaignId];
+                if (campaign) {
+                    campaign.amount_raised += amount;
+                    campaign.donors.push({
+                        name: donorName,
+                        amount: amount,
+                        timestamp: new Date()
+                    });
+
+                    // Update UI
+                    this.updateCampaignUI(campaignId);
+                    
+                    // Add notification
+                    this.addNotification(
+                        `${donorName} donated €${amount} to "${campaign.title}"`,
+                        'donation'
+                    );
+
+                    // Check if campaign goal reached
+                    if (campaign.amount_raised >= campaign.amount_needed) {
+                        this.addNotification(
+                            `Campaign "${campaign.title}" has reached its goal!`,
+                            'success'
+                        );
+                    }
+                }
+            }
+
+            updateCampaignUI(campaignId) {
+                const campaign = this.campaigns[campaignId];
+                const campaignElement = document.querySelector(`[data-campaign-id="${campaignId}"]`);
+                if (campaignElement && campaign) {
+                    // Update progress bar
+                    const progressBar = campaignElement.querySelector('.progress-bar');
+                    const progress = (campaign.amount_raised / campaign.amount_needed) * 100;
+                    progressBar.style.width = `${Math.min(progress, 100)}%`;
+
+                    // Update amounts
+                    campaignElement.querySelector('.amount-raised').textContent = `€${campaign.amount_raised}`;
+                    campaignElement.querySelector('.amount-left').textContent = 
+                        `€${Math.max(0, campaign.amount_needed - campaign.amount_raised)}`;
+
+                    // Update donor list
+                    this.updateDonorList(campaignId);
+                }
+            }
+
+            updateDonorList(campaignId) {
+                const campaign = this.campaigns[campaignId];
+                const donorList = document.querySelector(`[data-donor-list="${campaignId}"]`);
+                if (donorList && campaign) {
+                    donorList.innerHTML = campaign.donors
+                        .slice(-5) // Show last 5 donors
+                        .map(donor => `
+                            <div class="donor-item">
+                                <span class="donor-name">${donor.name}</span>
+                                <span class="donor-amount">€${donor.amount}</span>
+                                <span class="donor-time">${this.formatTime(donor.timestamp)}</span>
+                            </div>
+                        `)
+                        .join('');
+                }
+            }
+
+            // Advertisement System
+            initAdvertSystem() {
+                this.rotateAdverts();
+                setInterval(() => this.rotateAdverts(), 30000); // Rotate every 30 seconds
+            }
+
+            rotateAdverts() {
+                const adverts = [
+                    { title: "Premium Member", content: "Upgrade to Premium for higher donation limits!" },
+                    { title: "Verification", content: "Get verified to increase trust in your campaigns" },
+                    { title: "Mobile App", content: "Download our mobile app for instant notifications" }
+                ];
+
+                const advertContainer = document.querySelector('.advert-container');
+                if (advertContainer) {
+                    const randomAdvert = adverts[Math.floor(Math.random() * adverts.length)];
+                    advertContainer.innerHTML = `
+                        <div class="advert">
+                            <h3>${randomAdvert.title}</h3>
+                            <p>${randomAdvert.content}</p>
+                            <button class="btn btn-primary">Learn More</button>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Initialize systems when document loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const liveUpdate = new LiveUpdateSystem();
+            window.liveUpdate = liveUpdate; // Make it globally accessible
+
+            // Initialize after authentication
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                liveUpdate.init();
+                liveUpdate.initAdvertSystem();
+            }
+        });
+
+        // Handle donation submission
+        function handleDonation(campaignId) {
+            const amount = parseFloat(document.querySelector('#donation-amount').value);
+            const donorName = localStorage.getItem('userName') || 'Anonymous';
+
+            if (amount > 0) {
+                // Process the donation
+                window.liveUpdate.processDonation(campaignId, amount, donorName);
+                
+                // Update transaction history
+                const transaction = {
+                    type: 'donation',
+                    amount: amount,
+                    campaignId: campaignId,
+                    timestamp: new Date(),
+                    status: 'completed'
+                };
+                
+                // Store transaction in history
+                const history = JSON.parse(localStorage.getItem('transactionHistory') || '[]');
+                history.push(transaction);
+                localStorage.setItem('transactionHistory', JSON.stringify(history));
+                
+                // Close donation modal
+                closePayModal();
+            }
+        }
+    </script>
+
+    <script>
+        class DashboardDataLoader {
+            constructor() {
+                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.initialize();
+            }
+
+            async initialize() {
+                if (!this.userId) return;
+                
+                // Show loading state
+                this.showLoadingState();
+                
+                try {
+                    await Promise.all([
+                        this.loadCampaignStats(),
+                        this.loadRecentActivities(),
+                        this.loadUserMetrics(),
+                        this.loadNotifications()
+                    ]);
+                } catch (error) {
+                    console.error('Error loading dashboard data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const sections = document.querySelectorAll('.dashboard-section');
+                sections.forEach(section => {
+                    section.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading ${section.dataset.type}...</p>
+                        </div>
+                    `;
+                });
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => {
+                    spinner.remove();
+                });
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading dashboard data. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.dashboard-container').prepend(errorMessage);
+            }
+
+            async loadCampaignStats() {
+                // Load campaign statistics
+                const stats = JSON.parse(localStorage.getItem(`campaignStats_${this.userId}`) || '{}');
+                if (Object.keys(stats).length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const newStats = {
+                        activeCampaigns: 0,
+                        completedCampaigns: 0,
+                        totalDonations: 0,
+                        recentDonors: []
+                    };
+                    localStorage.setItem(`campaignStats_${this.userId}`, JSON.stringify(newStats));
+                }
+                this.updateCampaignStats(stats);
+            }
+
+            async loadRecentActivities() {
+                // Load recent activities
+                const activities = JSON.parse(localStorage.getItem(`activities_${this.userId}`) || '[]');
+                if (activities.length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const newActivities = [];
+                    localStorage.setItem(`activities_${this.userId}`, JSON.stringify(newActivities));
+                }
+                this.updateActivityFeed(activities);
+            }
+
+            async loadUserMetrics() {
+                // Load user metrics
+                const metrics = JSON.parse(localStorage.getItem(`metrics_${this.userId}`) || '{}');
+                if (Object.keys(metrics).length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const newMetrics = {
+                        totalRaised: 0,
+                        donorCount: 0,
+                        avgDonation: 0,
+                        campaignSuccess: 0
+                    };
+                    localStorage.setItem(`metrics_${this.userId}`, JSON.stringify(newMetrics));
+                }
+                this.updateMetrics(metrics);
+            }
+
+            async loadNotifications() {
+                // Load notifications
+                const notifications = JSON.parse(localStorage.getItem(`notifications_${this.userId}`) || '[]');
+                if (notifications.length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const newNotifications = [];
+                    localStorage.setItem(`notifications_${this.userId}`, JSON.stringify(newNotifications));
+                }
+                this.updateNotifications(notifications);
+            }
+
+            updateCampaignStats(stats) {
+                const statsContainer = document.querySelector('.campaign-stats');
+                if (!statsContainer) return;
+
+                statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <h3>Active Campaigns</h3>
+                        <p>${stats.activeCampaigns || 0}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Completed Campaigns</h3>
+                        <p>${stats.completedCampaigns || 0}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Donations</h3>
+                        <p>$${(stats.totalDonations || 0).toLocaleString()}</p>
+                    </div>
+                `;
+            }
+
+            updateActivityFeed(activities) {
+                const feedContainer = document.querySelector('.activity-feed');
+                if (!feedContainer) return;
+
+                if (activities.length === 0) {
+                    feedContainer.innerHTML = '<p class="no-data">No recent activities</p>';
+                    return;
+                }
+
+                feedContainer.innerHTML = activities.map(activity => `
+                    <div class="activity-item">
+                        <i class="${this.getActivityIcon(activity.type)}"></i>
+                        <div class="activity-content">
+                            <p>${activity.message}</p>
+                            <span class="activity-time">${this.formatTime(activity.timestamp)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateMetrics(metrics) {
+                const metricsContainer = document.querySelector('.metrics-container');
+                if (!metricsContainer) return;
+
+                metricsContainer.innerHTML = `
+                    <div class="metric-card">
+                        <h3>Total Raised</h3>
+                        <p>$${(metrics.totalRaised || 0).toLocaleString()}</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Donors</h3>
+                        <p>${(metrics.donorCount || 0).toLocaleString()}</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Average Donation</h3>
+                        <p>$${(metrics.avgDonation || 0).toFixed(2)}</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Campaign Success Rate</h3>
+                        <p>${(metrics.campaignSuccess || 0)}%</p>
+                    </div>
+                `;
+            }
+
+            updateNotifications(notifications) {
+                const notifContainer = document.querySelector('.notifications-panel');
+                if (!notifContainer) return;
+
+                if (notifications.length === 0) {
+                    notifContainer.innerHTML = '<p class="no-data">No new notifications</p>';
+                    return;
+                }
+
+                notifContainer.innerHTML = notifications.map(notif => `
+                    <div class="notification-item ${notif.read ? '' : 'unread'}">
+                        <i class="${this.getNotificationIcon(notif.type)}"></i>
+                        <div class="notification-content">
+                            <p>${notif.message}</p>
+                            <span class="notification-time">${this.formatTime(notif.timestamp)}</span>
+                        </div>
+                        ${!notif.read ? '<button class="mark-read-btn">Mark as Read</button>' : ''}
+                    </div>
+                `).join('');
+
+                // Add click handlers for mark as read buttons
+                document.querySelectorAll('.mark-read-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const notifItem = e.target.closest('.notification-item');
+                        this.markNotificationRead(notifItem);
+                    });
+                });
+            }
+
+            getActivityIcon(type) {
+                const icons = {
+                    donation: 'fas fa-gift',
+                    campaign: 'fas fa-flag',
+                    milestone: 'fas fa-star',
+                    update: 'fas fa-bell',
+                    default: 'fas fa-info-circle'
+                };
+                return icons[type] || icons.default;
+            }
+
+            getNotificationIcon(type) {
+                const icons = {
+                    success: 'fas fa-check-circle',
+                    warning: 'fas fa-exclamation-triangle',
+                    info: 'fas fa-info-circle',
+                    default: 'fas fa-bell'
+                };
+                return icons[type] || icons.default;
+            }
+
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = now - date;
+
+                if (diff < 60000) return 'Just now';
+                if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+                if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+                return date.toLocaleDateString();
+            }
+
+            markNotificationRead(notifItem) {
+                notifItem.classList.remove('unread');
+                notifItem.querySelector('.mark-read-btn')?.remove();
+
+                // Update storage
+                const notifications = JSON.parse(localStorage.getItem(`notifications_${this.userId}`) || '[]');
+                const index = Array.from(notifItem.parentElement.children).indexOf(notifItem);
+                if (notifications[index]) {
+                    notifications[index].read = true;
+                    localStorage.setItem(`notifications_${this.userId}`, JSON.stringify(notifications));
+                }
+
+                // Update notification badge in navigation
+                this.updateNotificationBadge();
+            }
+
+            updateNotificationBadge() {
+                const notifications = JSON.parse(localStorage.getItem(`notifications_${this.userId}`) || '[]');
+                const unreadCount = notifications.filter(n => !n.read).length;
+                
+                const badge = document.querySelector('.notification-badge');
+                if (unreadCount > 0) {
+                    if (badge) {
+                        badge.textContent = unreadCount;
+                    } else {
+                        const newBadge = document.createElement('span');
+                        newBadge.className = 'notification-badge';
+                        newBadge.textContent = unreadCount;
+                        document.querySelector('.user-nav-info')?.appendChild(newBadge);
+                    }
+                } else {
+                    badge?.remove();
+                }
+            }
+        }
+
+        // Initialize dashboard data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new DashboardDataLoader();
+        });
     </script>
 </body>
 </html>

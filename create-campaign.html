@@ -747,5 +747,464 @@
             });
         }
     </script>
+
+    <script>
+        class CampaignDataLoader {
+            constructor() {
+                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.initialize();
+            }
+
+            async initialize() {
+                if (!this.userId) return;
+                
+                this.showLoadingState();
+                
+                try {
+                    await Promise.all([
+                        this.loadUserLevel(),
+                        this.loadCampaignTemplates(),
+                        this.loadUserLimits(),
+                        this.loadDraftCampaigns()
+                    ]);
+                    this.setupFormValidation();
+                    this.setupImageUpload();
+                    this.setupAutoSave();
+                } catch (error) {
+                    console.error('Error loading campaign data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                form.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading campaign creation form...</p>
+                    </div>
+                `;
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading campaign creation form. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.campaign-container').prepend(errorMessage);
+            }
+
+            async loadUserLevel() {
+                // Load user level and permissions
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                const userLevel = userData.level || 'Bronze';
+                
+                // Update UI with user level information
+                const levelInfo = document.querySelector('.user-level-info');
+                if (levelInfo) {
+                    levelInfo.innerHTML = `
+                        <h3>Your Level: ${userLevel}</h3>
+                        <p>Maximum campaign amount: $${this.getMaxAmountForLevel(userLevel).toLocaleString()}</p>
+                        <p>Maximum active campaigns: ${this.getMaxCampaignsForLevel(userLevel)}</p>
+                    `;
+                }
+            }
+
+            async loadCampaignTemplates() {
+                // Load campaign templates
+                const templates = JSON.parse(localStorage.getItem('campaignTemplates') || '[]');
+                if (templates.length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const newTemplates = [
+                        { id: 1, name: 'Emergency Fund', description: 'Template for emergency funding campaigns' },
+                        { id: 2, name: 'Medical Support', description: 'Template for medical support campaigns' },
+                        { id: 3, name: 'Education Fund', description: 'Template for education funding campaigns' }
+                    ];
+                    localStorage.setItem('campaignTemplates', JSON.stringify(newTemplates));
+                }
+                this.updateTemplateSelector(templates);
+            }
+
+            async loadUserLimits() {
+                // Load user campaign limits
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                const activeCampaigns = JSON.parse(localStorage.getItem(`activeCampaigns_${this.userId}`) || '[]');
+                
+                const userLevel = userData.level || 'Bronze';
+                const maxCampaigns = this.getMaxCampaignsForLevel(userLevel);
+                const remainingCampaigns = maxCampaigns - activeCampaigns.length;
+
+                // Update UI with limit information
+                const limitsInfo = document.querySelector('.campaign-limits');
+                if (limitsInfo) {
+                    limitsInfo.innerHTML = `
+                        <p>Active Campaigns: ${activeCampaigns.length}/${maxCampaigns}</p>
+                        <p>Remaining Campaigns: ${remainingCampaigns}</p>
+                    `;
+                }
+            }
+
+            async loadDraftCampaigns() {
+                // Load draft campaigns
+                const drafts = JSON.parse(localStorage.getItem(`campaignDrafts_${this.userId}`) || '[]');
+                
+                // Update UI with drafts
+                const draftsContainer = document.querySelector('.draft-campaigns');
+                if (draftsContainer) {
+                    if (drafts.length === 0) {
+                        draftsContainer.innerHTML = '<p>No draft campaigns</p>';
+                        return;
+                    }
+
+                    draftsContainer.innerHTML = drafts.map(draft => `
+                        <div class="draft-item">
+                            <h4>${draft.title || 'Untitled Campaign'}</h4>
+                            <p>Last edited: ${this.formatDate(draft.lastEdited)}</p>
+                            <div class="draft-actions">
+                                <button onclick="loadDraft('${draft.id}')">Continue Editing</button>
+                                <button onclick="deleteDraft('${draft.id}')" class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            setupFormValidation() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (this.validateForm()) {
+                        this.submitCampaign();
+                    }
+                });
+
+                // Add real-time validation
+                form.querySelectorAll('input, textarea').forEach(input => {
+                    input.addEventListener('input', () => {
+                        this.validateField(input);
+                    });
+                });
+            }
+
+            setupImageUpload() {
+                const imageUpload = document.querySelector('.image-upload');
+                if (!imageUpload) return;
+
+                imageUpload.addEventListener('change', (e) => {
+                    this.handleImageUpload(e.target.files[0]);
+                });
+            }
+
+            setupAutoSave() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                // Auto-save every 30 seconds
+                setInterval(() => {
+                    this.autoSaveDraft();
+                }, 30000);
+
+                // Save on form change
+                form.addEventListener('input', () => {
+                    clearTimeout(this.autoSaveTimeout);
+                    this.autoSaveTimeout = setTimeout(() => {
+                        this.autoSaveDraft();
+                    }, 1000);
+                });
+            }
+
+            validateForm() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return false;
+
+                let isValid = true;
+                form.querySelectorAll('input, textarea').forEach(input => {
+                    if (!this.validateField(input)) {
+                        isValid = false;
+                    }
+                });
+
+                return isValid;
+            }
+
+            validateField(input) {
+                const value = input.value.trim();
+                const name = input.name;
+                let isValid = true;
+                let errorMessage = '';
+
+                switch (name) {
+                    case 'title':
+                        if (value.length < 5) {
+                            isValid = false;
+                            errorMessage = 'Title must be at least 5 characters long';
+                        }
+                        break;
+                    case 'amount':
+                        const amount = parseFloat(value);
+                        const maxAmount = this.getMaxAmountForLevel(this.getUserLevel());
+                        if (isNaN(amount) || amount <= 0) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid amount';
+                        } else if (amount > maxAmount) {
+                            isValid = false;
+                            errorMessage = `Amount cannot exceed $${maxAmount.toLocaleString()}`;
+                        }
+                        break;
+                    case 'deadline':
+                        const deadline = new Date(value);
+                        const minDate = new Date();
+                        minDate.setDate(minDate.getDate() + 1);
+                        const maxDate = new Date();
+                        maxDate.setDate(maxDate.getDate() + 90);
+                        
+                        if (deadline < minDate) {
+                            isValid = false;
+                            errorMessage = 'Deadline must be at least 1 day in the future';
+                        } else if (deadline > maxDate) {
+                            isValid = false;
+                            errorMessage = 'Deadline cannot be more than 90 days in the future';
+                        }
+                        break;
+                    // Add more validation cases as needed
+                }
+
+                this.showFieldValidation(input, isValid, errorMessage);
+                return isValid;
+            }
+
+            showFieldValidation(input, isValid, errorMessage) {
+                const errorElement = input.parentElement.querySelector('.error-message');
+                if (isValid) {
+                    input.classList.remove('invalid');
+                    input.classList.add('valid');
+                    if (errorElement) errorElement.remove();
+                } else {
+                    input.classList.remove('valid');
+                    input.classList.add('invalid');
+                    if (!errorElement) {
+                        const error = document.createElement('div');
+                        error.className = 'error-message';
+                        error.textContent = errorMessage;
+                        input.parentElement.appendChild(error);
+                    } else {
+                        errorElement.textContent = errorMessage;
+                    }
+                }
+            }
+
+            async handleImageUpload(file) {
+                if (!file) return;
+
+                // Validate file
+                if (!this.validateImage(file)) {
+                    return;
+                }
+
+                // Show upload preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.querySelector('.image-preview');
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            validateImage(file) {
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    this.showError('Please upload an image file');
+                    return false;
+                }
+
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showError('Image size must be less than 5MB');
+                    return false;
+                }
+
+                return true;
+            }
+
+            autoSaveDraft() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                const formData = new FormData(form);
+                const draft = {
+                    id: this.currentDraftId || Date.now().toString(),
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    amount: formData.get('amount'),
+                    deadline: formData.get('deadline'),
+                    lastEdited: new Date().toISOString()
+                };
+
+                // Save to localStorage
+                const drafts = JSON.parse(localStorage.getItem(`campaignDrafts_${this.userId}`) || '[]');
+                const existingDraftIndex = drafts.findIndex(d => d.id === draft.id);
+                
+                if (existingDraftIndex >= 0) {
+                    drafts[existingDraftIndex] = draft;
+                } else {
+                    drafts.push(draft);
+                }
+
+                localStorage.setItem(`campaignDrafts_${this.userId}`, JSON.stringify(drafts));
+                this.showAutoSaveNotification();
+            }
+
+            showAutoSaveNotification() {
+                const notification = document.createElement('div');
+                notification.className = 'autosave-notification';
+                notification.textContent = 'Draft saved';
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            }
+
+            submitCampaign() {
+                // Get form data
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                const formData = new FormData(form);
+                const campaignData = {
+                    id: Date.now().toString(),
+                    userId: this.userId,
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    amount: parseFloat(formData.get('amount')),
+                    deadline: formData.get('deadline'),
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+
+                // Save campaign
+                const campaigns = JSON.parse(localStorage.getItem(`campaigns`) || '[]');
+                campaigns.push(campaignData);
+                localStorage.setItem('campaigns', JSON.stringify(campaigns));
+
+                // Remove draft if exists
+                if (this.currentDraftId) {
+                    this.deleteDraft(this.currentDraftId);
+                }
+
+                // Show success message and redirect
+                this.showSuccess('Campaign created successfully!');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            }
+
+            getMaxAmountForLevel(level) {
+                const limits = {
+                    'Bronze': 1000,
+                    'Silver': 5000,
+                    'Gold': 10000,
+                    'Platinum': 50000
+                };
+                return limits[level] || limits['Bronze'];
+            }
+
+            getMaxCampaignsForLevel(level) {
+                const limits = {
+                    'Bronze': 1,
+                    'Silver': 3,
+                    'Gold': 5,
+                    'Platinum': 10
+                };
+                return limits[level] || limits['Bronze'];
+            }
+
+            getUserLevel() {
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                return userData.level || 'Bronze';
+            }
+
+            updateTemplateSelector(templates) {
+                const selector = document.querySelector('.template-selector');
+                if (!selector) return;
+
+                selector.innerHTML = `
+                    <option value="">Select a Template</option>
+                    ${templates.map(template => `
+                        <option value="${template.id}">${template.name}</option>
+                    `).join('')}
+                `;
+
+                selector.addEventListener('change', (e) => {
+                    const templateId = e.target.value;
+                    if (templateId) {
+                        this.loadTemplate(templateId);
+                    }
+                });
+            }
+
+            loadTemplate(templateId) {
+                const templates = JSON.parse(localStorage.getItem('campaignTemplates') || '[]');
+                const template = templates.find(t => t.id.toString() === templateId.toString());
+                
+                if (template) {
+                    // Fill form with template data
+                    const form = document.querySelector('.campaign-form');
+                    if (!form) return;
+
+                    form.querySelector('[name="title"]').value = template.title || '';
+                    form.querySelector('[name="description"]').value = template.description || '';
+                    // Add more field population as needed
+                }
+            }
+
+            formatDate(date) {
+                return new Date(date).toLocaleDateString();
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.campaign-container').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.campaign-container').prepend(successDiv);
+                setTimeout(() => successDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize campaign data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CampaignDataLoader();
+        });
+    </script>
 </body>
 </html>

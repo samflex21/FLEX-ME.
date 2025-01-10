@@ -942,5 +942,339 @@
             window.location.href = 'home.html';
         }
     </script>
+    <script>
+        class HomeDataLoader {
+            constructor() {
+                this.initialize();
+            }
+
+            async initialize() {
+                this.showLoadingState();
+                try {
+                    await Promise.all([
+                        this.loadFeaturedCampaigns(),
+                        this.loadStatistics(),
+                        this.loadTestimonials(),
+                        this.loadLatestNews()
+                    ]);
+                    this.setupEventHandlers();
+                } catch (error) {
+                    console.error('Error loading home page data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const sections = document.querySelectorAll('.dynamic-content');
+                sections.forEach(section => {
+                    section.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading...</p>
+                        </div>
+                    `;
+                });
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading content. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.main-content').prepend(errorMessage);
+            }
+
+            async loadFeaturedCampaigns() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+                    const featuredCampaigns = campaigns
+                        .filter(campaign => campaign.status === 'active')
+                        .sort((a, b) => b.donations - a.donations)
+                        .slice(0, 6);
+
+                    const campaignsContainer = document.querySelector('.featured-campaigns');
+                    if (campaignsContainer) {
+                        campaignsContainer.innerHTML = featuredCampaigns.length > 0
+                            ? featuredCampaigns.map(campaign => `
+                                <div class="campaign-card">
+                                    <img src="${campaign.image || 'assets/default-campaign.jpg'}" alt="${campaign.title}">
+                                    <div class="campaign-info">
+                                        <h3>${campaign.title}</h3>
+                                        <p>${campaign.description.substring(0, 100)}...</p>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: ${(campaign.raised / campaign.goal * 100)}%"></div>
+                                        </div>
+                                        <div class="campaign-stats">
+                                            <span>$${campaign.raised.toLocaleString()} raised</span>
+                                            <span>${Math.round(campaign.raised / campaign.goal * 100)}% of $${campaign.goal.toLocaleString()}</span>
+                                        </div>
+                                        <a href="campaign.html?id=${campaign.id}" class="btn btn-primary">Learn More</a>
+                                    </div>
+                                </div>
+                            `).join('')
+                            : '<p>No featured campaigns at the moment</p>';
+                    }
+                } catch (error) {
+                    console.error('Error loading featured campaigns:', error);
+                    this.showSectionError('.featured-campaigns', 'Unable to load featured campaigns');
+                }
+            }
+
+            async loadStatistics() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const stats = {
+                        totalRaised: 1500000,
+                        campaignsCompleted: 250,
+                        successRate: 85,
+                        activeUsers: 10000
+                    };
+
+                    const statsContainer = document.querySelector('.statistics');
+                    if (statsContainer) {
+                        statsContainer.innerHTML = `
+                            <div class="stat-item">
+                                <h3>$${stats.totalRaised.toLocaleString()}</h3>
+                                <p>Total Raised</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>${stats.campaignsCompleted}</h3>
+                                <p>Campaigns Completed</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>${stats.successRate}%</h3>
+                                <p>Success Rate</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>${stats.activeUsers.toLocaleString()}</h3>
+                                <p>Active Users</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading statistics:', error);
+                    this.showSectionError('.statistics', 'Unable to load statistics');
+                }
+            }
+
+            async loadTestimonials() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const testimonials = [
+                        {
+                            name: "John Doe",
+                            role: "Campaign Creator",
+                            image: "assets/testimonial1.jpg",
+                            text: "This platform helped me raise funds for my medical treatment. Forever grateful!"
+                        },
+                        {
+                            name: "Jane Smith",
+                            role: "Regular Donor",
+                            image: "assets/testimonial2.jpg",
+                            text: "I love how easy it is to support meaningful causes through this platform."
+                        },
+                        {
+                            name: "Mike Johnson",
+                            role: "Nonprofit Leader",
+                            image: "assets/testimonial3.jpg",
+                            text: "The tools and support provided here have been instrumental in our success."
+                        }
+                    ];
+
+                    const testimonialsContainer = document.querySelector('.testimonials');
+                    if (testimonialsContainer) {
+                        testimonialsContainer.innerHTML = `
+                            <div class="testimonials-slider">
+                                ${testimonials.map(testimonial => `
+                                    <div class="testimonial-card">
+                                        <img src="${testimonial.image}" alt="${testimonial.name}">
+                                        <div class="testimonial-content">
+                                            <p>${testimonial.text}</p>
+                                            <h4>${testimonial.name}</h4>
+                                            <span>${testimonial.role}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="slider-controls">
+                                <button class="prev-slide"><i class="fas fa-chevron-left"></i></button>
+                                <button class="next-slide"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading testimonials:', error);
+                    this.showSectionError('.testimonials', 'Unable to load testimonials');
+                }
+            }
+
+            async loadLatestNews() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const news = [
+                        {
+                            title: "New Features Released",
+                            date: "2025-01-10",
+                            image: "assets/news1.jpg",
+                            summary: "We've added exciting new features to help you reach your fundraising goals."
+                        },
+                        {
+                            title: "Success Story: Local Community Center",
+                            date: "2025-01-09",
+                            image: "assets/news2.jpg",
+                            summary: "How one community came together to save their local center."
+                        },
+                        {
+                            title: "Monthly Impact Report",
+                            date: "2025-01-08",
+                            image: "assets/news3.jpg",
+                            summary: "See how your contributions made a difference this month."
+                        }
+                    ];
+
+                    const newsContainer = document.querySelector('.latest-news');
+                    if (newsContainer) {
+                        newsContainer.innerHTML = `
+                            <div class="news-grid">
+                                ${news.map(item => `
+                                    <div class="news-card">
+                                        <img src="${item.image}" alt="${item.title}">
+                                        <div class="news-content">
+                                            <h3>${item.title}</h3>
+                                            <span class="news-date">${new Date(item.date).toLocaleDateString()}</span>
+                                            <p>${item.summary}</p>
+                                            <a href="#" class="read-more">Read More</a>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading news:', error);
+                    this.showSectionError('.latest-news', 'Unable to load latest news');
+                }
+            }
+
+            setupEventHandlers() {
+                // Testimonials slider controls
+                const prevButton = document.querySelector('.prev-slide');
+                const nextButton = document.querySelector('.next-slide');
+                if (prevButton && nextButton) {
+                    let currentSlide = 0;
+                    const slides = document.querySelectorAll('.testimonial-card');
+                    const totalSlides = slides.length;
+
+                    prevButton.addEventListener('click', () => {
+                        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                        this.updateSlider(currentSlide);
+                    });
+
+                    nextButton.addEventListener('click', () => {
+                        currentSlide = (currentSlide + 1) % totalSlides;
+                        this.updateSlider(currentSlide);
+                    });
+
+                    // Auto-advance slides
+                    setInterval(() => {
+                        currentSlide = (currentSlide + 1) % totalSlides;
+                        this.updateSlider(currentSlide);
+                    }, 5000);
+                }
+
+                // Newsletter subscription
+                const newsletterForm = document.querySelector('.newsletter-form');
+                if (newsletterForm) {
+                    newsletterForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleNewsletterSubscription(e.target);
+                    });
+                }
+            }
+
+            updateSlider(currentSlide) {
+                const slider = document.querySelector('.testimonials-slider');
+                if (slider) {
+                    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+                }
+            }
+
+            async handleNewsletterSubscription(form) {
+                const email = form.querySelector('input[type="email"]').value;
+                
+                if (!email || !email.includes('@')) {
+                    this.showError('Please enter a valid email address');
+                    return;
+                }
+
+                try {
+                    // Simulate API call - replace with actual subscription
+                    const subscribers = JSON.parse(localStorage.getItem('subscribers') || '[]');
+                    if (subscribers.includes(email)) {
+                        this.showError('You are already subscribed to our newsletter');
+                        return;
+                    }
+
+                    subscribers.push(email);
+                    localStorage.setItem('subscribers', JSON.stringify(subscribers));
+                    
+                    this.showSuccess('Thank you for subscribing to our newsletter!');
+                    form.reset();
+                } catch (error) {
+                    console.error('Error handling subscription:', error);
+                    this.showError('Unable to process subscription. Please try again.');
+                }
+            }
+
+            showSectionError(selector, message) {
+                const section = document.querySelector(selector);
+                if (section) {
+                    section.innerHTML = `
+                        <div class="section-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>${message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.main-content').prepend(successDiv);
+                setTimeout(() => successDiv.remove(), 5000);
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.main-content').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize home data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new HomeDataLoader();
+        });
+    </script>
 </body>
 </html>

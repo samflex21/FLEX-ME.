@@ -898,7 +898,6 @@
             box-shadow: 0 3px 8px rgba(74, 144, 226, 0.3);
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .form-container {
                 padding: 20px;
@@ -1029,10 +1028,9 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="home.html"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a class="nav-link" href="history.html"><i class="fas fa-history"></i> History</a>
-            <a class="nav-link" href="create-campaign.html"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
@@ -1286,154 +1284,761 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-        // Initialize the level bar
-        document.addEventListener('DOMContentLoaded', function() {
-            const levelBar = document.querySelector('.level-bar');
-            if (levelBar) {
-                levelBar.style.width = '75%';
+        class ProfileValidator {
+            constructor() {
+                this.maxFileSize = 5 * 1024 * 1024; // 5MB
+                this.allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                this.passwordHistory = JSON.parse(localStorage.getItem('passwordHistory') || '[]');
             }
 
-            // Handle editable fields
-            const editableFields = document.querySelectorAll('.editable-field');
-            let hasChanges = false;
-
-            editableFields.forEach(field => {
-                const input = field.querySelector('.form-control');
-                const editIcon = field.querySelector('.edit-icon');
-
-                editIcon.addEventListener('click', () => {
-                    input.readOnly = !input.readOnly;
-                    input.classList.toggle('editing');
-                    if (!input.readOnly) {
-                        input.focus();
-                    }
-                    hasChanges = true;
-                });
-
-                input.addEventListener('blur', () => {
-                    if (!input.readOnly) {
-                        input.readOnly = true;
-                        input.classList.remove('editing');
-                    }
-                });
-            });
-
-            // Handle profile picture upload
-            document.querySelector('.edit-picture').addEventListener('click', function() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
+            validateProfilePicture(file) {
+                if (!file) return { valid: false, message: 'Please select an image file.' };
                 
-                input.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            document.querySelector('.profile-picture').src = event.target.result;
-                            document.querySelector('.profile-pic').src = event.target.result;
-                        };
-                        reader.readAsDataURL(file);
+                if (!this.allowedImageTypes.includes(file.type)) {
+                    return { valid: false, message: 'Please upload a JPG, PNG, or GIF file.' };
+                }
+
+                if (file.size > this.maxFileSize) {
+                    return { valid: false, message: 'Image size must be less than 5MB.' };
+                }
+
+                return { valid: true };
+            }
+
+            validatePassword(currentPassword, newPassword, confirmPassword) {
+                // Password format validation
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                
+                if (!currentPassword) {
+                    return { valid: false, message: 'Please enter your current password.' };
+                }
+
+                if (newPassword !== confirmPassword) {
+                    return { valid: false, message: 'New passwords do not match.' };
+                }
+
+                if (!passwordRegex.test(newPassword)) {
+                    return { 
+                        valid: false, 
+                        message: 'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.' 
+                    };
+                }
+
+                // Check password history
+                if (this.passwordHistory.includes(newPassword)) {
+                    return { valid: false, message: 'Cannot reuse a previous password.' };
+                }
+
+                return { valid: true };
+            }
+
+            validateSecurityQuestions(questions, answers) {
+                // Check for duplicate questions
+                if (new Set(questions).size !== questions.length) {
+                    return { valid: false, message: 'Please select different security questions.' };
+                }
+
+                // Validate answers
+                for (let answer of answers) {
+                    if (!answer || answer.length < 3) {
+                        return { valid: false, message: 'Security answers must be at least 3 characters long.' };
+                    }
+
+                    if (/[^a-zA-Z0-9\s]/.test(answer)) {
+                        return { valid: false, message: 'Security answers cannot contain special characters.' };
+                    }
+                }
+
+                // Check for duplicate answers
+                const normalizedAnswers = answers.map(a => a.toLowerCase().trim());
+                if (new Set(normalizedAnswers).size !== answers.length) {
+                    return { valid: false, message: 'Please use different answers for each security question.' };
+                }
+
+                return { valid: true };
+            }
+
+            validateProfileInfo(info) {
+                const nameRegex = /^[a-zA-Z\s]{2,50}$/;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const phoneRegex = /^\+?[\d\s-]{10,}$/;
+
+                if (!nameRegex.test(info.firstName) || !nameRegex.test(info.lastName)) {
+                    return { valid: false, message: 'Names can only contain letters and spaces (2-50 characters).' };
+                }
+
+                if (!emailRegex.test(info.email)) {
+                    return { valid: false, message: 'Please enter a valid email address.' };
+                }
+
+                if (info.phone && !phoneRegex.test(info.phone)) {
+                    return { valid: false, message: 'Please enter a valid phone number.' };
+                }
+
+                return { valid: true };
+            }
+
+            checkPasswordStrength(password) {
+                let strength = 0;
+                const checks = {
+                    length: password.length >= 8,
+                    lowercase: /[a-z]/.test(password),
+                    uppercase: /[A-Z]/.test(password),
+                    number: /\d/.test(password),
+                    special: /[@$!%*?&]/.test(password)
+                };
+
+                strength += Object.values(checks).filter(Boolean).length;
+
+                return {
+                    score: strength,
+                    feedback: {
+                        length: 'At least 8 characters',
+                        lowercase: 'At least one lowercase letter',
+                        uppercase: 'At least one uppercase letter',
+                        number: 'At least one number',
+                        special: 'At least one special character'
+                    },
+                    checks
+                };
+            }
+        }
+
+        // Initialize validator and form handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const validator = new ProfileValidator();
+            const form = document.getElementById('profileForm');
+            const profilePicInput = document.getElementById('profile-upload');
+            const passwordStrengthIndicator = document.createElement('div');
+            passwordStrengthIndicator.className = 'password-strength';
+
+            // Add password strength indicator
+            document.getElementById('newPassword').parentNode.appendChild(passwordStrengthIndicator);
+
+            // Profile picture validation
+            profilePicInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const validation = validator.validateProfilePicture(file);
+                
+                if (!validation.valid) {
+                    alert(validation.message);
+                    this.value = '';
+                    return;
+                }
+
+                // Auto-resize image if needed
+                const img = new Image();
+                img.onload = function() {
+                    const maxWidth = 800;
+                    const maxHeight = 800;
+                    
+                    if (img.width > maxWidth || img.height > maxHeight) {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+                        canvas.width = img.width * ratio;
+                        canvas.height = img.height * ratio;
+                        
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob((blob) => {
+                            const resizedFile = new File([blob], file.name, { type: file.type });
+                            // Update the file input with resized image
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(resizedFile);
+                            profilePicInput.files = dataTransfer.files;
+                        }, file.type);
                     }
                 };
+                img.src = URL.createObjectURL(file);
+            });
+
+            // Password strength checker
+            document.getElementById('newPassword').addEventListener('input', function() {
+                const strength = validator.checkPasswordStrength(this.value);
+                const strengthClass = ['weak', 'medium', 'strong', 'very-strong'][strength.score - 1] || '';
                 
-                input.click();
-            });
-
-            // Password change functionality
-            const changePasswordCheckbox = document.getElementById('changePassword');
-            const passwordFields = document.querySelector('.password-fields');
-            const passwordInputs = document.querySelectorAll('.password-input-group input');
-            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
-
-            // Toggle password change fields
-            changePasswordCheckbox.addEventListener('change', function() {
-                passwordFields.classList.toggle('visible');
-                if (!this.checked) {
-                    // Clear password fields when unchecked
-                    passwordInputs.forEach(input => input.value = '');
+                let html = '<div class="strength-meter ' + strengthClass + '">';
+                for (let i = 0; i < 4; i++) {
+                    html += '<div class="strength-bar"></div>';
                 }
-            });
-
-            // Toggle password visibility
-            togglePasswordButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    const input = document.getElementById(targetId);
-                    const type = input.type === 'password' ? 'text' : 'password';
-                    input.type = type;
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
+                html += '</div><ul class="strength-checks">';
+                
+                Object.entries(strength.checks).forEach(([check, passed]) => {
+                    html += `<li class="${passed ? 'passed' : ''}">${strength.feedback[check]}</li>`;
                 });
+                html += '</ul>';
+                
+                passwordStrengthIndicator.innerHTML = html;
             });
 
             // Form submission
-            document.querySelector('.profile-form').addEventListener('submit', function(e) {
+            form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                if (changePasswordCheckbox.checked) {
+                // Gather form data
+                const formData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value
+                };
+
+                // Validate profile info
+                const infoValidation = validator.validateProfileInfo(formData);
+                if (!infoValidation.valid) {
+                    alert(infoValidation.message);
+                    return;
+                }
+
+                // Validate security questions if they've been changed
+                const securityQuestions = Array.from(document.querySelectorAll('.security-question')).map(q => q.value);
+                const securityAnswers = Array.from(document.querySelectorAll('.security-answer')).map(a => a.value);
+                
+                if (securityAnswers.some(answer => !answer.includes('*'))) {
+                    const securityValidation = validator.validateSecurityQuestions(securityQuestions, securityAnswers);
+                    if (!securityValidation.valid) {
+                        alert(securityValidation.message);
+                        return;
+                    }
+                }
+
+                // Validate password if change is requested
+                if (document.getElementById('changePassword').checked) {
                     const currentPassword = document.getElementById('currentPassword').value;
                     const newPassword = document.getElementById('newPassword').value;
                     const confirmPassword = document.getElementById('confirmPassword').value;
 
-                    // Validate passwords
-                    if (!currentPassword) {
-                        alert('Please enter your current password');
+                    const passwordValidation = validator.validatePassword(currentPassword, newPassword, confirmPassword);
+                    if (!passwordValidation.valid) {
+                        alert(passwordValidation.message);
                         return;
                     }
-                    if (newPassword !== confirmPassword) {
-                        alert('New passwords do not match');
-                        return;
-                    }
-                    if (newPassword.length < 8) {
-                        alert('New password must be at least 8 characters long');
-                        return;
-                    }
-                    // Add more password validation as needed
+
+                    // Add new password to history
+                    const passwordHistory = JSON.parse(localStorage.getItem('passwordHistory') || '[]');
+                    passwordHistory.push(newPassword);
+                    if (passwordHistory.length > 5) passwordHistory.shift(); // Keep last 5 passwords
+                    localStorage.setItem('passwordHistory', JSON.stringify(passwordHistory));
                 }
 
-                // Proceed with form submission
+                // If all validations pass, save changes
                 alert('Profile updated successfully!');
+                // Here you would normally send the data to your backend
             });
+        });
 
-            // Add show/hide password icons
-            const securityAnswers = document.querySelectorAll('.security-questions input[type="password"]');
-            securityAnswers.forEach(input => {
-                const showPasswordIcon = document.createElement('i');
-                showPasswordIcon.className = 'fas fa-eye show-password';
-                input.parentElement.appendChild(showPasswordIcon);
+        class NavigationGuard {
+            constructor() {
+                // Routes that require authentication
+                this.protectedRoutes = [
+                    'profile.html',
+                    'dashboard.html',
+                    'create-campaign.html',
+                    'history.html'
+                ];
+                // Routes accessible to everyone
+                this.publicRoutes = [
+                    'index.html',
+                    'login.html',
+                    'register.html',
+                    'about.html',
+                    'contact.html'
+                ];
+                this.initialize();
+            }
 
-                showPasswordIcon.addEventListener('click', function() {
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        this.className = 'fas fa-eye-slash show-password';
-                    } else {
-                        input.type = 'password';
-                        this.className = 'fas fa-eye show-password';
+            initialize() {
+                // Check authentication on page load
+                if (!this.checkAuthentication()) {
+                    return;
+                }
+                this.loadUserData();
+                window.addEventListener('popstate', () => this.checkAuthentication());
+            }
+
+            loadUserData() {
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                if (!userData.id) return;
+
+                // Load different data based on current page
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                
+                switch(currentPage) {
+                    case 'profile.html':
+                        this.loadProfileData(userData.id);
+                        break;
+                    case 'dashboard.html':
+                        this.loadDashboardData(userData.id);
+                        break;
+                    case 'history.html':
+                        this.loadHistoryData(userData.id);
+                        break;
+                    case 'create-campaign.html':
+                        this.loadCampaignData(userData.id);
+                        break;
+                }
+            }
+
+            loadProfileData(userId) {
+                // Load user profile data
+                const profileData = JSON.parse(localStorage.getItem('profileData_' + userId) || '{}');
+                if (Object.keys(profileData).length === 0) {
+                    // If no cached data, would normally fetch from server
+                    console.log('Loading profile data for user:', userId);
+                }
+            }
+
+            loadDashboardData(userId) {
+                // Load dashboard statistics and data
+                const dashboardData = JSON.parse(localStorage.getItem('dashboardData_' + userId) || '{}');
+                if (Object.keys(dashboardData).length === 0) {
+                    console.log('Loading dashboard data for user:', userId);
+                }
+            }
+
+            loadHistoryData(userId) {
+                // Load user history data
+                const historyData = JSON.parse(localStorage.getItem('historyData_' + userId) || '[]');
+                if (historyData.length === 0) {
+                    console.log('Loading history data for user:', userId);
+                }
+            }
+
+            loadCampaignData(userId) {
+                // Load campaign related data
+                const campaignData = JSON.parse(localStorage.getItem('campaignData_' + userId) || '[]');
+                if (campaignData.length === 0) {
+                    console.log('Loading campaign data for user:', userId);
+                }
+            }
+
+            updateNavigation() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                const navbar = document.querySelector('.navbar-nav');
+                
+                navbar.innerHTML = `
+                    <a href="index.html" class="nav-link" data-page="home"><i class="fas fa-home"></i> Home</a>
+                    <a href="about.html" class="nav-link" data-page="about"><i class="fas fa-info-circle"></i> About</a>
+                    <a href="contact.html" class="nav-link" data-page="contact"><i class="fas fa-envelope"></i> Contact</a>
+                `;
+
+                if (isLoggedIn) {
+                    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                    
+                    navbar.innerHTML += `
+                        <a href="dashboard.html" class="nav-link" data-page="dashboard" data-requires-data="true">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="create-campaign.html" class="nav-link" data-page="campaign" data-requires-data="true">
+                            <i class="fas fa-plus-circle"></i> Create Campaign
+                        </a>
+                        <a href="history.html" class="nav-link" data-page="history" data-requires-data="true">
+                            <i class="fas fa-history"></i> History
+                        </a>
+                        <div class="user-nav-info">
+                            <img src="${userData.profilePic || 'images/default-avatar.png'}" alt="Profile" class="nav-profile-pic">
+                            <span class="user-name">${userData.firstName || 'User'}</span>
+                            <a href="profile.html" class="nav-link" data-page="profile" data-requires-data="true">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                            <a href="#" class="nav-link logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    `;
+
+                    // Add click handlers for data loading
+                    document.querySelectorAll('[data-requires-data="true"]').forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const page = link.getAttribute('data-page');
+                            this.preloadPageData(page, userData.id).then(() => {
+                                window.location.href = link.getAttribute('href');
+                            });
+                        });
+                    });
+
+                    // Add notification badge if needed
+                    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                    const unreadCount = notifications.filter(n => !n.read).length;
+                    if (unreadCount > 0) {
+                        const badge = document.createElement('span');
+                        badge.className = 'notification-badge';
+                        badge.textContent = unreadCount;
+                        document.querySelector('.user-nav-info').appendChild(badge);
+                    }
+
+                    // Add logout handler
+                    document.querySelector('.logout-btn').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleLogout();
+                    });
+                } else {
+                    navbar.innerHTML += `
+                        <a href="login.html" class="nav-link" data-page="login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        <a href="register.html" class="nav-link" data-page="register"><i class="fas fa-user-plus"></i> Register</a>
+                    `;
+                }
+
+                this.highlightActivePage();
+            }
+
+            async preloadPageData(page, userId) {
+                // Show loading indicator
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.className = 'loading-indicator';
+                loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                document.body.appendChild(loadingIndicator);
+
+                try {
+                    switch(page) {
+                        case 'profile':
+                            await this.loadProfileData(userId);
+                            break;
+                        case 'dashboard':
+                            await this.loadDashboardData(userId);
+                            break;
+                        case 'history':
+                            await this.loadHistoryData(userId);
+                            break;
+                        case 'campaign':
+                            await this.loadCampaignData(userId);
+                            break;
+                    }
+                } finally {
+                    // Remove loading indicator
+                    loadingIndicator.remove();
+                }
+            }
+
+            highlightActivePage() {
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    if (link.getAttribute('href') === currentPage) {
+                        link.classList.add('active');
                     }
                 });
+            }
+        }
+
+        // Initialize navigation guard
+        document.addEventListener('DOMContentLoaded', function() {
+            const navGuard = new NavigationGuard();
+            
+            // Check authentication status
+            if (!navGuard.checkAuthentication()) return;
+
+            // Update navigation based on auth status
+            navGuard.updateNavigation();
+
+            // Initialize activity tracker for authenticated users
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                navGuard.initializeActivityTracker();
+            }
+
+            // Setup page transitions
+            navGuard.handlePageTransitions();
+
+            // Add active state to current page link
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
             });
+        });
+    </script>
+    <script>
+        class ProfileDataLoader {
+            constructor() {
+                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.initialize();
+            }
 
-            // Handle edit functionality
-            const securityFields = document.querySelectorAll('.security-questions .editable-field');
-            securityFields.forEach(field => {
-                const editIcon = field.querySelector('.edit-icon');
-                const select = field.querySelector('select');
-                const input = field.querySelector('input');
+            async initialize() {
+                if (!this.userId) {
+                    window.location.href = 'login.html';
+                    return;
+                }
 
-                editIcon.addEventListener('click', function() {
-                    if (select.hasAttribute('readonly')) {
-                        select.removeAttribute('readonly');
-                        input.removeAttribute('readonly');
-                        input.value = ''; // Clear the password field
-                        editIcon.className = 'fas fa-save edit-icon';
-                    } else {
-                        select.setAttribute('readonly', true);
-                        input.setAttribute('readonly', true);
-                        input.value = '********';
-                        editIcon.className = 'fas fa-pencil-alt edit-icon';
+                this.showLoadingState();
+                try {
+                    await Promise.all([
+                        this.loadUserProfile(),
+                        this.loadUserStats(),
+                        this.loadPreferences(),
+                        this.loadNotificationSettings()
+                    ]);
+                    this.setupFormHandlers();
+                } catch (error) {
+                    console.error('Error loading profile data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const container = document.querySelector('.profile-container');
+                if (!container) return;
+
+                container.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading profile data...</p>
+                    </div>
+                `;
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading profile data. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.profile-container').prepend(errorMessage);
+            }
+
+            async loadUserProfile() {
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                
+                // Update profile information
+                const profileInfo = document.querySelector('.profile-info');
+                if (profileInfo) {
+                    profileInfo.innerHTML = `
+                        <div class="profile-header">
+                            <img src="${userData.avatar || 'assets/default-avatar.png'}" alt="Profile Picture" class="profile-picture">
+                            <div class="profile-details">
+                                <h2>${userData.name || 'Anonymous User'}</h2>
+                                <p class="user-level">Level: ${userData.level || 'Bronze'}</p>
+                                <p class="join-date">Member since: ${this.formatDate(userData.joinDate)}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Update form fields
+                const form = document.querySelector('.profile-form');
+                if (form) {
+                    form.querySelector('[name="name"]').value = userData.name || '';
+                    form.querySelector('[name="email"]').value = userData.email || '';
+                    form.querySelector('[name="phone"]').value = userData.phone || '';
+                    form.querySelector('[name="bio"]').value = userData.bio || '';
+                }
+            }
+
+            async loadUserStats() {
+                const stats = JSON.parse(localStorage.getItem(`userStats_${this.userId}`) || '{}');
+                
+                const statsContainer = document.querySelector('.user-stats');
+                if (statsContainer) {
+                    statsContainer.innerHTML = `
+                        <div class="stat-item">
+                            <h3>Campaigns Created</h3>
+                            <p>${stats.campaignsCreated || 0}</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Total Raised</h3>
+                            <p>$${(stats.totalRaised || 0).toLocaleString()}</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Successful Campaigns</h3>
+                            <p>${stats.successfulCampaigns || 0}</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Average Success Rate</h3>
+                            <p>${stats.successRate || 0}%</p>
+                        </div>
+                    `;
+                }
+            }
+
+            async loadPreferences() {
+                const preferences = JSON.parse(localStorage.getItem(`userPreferences_${this.userId}`) || '{}');
+                
+                const preferencesForm = document.querySelector('.preferences-form');
+                if (preferencesForm) {
+                    preferencesForm.querySelector('[name="theme"]').value = preferences.theme || 'light';
+                    preferencesForm.querySelector('[name="language"]').value = preferences.language || 'en';
+                    preferencesForm.querySelector('[name="currency"]').value = preferences.currency || 'USD';
+                    preferencesForm.querySelector('[name="timezone"]').value = preferences.timezone || 'UTC';
+                }
+            }
+
+            async loadNotificationSettings() {
+                const settings = JSON.parse(localStorage.getItem(`notificationSettings_${this.userId}`) || '{}');
+                
+                const settingsForm = document.querySelector('.notification-settings');
+                if (settingsForm) {
+                    settingsForm.querySelector('[name="emailNotifications"]').checked = settings.email || false;
+                    settingsForm.querySelector('[name="pushNotifications"]').checked = settings.push || false;
+                    settingsForm.querySelector('[name="smsNotifications"]').checked = settings.sms || false;
+                    settingsForm.querySelector('[name="campaignUpdates"]').checked = settings.updates || false;
+                }
+            }
+
+            setupFormHandlers() {
+                // Profile form handler
+                const profileForm = document.querySelector('.profile-form');
+                if (profileForm) {
+                    profileForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.saveProfileChanges(e.target);
+                    });
+                }
+
+                // Preferences form handler
+                const preferencesForm = document.querySelector('.preferences-form');
+                if (preferencesForm) {
+                    preferencesForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.savePreferences(e.target);
+                    });
+                }
+
+                // Notification settings handler
+                const notificationForm = document.querySelector('.notification-settings');
+                if (notificationForm) {
+                    notificationForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.saveNotificationSettings(e.target);
+                    });
+                }
+
+                // Profile picture upload handler
+                const pictureUpload = document.querySelector('.profile-picture-upload');
+                if (pictureUpload) {
+                    pictureUpload.addEventListener('change', (e) => {
+                        this.handleProfilePictureUpload(e.target.files[0]);
+                    });
+                }
+            }
+
+            async saveProfileChanges(form) {
+                const formData = new FormData(form);
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                
+                const updatedData = {
+                    ...userData,
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    bio: formData.get('bio')
+                };
+
+                localStorage.setItem(`userData_${this.userId}`, JSON.stringify(updatedData));
+                this.showSuccess('Profile updated successfully!');
+            }
+
+            async savePreferences(form) {
+                const formData = new FormData(form);
+                const preferences = {
+                    theme: formData.get('theme'),
+                    language: formData.get('language'),
+                    currency: formData.get('currency'),
+                    timezone: formData.get('timezone')
+                };
+
+                localStorage.setItem(`userPreferences_${this.userId}`, JSON.stringify(preferences));
+                this.showSuccess('Preferences saved successfully!');
+                this.applyPreferences(preferences);
+            }
+
+            async saveNotificationSettings(form) {
+                const settings = {
+                    email: form.querySelector('[name="emailNotifications"]').checked,
+                    push: form.querySelector('[name="pushNotifications"]').checked,
+                    sms: form.querySelector('[name="smsNotifications"]').checked,
+                    updates: form.querySelector('[name="campaignUpdates"]').checked
+                };
+
+                localStorage.setItem(`notificationSettings_${this.userId}`, JSON.stringify(settings));
+                this.showSuccess('Notification settings updated successfully!');
+            }
+
+            async handleProfilePictureUpload(file) {
+                if (!file) return;
+
+                if (!this.validateImage(file)) {
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                    userData.avatar = e.target.result;
+                    localStorage.setItem(`userData_${this.userId}`, JSON.stringify(userData));
+                    
+                    // Update profile picture in UI
+                    const profilePicture = document.querySelector('.profile-picture');
+                    if (profilePicture) {
+                        profilePicture.src = e.target.result;
                     }
-                });
-            });
+                    
+                    this.showSuccess('Profile picture updated successfully!');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            validateImage(file) {
+                if (!file.type.startsWith('image/')) {
+                    this.showError('Please upload an image file');
+                    return false;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showError('Image size must be less than 5MB');
+                    return false;
+                }
+
+                return true;
+            }
+
+            applyPreferences(preferences) {
+                // Apply theme
+                document.body.classList.remove('theme-light', 'theme-dark');
+                document.body.classList.add(`theme-${preferences.theme}`);
+
+                // Apply other preferences as needed
+                document.documentElement.lang = preferences.language;
+                // Add more preference applications as needed
+            }
+
+            formatDate(date) {
+                return new Date(date).toLocaleDateString();
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.profile-container').prepend(successDiv);
+                setTimeout(() => successDiv.remove(), 5000);
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.profile-container').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize profile data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProfileDataLoader();
         });
     </script>
 </body>
