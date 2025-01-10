@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex Me - Join Our Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <nav class="navbar">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
+                    <a class="nav-link" href="About.html"><i class="fas fa-info-circle"></i> About</a>
+                    <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                </div>
+                <h1 class="website-name"><span>Flex</span> Me</h1>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <!-- Left Side - Information -->
+        <div class="info-side">
+            <h2>Join Our Community</h2>
+            <p>Create your account and start your fitness journey today!</p>
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+
+            <div class="info-content">
+                <h1>Join Our Community</h1>
+                <p>Connect with people who care. Help others achieve their goals and get help when you need it.</p>
+            </div>
+
+            <div class="trust-levels">
+                <div class="trust-card">
+                    <h3><i class="fas fa-medal"></i> Bronze Level</h3>
+                    <p>Start your journey with up to &euro;200 help limit</p>
+                </div>
+                <div class="trust-card">
+                    <h3><i class="fas fa-medal"></i> Silver Level</h3>
+                    <p>Unlock up to &euro;500 help limit with good activity</p>
+                </div>
+                <div class="trust-card">
+                    <h3><i class="fas fa-medal"></i> Gold Level</h3>
+                    <p>Achieve up to &euro;1000 help limit as a trusted member</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Registration Form -->
+        <div class="form-side">
+            <form id="registrationForm">
+                <!-- Step Navigation -->
+                <div class="steps">
+                    <div class="step active" data-step="1">1</div>
+                    <div class="step" data-step="2">2</div>
+                    <div class="step" data-step="3">3</div>
+                </div>
+
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" data-step="1">
+                    <h3>Basic Information</h3>
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <!-- Address Fields -->
+                    <div class="form-group">
+                        <label for="street">Street Address</label>
+                        <input type="text" id="street" name="street" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="state">State/Province</label>
+                            <input type="text" id="state" name="state" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" class="form-control" required>
+                                <option value="">Select Country</option>
+                                <option value="AF">Afghanistan</option>
+                                <option value="AL">Albania</option>
+                                <option value="DZ">Algeria</option>
+                                <option value="NG">Nigeria</option>
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="FR">France</option>
+                                <option value="DE">Germany</option>
+                                <option value="IT">Italy</option>
+                                <option value="ES">Spain</option>
+                                <option value="PT">Portugal</option>
+                                <option value="NL">Netherlands</option>
+                                <option value="BE">Belgium</option>
+                                <option value="CH">Switzerland</option>
+                                <option value="AT">Austria</option>
+                                <option value="GR">Greece</option>
+                                <option value="SE">Sweden</option>
+                                <option value="NO">Norway</option>
+                                <option value="DK">Denmark</option>
+                                <option value="FI">Finland</option>
+                                <option value="IE">Ireland</option>
+                                <option value="IS">Iceland</option>
+                                <!-- Add more countries as needed -->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="postal">Postal/ZIP Code</label>
+                            <input type="text" id="postal" name="postal" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="phone-group">
+                            <div class="country-code">
+                                <select id="countryCode" required>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+234">🇳🇬 +234</option>
+                                    <option value="+91">🇮🇳 +91</option>
+                                    <option value="+86">🇨🇳 +86</option>
+                                    <option value="+81">🇯🇵 +81</option>
+                                    <option value="+49">🇩🇪 +49</option>
+                                    <option value="+33">🇫🇷 +33</option>
+                                    <option value="+61">🇦🇺 +61</option>
+                                    <option value="+27">🇿🇦 +27</option>
+                                </select>
+                            </div>
+                            <div class="phone-number">
+                                <input type="tel" id="phoneNumber" placeholder="Phone number" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Security -->
+                <div class="form-step" data-step="2">
+                    <h3>Security</h3>
+                    <div class="form-group">
+                        <label for="password">Create Password</label>
+                        <div class="password-field">
+                            <input type="password" id="password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                        <div class="password-requirements">
+                            Password must be at least 8 characters long and include uppercase, lowercase, number, and special character
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="password-field">
+                            <input type="password" id="confirmPassword" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                        <div class="password-match">Passwords match!</div>
+                        <div class="password-mismatch">Passwords do not match</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="securityQuestion">Security Question</label>
+                        <select id="securityQuestion" class="form-control" required>
+                            <option value="">Select a security question</option>
+                            <option value="pet">What was the name of your first pet?</option>
+                            <option value="school">What was the name of your first school?</option>
+                            <option value="city">In which city were you born?</option>
+                            <option value="mother">What is your mother's maiden name?</option>
+                            <option value="car">What was your first car?</option>
+                            <option value="food">What is your favorite childhood food?</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="securityAnswer">Security Answer</label>
+                        <input type="text" id="securityAnswer" class="form-control" placeholder="Enter your answer" required>
+                        <small class="form-text text-muted">Remember this answer in case you need to reset your password</small>
+                    </div>
+                </div>
+
+                <!-- Step 3: Verification -->
+                <div class="form-step" data-step="3">
+                    <h3>Final Step</h3>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I agree to the Terms and Conditions
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I agree to the Privacy Policy
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">Previous</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                    <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/services/api.js" type="module"></script>
+    <script src="js/utils.js" type="module"></script>
+    <script src="js/register.js" type="module"></script>
+    <script>
+        // Initialize form validation on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (validateRegistration()) {
+                        // Form is valid, show success message
+                        showSuccess('Registration successful! Redirecting to dashboard...');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

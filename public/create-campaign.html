@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Campaign - Flex Me</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/create-campaign.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+        <h1 class="website-name">FLEX<span>ME</span></h1>
+        <div class="user-profile">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3" alt="Profile Picture" class="profile-pic">
+            <span class="user-name">John Doe</span>
+            <a href="#" class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4>Create Campaign</h4>
+            </div>
+            <div class="user-stats">
+                <div class="level-info">
+                    <h3>Level <span class="user-level">Bronze</span></h3>
+                    <div class="level-progress">
+                        <div class="level-bar" style="width: 60%;"></div>
+                    </div>
+                    <p class="points-info">300/500 points to next level</p>
+                </div>
+                <div class="donation-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <div class="stat-details">
+                            <h4>Total Donations</h4>
+                            <p>$1,200</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-details">
+                            <h4>People Helped</h4>
+                            <p>25</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="create-campaign-form">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Create New Campaign</h2>
+                <form id="campaignForm" onsubmit="return handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="title">Campaign Title</label>
+                        <input type="text" id="title" class="form-control" required
+                               placeholder="Enter a clear, descriptive title">
+                        <div class="error-message">Please enter a title</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Campaign Description</label>
+                        <textarea id="description" class="form-control" required
+                                  placeholder="Describe your campaign and why you need help..."></textarea>
+                        <div class="error-message">Please enter a description</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Target Amount ($)</label>
+                        <input type="number" id="amount" class="form-control" required min="1"
+                               placeholder="Enter the amount you need">
+                        <div class="error-message">Please enter a valid amount</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deadline">Campaign Deadline</label>
+                        <input type="date" id="deadline" class="form-control" required
+                               min="">
+                        <div class="error-message">Please select a future date</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Campaign Images</label>
+                        <div class="image-upload" onclick="document.getElementById('images').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload images</p>
+                            <input type="file" id="images" multiple accept="image/*" style="display: none"
+                                   onchange="handleImageUpload(event)">
+                        </div>
+                        <div id="image-preview" style="display: flex; gap: 10px; margin-top: 10px;"></div>
+                        <div class="error-message">Please upload at least one image</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Create Campaign</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="successMessage" class="success-message">
+        Campaign created successfully!
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/create-campaign.js"></script>
+</body>
+</html>

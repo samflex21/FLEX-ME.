@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Flex Me</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-nav">
+      <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
+      <a class="nav-link" href="About.html"><i class="fas fa-info-circle"></i> About</a>
+      <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    </div>
+    <h1 class="website-name"><span>Flex</span> Me</h1>
+  </nav>
+
+  <div class="ring">
+    <i style="--clr:#00ff0a;"></i>
+    <i style="--clr:#ff0057;"></i>
+    <i style="--clr:#fffd44;"></i>
+    <div class="login">
+      <h2>Login</h2>
+      <div id="errorMessage" class="error-message"></div>
+      <div class="inputBx">
+        <input type="text" id="email" placeholder="Email" />
+      </div>
+      <div class="inputBx">
+        <input type="password" id="password" placeholder="Password" />
+      </div>
+      <div class="inputBx">
+        <input type="submit" value="Sign in" onClick="login()" />
+      </div>
+      <div class="links">
+        <a href="#" class="forgot-password">Forgot Password?</a>
+        <a href="register.html">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Recovery Modal -->
+  <div id="recoveryModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2>Password Recovery</h2>
+      
+      <!-- Step 1: Security Question -->
+      <div class="recovery-step active" id="step1">
+        <div class="form-group">
+          <label for="securityQuestion">Security Question</label>
+          <select id="securityQuestion">
+            <option value="">Select a security question</option>
+            <option value="pet">What was your first pet's name?</option>
+            <option value="school">What was the name of your first school?</option>
+            <option value="city">In which city were you born?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="securityAnswer">Your Answer</label>
+          <input type="text" id="securityAnswer" />
+        </div>
+        <button onclick="verifySecurityAnswer()" class="recovery-btn">Submit</button>
+      </div>
+
+      <!-- Step 2: Password Display -->
+      <div class="recovery-step" id="step2">
+        <div class="password-display">
+          <p>Your password is: <strong id="recoveredPassword"></strong></p>
+        </div>
+        <button onclick="closeModal()" class="recovery-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("errorMessage");
+
+      // Simple validation
+      if (!email || !password) {
+        errorMessage.textContent = "Please fill in all fields";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      // Here you would typically make an API call to verify credentials
+      // For demo purposes, we'll just show an error
+      errorMessage.textContent = "Invalid email or password";
+      errorMessage.style.display = "block";
+    }
+
+    // Keep your existing code that hides error messages on input change
+    document.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("input", () => {
+        document.getElementById("errorMessage").style.display = "none";
+      });
+    });
+
+    // Modal functionality
+    const modal = document.getElementById("recoveryModal");
+    const forgotPasswordLink = document.querySelector(".forgot-password");
+    const closeBtn = document.querySelector(".close-modal");
+
+    // Show modal when clicking "Forgot Password"
+    forgotPasswordLink.onclick = function(e) {
+      e.preventDefault();
+      modal.style.display = "block";
+      document.getElementById("step1").classList.add("active");
+      document.getElementById("step2").classList.remove("active");
+    };
+
+    // Close modal when clicking (X) or outside
+    closeBtn.onclick = closeModal;
+
+    window.onclick = function(e) {
+      if (e.target == modal) {
+        closeModal();
+      }
+    };
+
+    function closeModal() {
+      modal.style.display = "none";
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById("securityQuestion").value = "";
+      document.getElementById("securityAnswer").value = "";
+      document.getElementById("step1").classList.add("active");
+      document.getElementById("step2").classList.remove("active");
+    }
+
+    function verifySecurityAnswer() {
+      const question = document.getElementById("securityQuestion").value;
+      const answer = document.getElementById("securityAnswer").value;
+
+      if (!question || !answer) {
+        alert("Please fill in all fields");
+        return;
+      }
+
+      // In a real application, you would verify this against stored data
+      document.getElementById("recoveredPassword").textContent = "********";
+      document.getElementById("step1").classList.remove("active");
+      document.getElementById("step2").classList.add("active");
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/services/api.js" type="module"></script>
+  <script src="js/utils.js" type="module"></script>
+  <script src="js/login.js" type="module"></script>
+</body>
+</html>
