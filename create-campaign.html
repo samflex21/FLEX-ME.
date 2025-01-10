@@ -322,42 +322,42 @@
             box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
         }
 
+        /* Footer Styles */
         .footer {
             background: rgba(17, 17, 17, 0.95);
-            padding: 20px;
-            color: white;
-            text-align: center;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-direction: column;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: auto;
         }
 
         .footer-content {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            gap: 30px;
         }
 
         .footer-section {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            margin: 20px;
+            min-width: 250px;
         }
 
         .footer-section h4 {
-            margin: 0;
-            font-size: 1rem;
             color: #fff;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
         }
 
         .footer-section a {
-            color: white;
+            color: #fff;
             text-decoration: none;
+            display: block;
+            margin: 8px 0;
             transition: color 0.3s;
         }
 
@@ -365,31 +365,63 @@
             color: #ff357a;
         }
 
-        .social-links {
+        .footer-section p {
+            margin: 8px 0;
             display: flex;
+            align-items: center;
             gap: 10px;
         }
 
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
         .social-links a {
-            font-size: 1.2rem;
-            color: white;
-            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .social-links a:hover {
-            color: #ff357a;
+            background: #ff357a;
+            color: #fff;
+            transform: translateY(-3px);
         }
 
         .footer-bottom {
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-bottom p {
-            margin: 0;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 0 10px;
+            }
+
+            .footer-section {
+                margin: 10px 0;
+                min-width: auto;
+                width: 100%;
+            }
         }
 
         .error-message {
@@ -422,16 +454,18 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="home page.html"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="#"><i class="fas fa-users"></i> Profile</a>
-            <a class="nav-link" href="dashboard.html"><i class="fas fa-hand-holding-heart"></i> Dashboard</a>
-            <a class="nav-link" href="#"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="home.html"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link auth-required" href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link auth-required" href="history.html"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link auth-required" href="profile.html"><i class="fas fa-user"></i> Profile</a>
         </div>
-        <h1 class="website-name">Flex <span>Me</span></h1>
-        <div class="user-profile">
-            <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
+        <h1 class="website-name"><span>Flex</span> Me</h1>
+        <div class="user-profile auth-required">
             <span class="user-name">John Doe</span>
-            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <img src="image/user.jpg" alt="Profile Picture" class="profile-pic">
+            <a href="#" class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
     </nav>
 
@@ -658,6 +692,59 @@
             }, 2000);
 
             return false;
+        }
+
+        // Check authentication when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
+
+        function checkAuthStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Redirect to login page if not authenticated
+                window.location.href = 'login.html?redirect=create-campaign.html';
+                return;
+            }
+
+            // Update user name if available
+            const userName = localStorage.getItem('userName') || 'User';
+            document.querySelectorAll('.user-name').forEach(el => {
+                el.textContent = userName;
+            });
+
+            // Show authenticated elements
+            const authElements = document.querySelectorAll('.auth-required');
+            authElements.forEach(element => {
+                element.style.display = element.tagName === 'A' ? 'inline-flex' : 'flex';
+            });
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            window.location.href = 'home.html';
+        }
+
+        // Form submission handling
+        const campaignForm = document.querySelector('.campaign-form');
+        if (campaignForm) {
+            campaignForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check authentication again before submission
+                if (localStorage.getItem('isLoggedIn') !== 'true') {
+                    alert('Please log in to create a campaign');
+                    window.location.href = 'login.html?redirect=create-campaign.html';
+                    return;
+                }
+
+                // Process form submission
+                // Add your form submission logic here
+                alert('Campaign created successfully!');
+                window.location.href = 'dashboard.html';
+            });
         }
     </script>
 </body>

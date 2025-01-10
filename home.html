@@ -526,17 +526,136 @@
                 justify-content: center;
             }
         }
+
+        /* Styles for authenticated content */
+        .auth-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .auth-hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .auth-hero h1 {
+            font-size: 2.5rem;
+            color: var(--light);
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-hero p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
+            <a class="nav-link" href="home.html"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link auth-required" href="dashboard.html" style="display: none;"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link auth-required" href="create-campaign.html" style="display: none;"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link auth-required" href="history.html" style="display: none;"><i class="fas fa-history"></i> History</a>
+        </div>
+        <h1 class="website-name">Flex <span>Me</span></h1>
+        <div class="user-profile auth-required" style="display: none;">
+            <span class="user-name">John Doe</span>
+            <img src="image/user.jpg" alt="Profile Picture" class="profile-pic">
+            <a href="#" class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+        <div class="guest-links" style="position: absolute; right: 20px;">
             <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
             <a class="nav-link" href="register.html"><i class="fas fa-user-plus"></i> Register</a>
         </div>
-        <h1 class="website-name">Flex <span>Me</span></h1>
     </nav>
+
+    <!-- Guest Content (Default Landing Page) -->
+    <div class="guest-content" style="display: block;">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Welcome to <span>Flex Me</span></h1>
+                <p>Join our community and start helping others achieve their goals</p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn btn-primary">Get Started</a>
+                    <a href="about.html" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>Why Choose Flex Me?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Community Support</h3>
+                    <p>Join a supportive community ready to help you succeed</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Platform</h3>
+                    <p>Your transactions and data are protected</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Build Trust</h3>
+                    <p>Earn trust levels and increase your help limits</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Authenticated User Content -->
+    <div class="auth-content auth-required" style="display: none;">
+        <section class="dashboard-preview">
+            <div class="welcome-section">
+                <h2>Welcome back, <span class="user-name-display">John</span>!</h2>
+                <p>Thank you for being part of our community</p>
+            </div>
+            
+            <section class="auth-hero">
+                <div class="hero-content">
+                    <h1>Make a Difference Today</h1>
+                    <p>Your support can change someone's life. Explore campaigns or start your own.</p>
+                    <div class="cta-buttons">
+                        <a href="create-campaign.html" class="btn btn-primary">Start a Campaign</a>
+                        <a href="dashboard.html" class="btn btn-secondary">View Campaigns</a>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </div>
 
     <!-- Slider Section -->
     <section class="slider-section">
@@ -781,42 +900,47 @@
             });
         });
 
-// Add this to your existing script section
-function checkAuthStatus() {
-    // Check if user is logged in (you can use localStorage or session storage)
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    
-    // Get all elements
-    const authHideElements = document.querySelectorAll('.auth-hide');
-    const authShowElements = document.querySelectorAll('.auth-show');
-    
-    if (isLoggedIn) {
-        // Hide login/register buttons
-        authHideElements.forEach(el => el.style.display = 'none');
-        // Show dashboard/profile/logout buttons
-        authShowElements.forEach(el => el.style.display = 'block');
-    } else {
-        // Show login/register buttons
-        authHideElements.forEach(el => el.style.display = 'block');
-        // Hide dashboard/profile/logout buttons
-        authShowElements.forEach(el => el.style.display = 'none');
-    }
-}
+        // Check authentication status when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
 
-// Handle logout
-document.getElementById('logoutBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    // Clear authentication status
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
-    // Update UI
-    checkAuthStatus();
-    // You might want to redirect to home or show a message
-    alert('Successfully logged out!');
-});
+        function checkAuthStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authElements = document.querySelectorAll('.auth-required');
+            const guestLinks = document.querySelector('.guest-links');
+            const guestContent = document.querySelector('.guest-content');
+            
+            if (isLoggedIn) {
+                // Show authenticated elements
+                authElements.forEach(element => {
+                    element.style.display = element.tagName === 'A' ? 'inline-flex' : 'flex';
+                });
+                // Hide guest elements
+                guestLinks.style.display = 'none';
+                guestContent.style.display = 'none';
+                
+                // Update user name if available
+                const userName = localStorage.getItem('userName') || 'User';
+                document.querySelectorAll('.user-name-display').forEach(el => {
+                    el.textContent = userName;
+                });
+            } else {
+                // Hide authenticated elements
+                authElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+                // Show guest elements
+                guestLinks.style.display = 'flex';
+                guestContent.style.display = 'block';
+            }
+        }
 
-// Check auth status when page loads
-document.addEventListener('DOMContentLoaded', checkAuthStatus);
+        function handleLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            window.location.href = 'home.html';
+        }
     </script>
 </body>
 </html>
