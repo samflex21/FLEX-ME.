@@ -41,7 +41,8 @@ def run_server():
     else:
         print("Database connection successful")
     
-    return app.run(
+    print()
+    app.run(
         host=host,
         port=port,
         debug=debug,

@@ -44,42 +44,43 @@ def check_db_connection():
 # Routes for pages
 @app.route('/')
 def home():
+    print("home.html")
     return render_template('home.html')
 
-@app.route('/dashboard.html')
+@app.route('/dashboard')
 @jwt_required()
-def dashboard_page():
+def dashboard():
     return render_template('dashboard.html')
 
-@app.route('/profile.html')
+@app.route('/profile')
 @jwt_required()
-def profile_page():
+def profile():
     return render_template('profile.html')
 
-@app.route('/history.html')
+@app.route('/history')
 @jwt_required()
-def history_page():
+def history():
     return render_template('history.html')
 
-@app.route('/create-campaign.html')
+@app.route('/create-campaign')
 @jwt_required()
 def create_campaign_page():
     return render_template('create-campaign.html')
 
-@app.route('/about.html')
-def about_page():
+@app.route('/about')
+def about():
     return render_template('about.html')
 
-@app.route('/contact.html')
-def contact_page():
+@app.route('/contact')
+def contact():
     return render_template('contact.html')
 
-@app.route('/admin.html')
-def admin_page():
+@app.route('/admin')
+def admin():
     return render_template('admin.html')
 
-@app.route('/login.html', methods=['GET', 'POST'])
-def login_page():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
@@ -95,8 +96,8 @@ def login_page():
         
         return jsonify({'error': 'Invalid credentials'}), 401
 
-@app.route('/register.html', methods=['GET', 'POST'])
-def register_page():
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'GET':
         return render_template('register.html')
     elif request.method == 'POST':
@@ -120,7 +121,7 @@ def register_page():
         return jsonify({'message': 'Registration successful'}), 201
 
 # Campaign routes
-@app.route('/api/campaigns.html', methods=['GET'])
+@app.route('/api/campaigns', methods=['GET'])
 @jwt_required()
 def get_campaigns():
     try:
@@ -129,9 +130,9 @@ def get_campaigns():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/campaigns.html', methods=['POST'])
+@app.route('/api/campaigns', methods=['POST'])
 @jwt_required()
-def create_campaign():
+def create_campaign_api():
     try:
         data = request.get_json()
         campaign = {
@@ -149,7 +150,7 @@ def create_campaign():
         return jsonify({'error': str(e)}), 500
 
 # Donation routes
-@app.route('/api/donations.html', methods=['POST'])
+@app.route('/api/donations', methods=['POST'])
 @jwt_required()
 def create_donation():
     try:
@@ -174,31 +175,31 @@ def create_donation():
         return jsonify({'error': str(e)}), 500
 
 # User routes
-@app.route('/api/users/profile.html', methods=['GET'])
+@app.route('/api/users/profile', methods=['GET'])
 @jwt_required()
-def get_profile():
+def get_profile_api():
     user_id = get_jwt_identity()
-    user = db_mongo.users.find_one({'_id': user_id})
+    user = db_mongo.users.find_one({'_id': ObjectId(user_id)})
     if user:
-        del user['password']  # Don't send password
+        user['_id'] = str(user['_id'])
         return jsonify(user)
     return jsonify({'error': 'User not found'}), 404
 
-@app.route('/api/users/profile.html', methods=['PUT'])
+@app.route('/api/users/profile', methods=['PUT'])
 @jwt_required()
-def update_profile():
+def update_profile_api():
     user_id = get_jwt_identity()
     data = request.get_json()
     
-    # Don't allow password update through this route
+    # Remove password from update data if present
     if 'password' in data:
         del data['password']
     
-    db_mongo.users.update_one({'_id': user_id}, {'$set': data})
+    db_mongo.users.update_one({'_id': ObjectId(user_id)}, {'$set': data})
     return jsonify({'message': 'Profile updated successfully'})
 
 # Migration routes
-@app.route('/api/migrate.html', methods=['POST'])
+@app.route('/api/migrate', methods=['POST'])
 def migrate_data():
     try:
         data = request.get_json()
@@ -214,14 +215,14 @@ def migrate_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/migration-status.html')
+@app.route('/api/migration-status')
 def check_migration_status():
     # Check if any users exist in MongoDB
     has_users = db_mongo.users.count_documents({}) > 0
     return jsonify({'migrated': has_users})
 
 # Test route for database connection
-@app.route('/test-db.html')
+@app.route('/test-db')
 def test_db():
     try:
         # Test database connection

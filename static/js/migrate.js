@@ -91,18 +91,18 @@ async function checkMigrationStatusOld() {
 
 // Check if we need to migrate when the app starts
 document.addEventListener('DOMContentLoaded', async () => {
-    const isMigrated = await checkMigrationStatusOld();
-    if (!isMigrated) {
-        const shouldMigrate = confirm('Would you like to migrate your data to the new database system?');
-        if (shouldMigrate) {
-            const success = await migrateToMongoDB();
-            if (success) {
-                alert('Data migration successful!');
-            } else {
-                alert('Data migration failed. Please try again later.');
-            }
-        }
-    }
+    // const isMigrated = await checkMigrationStatusOld();
+    // if (!isMigrated) {
+    //     const shouldMigrate = confirm('Would you like to migrate your data to the new database system?');
+    //     if (shouldMigrate) {
+    //         const success = await migrateToMongoDB();
+    //         if (success) {
+    //             alert('Data migration successful!');
+    //         } else {
+    //             alert('Data migration failed. Please try again later.');
+    //         }
+    //     }
+    // }
 });
 
 // Export functions
