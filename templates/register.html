@@ -775,6 +775,96 @@
             padding: 10px;
         }
     </style>
+    <style>
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-primary, .btn-success {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .error {
+            border: 1px solid #ff3860 !important;
+        }
+
+        .error:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 56, 96, 0.25);
+        }
+
+        /* Step indicators */
+        .steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #f5f5f5;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .step.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step.active:not(:last-child):after {
+            background-color: var(--primary-color);
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -1415,6 +1505,141 @@
         // Initialize register data loader when page loads
         document.addEventListener('DOMContentLoaded', () => {
             new RegisterDataLoader();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const steps = document.querySelectorAll('.form-step');
+            const stepIndicators = document.querySelectorAll('.step');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            let currentStep = 1;
+
+            // Show/hide navigation buttons based on current step
+            function updateNavigationButtons() {
+                prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+                nextBtn.style.display = currentStep === steps.length ? 'none' : 'block';
+                submitBtn.style.display = currentStep === steps.length ? 'block' : 'none';
+            }
+
+            // Validate current step inputs
+            function validateStep(step) {
+                const inputs = steps[step - 1].querySelectorAll('input[required], select[required]');
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('error');
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+
+                return isValid;
+            }
+
+            // Go to next step
+            nextBtn.addEventListener('click', function() {
+                if (validateStep(currentStep)) {
+                    if (currentStep < steps.length) {
+                        // Hide current step
+                        steps[currentStep - 1].classList.remove('active');
+                        stepIndicators[currentStep - 1].classList.remove('active');
+                        
+                        // Show next step
+                        currentStep++;
+                        steps[currentStep - 1].classList.add('active');
+                        stepIndicators[currentStep - 1].classList.add('active');
+                        
+                        updateNavigationButtons();
+                    }
+                } else {
+                    alert('Please fill in all required fields');
+                }
+            });
+
+            // Go to previous step
+            prevBtn.addEventListener('click', function() {
+                if (currentStep > 1) {
+                    // Hide current step
+                    steps[currentStep - 1].classList.remove('active');
+                    stepIndicators[currentStep - 1].classList.remove('active');
+                    
+                    // Show previous step
+                    currentStep--;
+                    steps[currentStep - 1].classList.add('active');
+                    stepIndicators[currentStep - 1].classList.add('active');
+                    
+                    updateNavigationButtons();
+                }
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (!validateStep(currentStep)) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                // Validate password match
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+
+                // Create username from first name and last name if not provided
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const username = (firstName + lastName).toLowerCase().replace(/[^a-z0-9]/g, '');
+
+                const formData = {
+                    username: username,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: document.getElementById('email').value,
+                    password: password,
+                    phone: document.getElementById('phoneNumber').value,
+                    countryCode: document.getElementById('countryCode').value,
+                    street: document.getElementById('street').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    country: document.getElementById('country').value,
+                    postal: document.getElementById('postal').value,
+                    securityQuestion: document.getElementById('securityQuestion').value,
+                    securityAnswer: document.getElementById('securityAnswer').value
+                };
+
+                try {
+                    const response = await fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (!response.ok) {
+                        const data = await response.json();
+                        throw new Error(data.error || 'Registration failed');
+                    }
+
+                    const data = await response.json();
+                    alert('Registration successful! Please login.');
+                    window.location.href = '/login';
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message || 'An error occurred. Please try again.');
+                }
+            });
+
+            // Initialize form state
+            updateNavigationButtons();
         });
     </script>
     <style>

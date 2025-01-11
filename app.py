@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from pymongo import MongoClient
@@ -17,7 +17,59 @@ CORS(app)
 
 # JWT Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key')  # Change this in production
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False  # Tokens don't expire
+app.config['JWT_TOKEN_LOCATION'] = ['headers']
+app.config['JWT_HEADER_NAME'] = 'Authorization'
+app.config['JWT_HEADER_TYPE'] = 'Bearer'
+
 jwt = JWTManager(app)
+
+@jwt.unauthorized_loader
+def unauthorized_callback(callback):
+    print(f"Unauthorized callback triggered: {callback}")
+    return jsonify({
+        'error': 'Missing Authorization Header',
+        'message': callback
+    }), 401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(callback):
+    print(f"Invalid token callback triggered: {callback}")
+    return jsonify({
+        'error': 'Invalid token',
+        'message': callback
+    }), 401
+
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_data):
+    print(f"Expired token callback triggered - Header: {jwt_header}, Data: {jwt_data}")
+    return jsonify({
+        'error': 'Token has expired',
+        'message': 'Please log in again'
+    }), 401
+
+@jwt.needs_fresh_token_loader
+def token_not_fresh_callback(jwt_header, jwt_data):
+    print(f"Token not fresh callback triggered - Header: {jwt_header}, Data: {jwt_data}")
+    return jsonify({
+        'error': 'Fresh token required',
+        'message': 'Please log in again'
+    }), 401
+
+@jwt.revoked_token_loader
+def revoked_token_callback(jwt_header, jwt_data):
+    print(f"Revoked token callback triggered - Header: {jwt_header}, Data: {jwt_data}")
+    return jsonify({
+        'error': 'Token has been revoked',
+        'message': 'Please log in again'
+    }), 401
+
+# Add a before_request handler to log all requests
+@app.before_request
+def log_request_info():
+    print('Request Headers:', dict(request.headers))
+    print('Request Method:', request.method)
+    print('Request URL:', request.url)
 
 # MongoDB connection with error handling
 def connect_db():
@@ -50,7 +102,48 @@ def home():
 @app.route('/dashboard')
 @jwt_required()
 def dashboard():
-    return render_template('dashboard.html')
+    print("Dashboard endpoint")
+    print("Headers:", dict(request.headers))
+    try:
+        print("Getting current user ID")
+        current_user_id = get_jwt_identity()
+        print(f"Current user ID: {current_user_id}")
+        user = db_mongo.users.find_one({'_id': ObjectId(current_user_id)})
+        
+        if not user:
+            print("User not found")
+            return jsonify({"error": "User not found"}), 404
+            
+        print(f"User found: {user['username']}")
+        return render_template('dashboard.html', username=user['username'])
+    except Exception as e:
+        print(f"Dashboard error: {str(e)}")
+        return jsonify({"error": "Authentication failed"}), 401
+
+@app.route('/api/verify-token')
+@jwt_required()
+def verify_token():
+    try:
+        current_user_id = get_jwt_identity()
+        user = db_mongo.users.find_one({'_id': ObjectId(current_user_id)})
+        return jsonify({
+            "valid": True,
+            "username": user['username'] if user else None
+        })
+    except Exception as e:
+        return jsonify({"valid": False, "error": str(e)}), 401
+
+@app.route('/api/dashboard')
+@jwt_required()
+def dashboard_data():
+    current_user = get_jwt_identity()
+    user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+    if user:
+        return jsonify({
+            'username': user['username'],
+            'email': user['email']
+        })
+    return jsonify({'error': 'User not found'}), 404
 
 @app.route('/profile')
 @jwt_required()
@@ -81,44 +174,91 @@ def admin():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    elif request.method == 'POST':
-        data = request.get_json()
-        user = db_mongo.users.find_one({'username': data['username']})
+    print("Start logging in")
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
         
-        if user and bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):
-            access_token = create_access_token(identity=str(user['_id']))
-            return jsonify({
-                'access_token': access_token,
-                'username': user['username']
-            })
+        print(f"Login attempt: username={username}")
         
-        return jsonify({'error': 'Invalid credentials'}), 401
+        if not username or not password:
+            return jsonify({"error": "Missing username or password"}), 400
+            
+        user = db_mongo.users.find_one({'username': username})
+        print(f"Found user: {bool(user)}")
+        
+        if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+            print("Password verified")
+            user_id = str(user['_id'])
+            print(f"Creating token for user ID: {user_id}")
+            access_token = create_access_token(identity=user_id)
+            print(f"Access token created: {access_token}")
+            response_data = {
+                "token": access_token,
+                "username": username
+            }
+            print(f"Sending response: {response_data}")
+            return jsonify(response_data)
+        else:
+            return jsonify({"error": "Invalid username or password"}), 401
+            
+    return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
     elif request.method == 'POST':
-        data = request.get_json()
-        
-        if db_mongo.users.find_one({'username': data['username']}):
-            return jsonify({'error': 'Username already exists'}), 400
-        
-        # Hash the password
-        hashed = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
-        
-        user = {
-            'username': data['username'],
-            'password': hashed,
-            'email': data['email'],
-            'securityQuestion': data['securityQuestion'],
-            'securityAnswer': data['securityAnswer']
-        }
-        
-        db_mongo.users.insert_one(user)
-        return jsonify({'message': 'Registration successful'}), 201
+        try:
+            data = request.get_json()
+            
+            # Check if username or email already exists
+            if db_mongo.users.find_one({'username': data['username']}):
+                return jsonify({'error': 'Username already exists'}), 400
+            if db_mongo.users.find_one({'email': data['email']}):
+                return jsonify({'error': 'Email already exists'}), 400
+            
+            # Hash the password
+            hashed = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+            
+            # Create user document
+            user = {
+                'username': data['username'],
+                'firstName': data['firstName'],
+                'lastName': data['lastName'],
+                'email': data['email'],
+                'password': hashed,
+                'phone': {
+                    'countryCode': data['countryCode'],
+                    'number': data['phone']
+                },
+                'address': {
+                    'street': data['street'],
+                    'city': data['city'],
+                    'state': data['state'],
+                    'country': data['country'],
+                    'postal': data['postal']
+                },
+                'securityQuestion': data['securityQuestion'],
+                'securityAnswer': data['securityAnswer'],
+                'createdAt': datetime.utcnow(),
+                'status': 'active',
+                'role': 'user'
+            }
+            
+            # Insert user into database
+            result = db_mongo.users.insert_one(user)
+            
+            if result.inserted_id:
+                return jsonify({'message': 'Registration successful'}), 201
+            else:
+                return jsonify({'error': 'Failed to create user'}), 500
+                
+        except KeyError as e:
+            return jsonify({'error': f'Missing required field: {str(e)}'}), 400
+        except Exception as e:
+            print(f"Registration error: {str(e)}")
+            return jsonify({'error': 'An error occurred during registration'}), 500
 
 # Campaign routes
 @app.route('/api/campaigns', methods=['GET'])
