@@ -28,6 +28,57 @@
             color: #6c757d;
             margin-bottom: 2rem;
         }
+        .system-status {
+            margin-top: 2rem;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .status-item {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+        }
+        .status-item.operational {
+            background-color: #dff0d8;
+        }
+        .status-item.degraded {
+            background-color: #fcf8e3;
+        }
+        .service-name {
+            font-weight: bold;
+        }
+        .status-indicator {
+            color: #666;
+        }
+        .retry-button {
+            margin-top: 2rem;
+        }
+        .retry-timer {
+            font-size: 1.25rem;
+            color: #666;
+        }
+        .contact-support {
+            margin-top: 1rem;
+        }
+        .message-box {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .message-box.info {
+            background-color: #dff0d8;
+        }
+        .message-box.error {
+            background-color: #f2dede;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +87,168 @@
         <div class="error-message">Server Error</div>
         <p class="text-muted mb-4">Something went wrong on our end. Please try again later.</p>
         <a href="/" class="btn btn-primary">Go Home</a>
+        <button class="btn btn-secondary retry-button">Retry</button>
+        <div class="retry-timer"></div>
+        <button class="btn btn-link contact-support">Contact Support</button>
+        <div class="system-status"></div>
     </div>
+    <script>
+        class ServerErrorDataLoader {
+            constructor() {
+                this.initialize();
+            }
+
+            async initialize() {
+                try {
+                    await Promise.all([
+                        this.recordError(),
+                        this.checkSystemStatus()
+                    ]);
+                    this.setupEventHandlers();
+                    this.startRetryTimer();
+                } catch (error) {
+                    console.error('Error initializing 500 page:', error);
+                }
+            }
+
+            async recordError() {
+                try {
+                    // Record 500 error for analytics
+                    const errorData = {
+                        timestamp: new Date().toISOString(),
+                        path: window.location.pathname,
+                        referrer: document.referrer,
+                        userAgent: navigator.userAgent,
+                        errorStack: this.getErrorFromURL()
+                    };
+
+                    // Store in localStorage for now - replace with actual API call
+                    const errors = JSON.parse(localStorage.getItem('500_errors') || '[]');
+                    errors.push(errorData);
+                    localStorage.setItem('500_errors', JSON.stringify(errors));
+                } catch (error) {
+                    console.error('Error recording 500:', error);
+                }
+            }
+
+            getErrorFromURL() {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('error') || 'Unknown server error';
+            }
+
+            async checkSystemStatus() {
+                try {
+                    // Simulate API call - replace with actual status check
+                    const status = {
+                        api: 'degraded',
+                        database: 'operational',
+                        cache: 'operational',
+                        storage: 'operational'
+                    };
+
+                    const statusContainer = document.querySelector('.system-status');
+                    if (statusContainer) {
+                        statusContainer.innerHTML = `
+                            <h3>System Status</h3>
+                            <div class="status-grid">
+                                ${Object.entries(status).map(([service, state]) => `
+                                    <div class="status-item ${state}">
+                                        <span class="service-name">${service}</span>
+                                        <span class="status-indicator">${state}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    return Object.values(status).every(s => s === 'operational');
+                } catch (error) {
+                    console.error('Error checking system status:', error);
+                    return false;
+                }
+            }
+
+            setupEventHandlers() {
+                // Retry button
+                const retryButton = document.querySelector('.retry-button');
+                if (retryButton) {
+                    retryButton.addEventListener('click', () => {
+                        this.handleRetry();
+                    });
+                }
+
+                // Contact support button
+                const contactButton = document.querySelector('.contact-support');
+                if (contactButton) {
+                    contactButton.addEventListener('click', () => {
+                        this.handleContactSupport();
+                    });
+                }
+            }
+
+            startRetryTimer() {
+                let countdown = 30;
+                const timerElement = document.querySelector('.retry-timer');
+                
+                if (timerElement) {
+                    const timer = setInterval(() => {
+                        countdown--;
+                        timerElement.textContent = `Retrying in ${countdown} seconds...`;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(timer);
+                            this.handleRetry();
+                        }
+                    }, 1000);
+                }
+            }
+
+            async handleRetry() {
+                const isOperational = await this.checkSystemStatus();
+                
+                if (isOperational) {
+                    // Get the original URL from localStorage or default to home
+                    const originalUrl = localStorage.getItem('last_url') || 'home.html';
+                    window.location.href = originalUrl;
+                } else {
+                    this.showMessage('Systems are still experiencing issues. Please try again later.', 'error');
+                }
+            }
+
+            handleContactSupport() {
+                // Store error details for support page
+                const errorDetails = {
+                    timestamp: new Date().toISOString(),
+                    path: window.location.pathname,
+                    error: this.getErrorFromURL()
+                };
+                localStorage.setItem('error_details', JSON.stringify(errorDetails));
+                
+                // Redirect to contact page with error reference
+                window.location.href = `contact.html?ref=500&t=${Date.now()}`;
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-box ${type}`;
+                messageDiv.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.error-container').prepend(messageDiv);
+                setTimeout(() => messageDiv.remove(), 5000);
+            }
+        }
+
+        // Store current URL before error
+        if (!localStorage.getItem('last_url')) {
+            localStorage.setItem('last_url', document.referrer || 'home.html');
+        }
+
+        // Initialize server error data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ServerErrorDataLoader();
+        });
+    </script>
 </body>
 </html>

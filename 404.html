@@ -28,6 +28,45 @@
             color: #6c757d;
             margin-bottom: 2rem;
         }
+        .suggested-pages {
+            margin-top: 2rem;
+        }
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .suggestion-card {
+            background-color: #fff;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #333;
+        }
+        .suggestion-card:hover {
+            background-color: #f8f9fa;
+        }
+        .message-box {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .message-box.info {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        .message-box.success {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+        }
+        .message-box.error {
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +75,163 @@
         <div class="error-message">Page Not Found</div>
         <p class="text-muted mb-4">The page you're looking for doesn't exist or has been moved.</p>
         <a href="/" class="btn btn-primary">Go Home</a>
+        <div class="suggested-pages"></div>
+        <button class="btn btn-link report-broken-link">Report Broken Link</button>
+        <form class="search-form">
+            <input type="search" placeholder="Search...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
     </div>
+    <script>
+        class ErrorPageDataLoader {
+            constructor() {
+                this.initialize();
+            }
+
+            async initialize() {
+                try {
+                    await Promise.all([
+                        this.loadSuggestedPages(),
+                        this.recordError()
+                    ]);
+                    this.setupEventHandlers();
+                } catch (error) {
+                    console.error('Error initializing 404 page:', error);
+                }
+            }
+
+            async loadSuggestedPages() {
+                try {
+                    // Get the current path that led to 404
+                    const currentPath = window.location.pathname;
+                    
+                    // Simulate API call - replace with actual suggestions
+                    const suggestions = [
+                        {
+                            title: "Home",
+                            url: "home.html",
+                            description: "Return to the main page"
+                        },
+                        {
+                            title: "Browse Campaigns",
+                            url: "campaigns.html",
+                            description: "Discover active fundraising campaigns"
+                        },
+                        {
+                            title: "Contact Support",
+                            url: "contact.html",
+                            description: "Get help from our support team"
+                        }
+                    ];
+
+                    const suggestionsContainer = document.querySelector('.suggested-pages');
+                    if (suggestionsContainer) {
+                        suggestionsContainer.innerHTML = `
+                            <h3>You might be looking for:</h3>
+                            <div class="suggestions-grid">
+                                ${suggestions.map(page => `
+                                    <a href="${page.url}" class="suggestion-card">
+                                        <h4>${page.title}</h4>
+                                        <p>${page.description}</p>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading suggested pages:', error);
+                }
+            }
+
+            async recordError() {
+                try {
+                    // Record 404 error for analytics
+                    const errorData = {
+                        timestamp: new Date().toISOString(),
+                        path: window.location.pathname,
+                        referrer: document.referrer,
+                        userAgent: navigator.userAgent
+                    };
+
+                    // Store in localStorage for now - replace with actual API call
+                    const errors = JSON.parse(localStorage.getItem('404_errors') || '[]');
+                    errors.push(errorData);
+                    localStorage.setItem('404_errors', JSON.stringify(errors));
+                } catch (error) {
+                    console.error('Error recording 404:', error);
+                }
+            }
+
+            setupEventHandlers() {
+                // Report broken link button
+                const reportButton = document.querySelector('.report-broken-link');
+                if (reportButton) {
+                    reportButton.addEventListener('click', () => {
+                        this.reportBrokenLink();
+                    });
+                }
+
+                // Search functionality
+                const searchForm = document.querySelector('.search-form');
+                if (searchForm) {
+                    searchForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleSearch(e.target);
+                    });
+                }
+            }
+
+            async reportBrokenLink() {
+                try {
+                    const brokenLink = {
+                        url: window.location.href,
+                        timestamp: new Date().toISOString(),
+                        referrer: document.referrer
+                    };
+
+                    // Store report - replace with actual API call
+                    const reports = JSON.parse(localStorage.getItem('broken_link_reports') || '[]');
+                    reports.push(brokenLink);
+                    localStorage.setItem('broken_link_reports', JSON.stringify(reports));
+
+                    // Show confirmation
+                    this.showMessage('Thank you for reporting this broken link. We\'ll look into it.', 'success');
+                } catch (error) {
+                    console.error('Error reporting broken link:', error);
+                    this.showMessage('Unable to report broken link. Please try again.', 'error');
+                }
+            }
+
+            async handleSearch(form) {
+                const searchInput = form.querySelector('input[type="search"]');
+                if (!searchInput) return;
+
+                const query = searchInput.value.trim();
+                if (!query) {
+                    this.showMessage('Please enter a search term', 'error');
+                    return;
+                }
+
+                // Redirect to search page with query
+                window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-box ${type}`;
+                messageDiv.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.error-container').prepend(messageDiv);
+                setTimeout(() => messageDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize error page data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ErrorPageDataLoader();
+        });
+    </script>
 </body>
 </html>

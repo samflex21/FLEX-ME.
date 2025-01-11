@@ -267,11 +267,399 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{{ url_for('static', filename='js/services/admin.js') }}"></script>
-    <script type="module">
-        import adminService from '{{ url_for('static', filename='js/services/admin.js') }}';
-        
+    <script>
+        class AdminDataLoader {
+            constructor() {
+                this.initialize();
+            }
+
+            async initialize() {
+                this.showLoadingState();
+                try {
+                    // Check admin authorization first
+                    if (!await this.checkAdminAuth()) {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    await Promise.all([
+                        this.loadUserStatistics(),
+                        this.loadCampaignStatistics(),
+                        this.loadRecentActivity(),
+                        this.loadSystemStatus()
+                    ]);
+                    this.setupEventHandlers();
+                } catch (error) {
+                    console.error('Error loading admin data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const sections = document.querySelectorAll('.admin-section');
+                sections.forEach(section => {
+                    section.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading admin data...</p>
+                        </div>
+                    `;
+                });
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading admin data. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.admin-container').prepend(errorMessage);
+            }
+
+            async checkAdminAuth() {
+                const token = localStorage.getItem('authToken');
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                
+                if (!token || !userData.id) {
+                    return false;
+                }
+
+                // Verify admin role
+                return userData.role === 'admin';
+            }
+
+            async loadUserStatistics() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const stats = {
+                        totalUsers: users.length,
+                        activeUsers: users.filter(u => u.lastLogin > Date.now() - 7 * 24 * 60 * 60 * 1000).length,
+                        newUsersToday: users.filter(u => new Date(u.joinDate).toDateString() === new Date().toDateString()).length,
+                        verifiedUsers: users.filter(u => u.verified).length
+                    };
+
+                    const statsContainer = document.querySelector('.user-statistics');
+                    if (statsContainer) {
+                        statsContainer.innerHTML = `
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h3>Total Users</h3>
+                                    <p>${stats.totalUsers}</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3>Active Users (7d)</h3>
+                                    <p>${stats.activeUsers}</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3>New Users Today</h3>
+                                    <p>${stats.newUsersToday}</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3>Verified Users</h3>
+                                    <p>${stats.verifiedUsers}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading user statistics:', error);
+                    this.showSectionError('.user-statistics', 'Unable to load user statistics');
+                }
+            }
+
+            async loadCampaignStatistics() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+                    const stats = {
+                        totalCampaigns: campaigns.length,
+                        activeCampaigns: campaigns.filter(c => c.status === 'active').length,
+                        totalRaised: campaigns.reduce((sum, c) => sum + (c.raised || 0), 0),
+                        successRate: Math.round(campaigns.filter(c => c.status === 'completed' && c.raised >= c.goal).length / campaigns.filter(c => c.status === 'completed').length * 100)
+                    };
+
+                    const statsContainer = document.querySelector('.campaign-statistics');
+                    if (statsContainer) {
+                        statsContainer.innerHTML = `
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h3>Total Campaigns</h3>
+                                    <p>${stats.totalCampaigns}</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3>Active Campaigns</h3>
+                                    <p>${stats.activeCampaigns}</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3>Total Raised</h3>
+                                    <p>$${stats.totalRaised.toLocaleString()}</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h3>Success Rate</h3>
+                                    <p>${stats.successRate}%</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading campaign statistics:', error);
+                    this.showSectionError('.campaign-statistics', 'Unable to load campaign statistics');
+                }
+            }
+
+            async loadRecentActivity() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const activities = [
+                        {
+                            type: 'user_registration',
+                            user: 'john.doe@example.com',
+                            timestamp: new Date(Date.now() - 30 * 60000).toISOString()
+                        },
+                        {
+                            type: 'campaign_created',
+                            user: 'jane.smith@example.com',
+                            campaign: 'Save Local Park',
+                            timestamp: new Date(Date.now() - 2 * 60 * 60000).toISOString()
+                        },
+                        {
+                            type: 'large_donation',
+                            user: 'anonymous',
+                            campaign: 'Medical Fund',
+                            amount: 5000,
+                            timestamp: new Date(Date.now() - 4 * 60 * 60000).toISOString()
+                        }
+                    ];
+
+                    const activityContainer = document.querySelector('.recent-activity');
+                    if (activityContainer) {
+                        activityContainer.innerHTML = `
+                            <div class="activity-list">
+                                ${activities.map(activity => `
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            ${this.getActivityIcon(activity.type)}
+                                        </div>
+                                        <div class="activity-details">
+                                            <p>${this.formatActivity(activity)}</p>
+                                            <span>${this.formatTimestamp(activity.timestamp)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading recent activity:', error);
+                    this.showSectionError('.recent-activity', 'Unable to load recent activity');
+                }
+            }
+
+            async loadSystemStatus() {
+                try {
+                    // Simulate API call - replace with actual status check
+                    const status = {
+                        database: 'healthy',
+                        api: 'healthy',
+                        storage: 'warning',
+                        email: 'healthy'
+                    };
+
+                    const statusContainer = document.querySelector('.system-status');
+                    if (statusContainer) {
+                        statusContainer.innerHTML = `
+                            <div class="status-grid">
+                                ${Object.entries(status).map(([service, health]) => `
+                                    <div class="status-card ${health}">
+                                        <h3>${service.charAt(0).toUpperCase() + service.slice(1)}</h3>
+                                        <div class="status-indicator">
+                                            <i class="fas fa-${health === 'healthy' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                                            <span>${health.charAt(0).toUpperCase() + health.slice(1)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading system status:', error);
+                    this.showSectionError('.system-status', 'Unable to load system status');
+                }
+            }
+
+            getActivityIcon(type) {
+                const icons = {
+                    user_registration: '<i class="fas fa-user-plus"></i>',
+                    campaign_created: '<i class="fas fa-flag"></i>',
+                    large_donation: '<i class="fas fa-hand-holding-usd"></i>'
+                };
+                return icons[type] || '<i class="fas fa-info-circle"></i>';
+            }
+
+            formatActivity(activity) {
+                switch (activity.type) {
+                    case 'user_registration':
+                        return `New user registered: ${activity.user}`;
+                    case 'campaign_created':
+                        return `New campaign created: ${activity.campaign} by ${activity.user}`;
+                    case 'large_donation':
+                        return `Large donation ($${activity.amount}) to ${activity.campaign}`;
+                    default:
+                        return 'Unknown activity';
+                }
+            }
+
+            formatTimestamp(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = Math.floor((now - date) / 60000); // difference in minutes
+
+                if (diff < 60) {
+                    return `${diff} minute${diff !== 1 ? 's' : ''} ago`;
+                } else if (diff < 1440) {
+                    const hours = Math.floor(diff / 60);
+                    return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+                } else {
+                    return date.toLocaleDateString();
+                }
+            }
+
+            setupEventHandlers() {
+                // Refresh buttons
+                document.querySelectorAll('.refresh-section').forEach(button => {
+                    button.addEventListener('click', async (e) => {
+                        const section = e.target.closest('.admin-section');
+                        const sectionId = section.id;
+                        
+                        this.showSectionLoading(section);
+                        try {
+                            switch (sectionId) {
+                                case 'user-stats':
+                                    await this.loadUserStatistics();
+                                    break;
+                                case 'campaign-stats':
+                                    await this.loadCampaignStatistics();
+                                    break;
+                                case 'recent-activity':
+                                    await this.loadRecentActivity();
+                                    break;
+                                case 'system-status':
+                                    await this.loadSystemStatus();
+                                    break;
+                            }
+                        } catch (error) {
+                            console.error(`Error refreshing ${sectionId}:`, error);
+                            this.showSectionError(section, `Unable to refresh ${sectionId}`);
+                        } finally {
+                            this.hideSectionLoading(section);
+                        }
+                    });
+                });
+
+                // Export data buttons
+                document.querySelectorAll('.export-data').forEach(button => {
+                    button.addEventListener('click', async (e) => {
+                        const dataType = e.target.dataset.type;
+                        await this.exportData(dataType);
+                    });
+                });
+            }
+
+            showSectionLoading(section) {
+                section.classList.add('loading');
+                section.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Refreshing...</p>
+                    </div>
+                `;
+            }
+
+            hideSectionLoading(section) {
+                section.classList.remove('loading');
+            }
+
+            showSectionError(selector, message) {
+                const section = document.querySelector(selector);
+                if (section) {
+                    section.innerHTML = `
+                        <div class="section-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>${message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            async exportData(dataType) {
+                try {
+                    let data;
+                    switch (dataType) {
+                        case 'users':
+                            data = JSON.parse(localStorage.getItem('users') || '[]');
+                            break;
+                        case 'campaigns':
+                            data = JSON.parse(localStorage.getItem('campaigns') || '[]');
+                            break;
+                        case 'donations':
+                            data = JSON.parse(localStorage.getItem('donations') || '[]');
+                            break;
+                        default:
+                            throw new Error('Invalid data type');
+                    }
+
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${dataType}_export_${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    this.showSuccess(`Successfully exported ${dataType} data`);
+                } catch (error) {
+                    console.error(`Error exporting ${dataType} data:`, error);
+                    this.showError(`Unable to export ${dataType} data`);
+                }
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.admin-container').prepend(successDiv);
+                setTimeout(() => successDiv.remove(), 5000);
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.admin-container').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize admin data loader when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            adminService.initialize();
+            new AdminDataLoader();
         });
     </script>
 </body>

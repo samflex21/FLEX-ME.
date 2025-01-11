@@ -310,31 +310,31 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.7);
         z-index: 1000;
         animation: fadeIn 0.3s ease;
     }
 
     .modal-content {
         position: relative;
-        background-color: var(--dark);
+        background: linear-gradient(145deg, #2a2a2a, #3a3a3a);
         margin: 15% auto;
         padding: 30px;
-        border-radius: 10px;
+        border-radius: 15px;
         width: 90%;
-        max-width: 500px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         animation: slideIn 0.3s ease;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideIn {
-        from { transform: translateY(-20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+    .modal-content h2 {
+        color: #fff;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .close-modal {
@@ -343,56 +343,143 @@
         top: 15px;
         font-size: 24px;
         cursor: pointer;
-        color: var(--light);
+        color: #fff;
+        background: none;
+        border: none;
         transition: color 0.3s ease;
+        opacity: 0.7;
     }
 
     .close-modal:hover {
-        color: var(--primary);
+        color: #ff357a;
+        opacity: 1;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #ff357a;
+        box-shadow: 0 0 10px rgba(255, 53, 122, 0.3);
+    }
+
+    .security-question {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        font-style: italic;
+        border-left: 3px solid #ff357a;
+    }
+
+    .attempts-counter {
+        text-align: center;
+        margin-top: 10px;
+        color: #ff9999;
+        font-size: 0.9em;
+    }
+
+    .error-message {
+        background: rgba(255, 68, 68, 0.1);
+        color: #ff4444;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        text-align: center;
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        display: none;
     }
 
     .success-message {
-        text-align: center;
-        color: #4CAF50;
-        padding: 20px;
-        border-radius: 5px;
-        margin-top: 20px;
         background: rgba(76, 175, 80, 0.1);
-        border: 1px solid #4CAF50;
+        border: 1px solid rgba(76, 175, 80, 0.3);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
     }
 
     .success-message i {
         font-size: 48px;
+        color: #4CAF50;
         margin-bottom: 15px;
     }
 
     .success-message p {
         margin: 10px 0;
-        font-size: 1.1em;
+        color: #fff;
     }
 
-    .success-message small {
-        color: #888;
+    #recoveredPassword {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 1.2em;
+        letter-spacing: 1px;
+        margin: 10px 0;
     }
 
-    #recoveryForm .form-group {
-        margin-bottom: 20px;
-    }
-
-    #recoveryForm input {
+    .btn {
         width: 100%;
         padding: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 5px;
-        color: var(--light);
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
         transition: all 0.3s ease;
+        background: linear-gradient(45deg, #ff357a, #fff172);
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
-    #recoveryForm input:focus {
-        border-color: var(--primary);
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(255, 53, 122, 0.2);
+    .btn:hover {
+        background: linear-gradient(45deg, #fff172, #ff357a);
+        transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+    }
+
+    .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { 
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
     /* Light theme adjustments for modal */
@@ -543,7 +630,7 @@
 <body>
   <nav class="navbar">
     <div class="navbar-nav">
-      <a class="nav-link" href="home page.html">Home</a>
+      <a class="nav-link" href="home.html">Home</a>
       <a class="nav-link" href="about.html">About Us</a>
       <a class="nav-link" href="contact.html">Contact Us</a>
     </div>
@@ -578,19 +665,32 @@
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h2>Password Recovery</h2>
-      <p>Enter your email address to receive a password reset link.</p>
       <div id="recoveryError" class="error-message"></div>
-      <form id="recoveryForm" onsubmit="return false;">
+      <form id="recoveryForm">
         <div class="form-group">
-          <input type="email" id="recoveryEmail" placeholder="Enter your email" required>
+          <label for="recoveryUsername">Username</label>
+          <input type="text" id="recoveryUsername" placeholder="Enter your username" required>
         </div>
-        <button type="submit" class="btn btn-primary">Send Reset Link</button>
+        <div id="securityQuestionContainer" style="display: none;">
+          <div class="form-group">
+            <label>Security Question:</label>
+            <p id="securityQuestionText" class="security-question"></p>
+            <input type="text" id="securityAnswer" placeholder="Your answer" required>
+            <div id="attemptsCounter" class="attempts-counter">
+              Attempts remaining: <span id="remainingAttempts">3</span>
+            </div>
+          </div>
+        </div>
+        <div id="passwordDisplay" style="display: none;">
+          <div class="success-message">
+            <i class="fas fa-check-circle"></i>
+            <p>Your password is:</p>
+            <p id="recoveredPassword"></p>
+            <small>Please remember to change your password after logging in.</small>
+          </div>
+        </div>
+        <button type="submit" class="btn">Continue</button>
       </form>
-      <div id="recoverySuccess" class="success-message" style="display: none;">
-        <i class="fas fa-check-circle"></i>
-        <p>Reset link has been sent to your email.</p>
-        <small>Please check your inbox and spam folder.</small>
-      </div>
     </div>
   </div>
 
@@ -822,22 +922,17 @@
     const modal = document.getElementById('recoveryModal');
     const closeBtn = document.querySelector('.close-modal');
     const forgotPasswordLink = document.querySelector('.forgot-password');
+    const recoveryForm = document.getElementById('recoveryForm');
+    const recoveryError = document.getElementById('recoveryError');
     
-    // Sample user data (in real application, this would come from a database)
-    const userData = {
-        username: "johndoe",
-        password: "SecurePass123",
-        securityQuestion: "pet",
-        securityAnswer: "fluffy"
-    };
-
     // Show modal when clicking "Forgot Password"
     forgotPasswordLink.onclick = function(e) {
         e.preventDefault();
         modal.style.display = "block";
-        document.getElementById('recoveryError').style.display = 'none';
-        document.getElementById('recoverySuccess').style.display = 'none';
-        document.getElementById('recoveryForm').reset();
+        recoveryError.style.display = 'none';
+        document.getElementById('securityQuestionContainer').style.display = 'none';
+        document.getElementById('passwordDisplay').style.display = 'none';
+        recoveryForm.reset();
     }
 
     // Close modal when clicking (X) or outside
@@ -850,8 +945,77 @@
 
     function closeModal() {
         modal.style.display = "none";
-        document.getElementById('recoveryForm').reset();
+        recoveryForm.reset();
+        document.getElementById('securityQuestionContainer').style.display = 'none';
+        document.getElementById('passwordDisplay').style.display = 'none';
+        recoveryError.style.display = 'none';
     }
+
+    // Handle recovery form submission
+    let attemptCount = 0;
+    const maxAttempts = 3;
+    
+    recoveryForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('recoveryUsername').value;
+        const securityContainer = document.getElementById('securityQuestionContainer');
+        const passwordDisplay = document.getElementById('passwordDisplay');
+        const submitBtn = this.querySelector('button');
+        const attemptsCounter = document.getElementById('attemptsCounter');
+        const remainingAttempts = document.getElementById('remainingAttempts');
+        
+        // Get users from localStorage
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const user = users.find(u => u.username === username);
+
+        if (!user) {
+            recoveryError.textContent = 'Username not found';
+            recoveryError.style.display = 'block';
+            return;
+        }
+
+        if (securityContainer.style.display === 'none') {
+            // Show security question
+            document.getElementById('securityQuestionText').textContent = user.securityQuestion;
+            securityContainer.style.display = 'block';
+            recoveryError.style.display = 'none';
+            submitBtn.textContent = 'Verify Answer';
+            remainingAttempts.textContent = maxAttempts;
+            attemptCount = 0;
+        } else {
+            // Verify security answer
+            const answer = document.getElementById('securityAnswer').value;
+            
+            if (answer.toLowerCase() === user.securityAnswer.toLowerCase()) {
+                securityContainer.style.display = 'none';
+                document.getElementById('recoveredPassword').textContent = user.password;
+                passwordDisplay.style.display = 'block';
+                submitBtn.style.display = 'none';
+                recoveryError.style.display = 'none';
+                attemptCount = 0;
+            } else {
+                attemptCount++;
+                const remaining = maxAttempts - attemptCount;
+                remainingAttempts.textContent = remaining;
+                
+                if (remaining === 0) {
+                    recoveryError.textContent = 'Maximum attempts reached. Please try again in 30 minutes.';
+                    submitBtn.disabled = true;
+                    
+                    // Lock the recovery for 30 minutes
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        attemptCount = 0;
+                        remainingAttempts.textContent = maxAttempts;
+                        recoveryError.style.display = 'none';
+                    }, 30 * 60 * 1000); // 30 minutes
+                } else {
+                    recoveryError.textContent = `Incorrect answer. ${remaining} attempts remaining.`;
+                }
+                recoveryError.style.display = 'block';
+            }
+        }
+    });
 
     class PasswordRecovery {
         constructor() {
@@ -972,14 +1136,14 @@
         const closeBtn = document.querySelector('.close-modal');
         const recoveryForm = document.getElementById('recoveryForm');
         const recoveryError = document.getElementById('recoveryError');
-        const recoverySuccess = document.getElementById('recoverySuccess');
 
         // Show modal when clicking "Forgot Password"
         document.querySelector('.forgot-password').addEventListener('click', function(e) {
             e.preventDefault();
             modal.style.display = 'block';
             recoveryError.style.display = 'none';
-            recoverySuccess.style.display = 'none';
+            document.getElementById('securityQuestionContainer').style.display = 'none';
+            document.getElementById('passwordDisplay').style.display = 'none';
             recoveryForm.reset();
         });
 
@@ -999,20 +1163,20 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Sending...';
             recoveryError.style.display = 'none';
-            recoverySuccess.style.display = 'none';
+            document.getElementById('passwordDisplay').style.display = 'none';
 
             try {
                 const result = await recovery.sendRecoveryEmail(email);
                 
                 if (result.success) {
                     recoveryForm.style.display = 'none';
-                    recoverySuccess.style.display = 'block';
+                    document.getElementById('passwordDisplay').style.display = 'block';
                     
                     // Close modal after 5 seconds
                     setTimeout(() => {
                         modal.style.display = 'none';
                         recoveryForm.style.display = 'block';
-                        recoverySuccess.style.display = 'none';
+                        document.getElementById('passwordDisplay').style.display = 'none';
                         recoveryForm.reset();
                     }, 5000);
                 } else {
