@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Campaign - Flex Me</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #f68b1e;
+            --secondary: #ff6b6b;
+            --dark: #111;
+            --light: #fff;
+            --gray: #f5f5f5;
+            --gradient: linear-gradient(45deg, #f68b1e, #ff6b6b);
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #e8e9eb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-nav {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #ff357a;
+        }
+
+        .website-name {
+            font-size: 3em;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .website-name span {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+
+        .website-name span::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .user-profile {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ff357a;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ff357a;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+        }
+
+        .user-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 60px);
+            background: var(--dark);
+            padding: 20px;
+            color: var(--light);
+            position: fixed;
+            top: 60px;
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .user-stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .level-info {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .level-info h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .user-level {
+            color: #cd7f32;
+            font-weight: bold;
+        }
+
+        .level-progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .level-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .points-info {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .donation-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .stat-item i {
+            font-size: 1.2rem;
+            color: #ff357a;
+        }
+
+        .stat-details h4 {
+            margin: 0;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .stat-details p {
+            margin: 2px 0 0;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+
+        .create-campaign-form {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .image-upload {
+            border: 2px dashed #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .image-upload i {
+            font-size: 2rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 53, 122, 0.3);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            gap: 30px;
+        }
+
+        .footer-section {
+            margin: 20px;
+            min-width: 250px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #ff357a;
+        }
+
+        .footer-section p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #ff357a;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 0 10px;
+            }
+
+            .footer-section {
+                margin: 10px 0;
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link" href="/profile"><i class="fas fa-user"></i> Profile</a>
+            <a class="nav-link" href="/history"><i class="fas fa-history"></i> History</a>
+            <a class="nav-link" href="/create-campaign"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+        <h1 class="website-name"><span>Flex</span> Me</h1>
+        <div class="user-profile auth-required">
+            <span class="user-name">John Doe</span>
+            <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
+            <a href="#" class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4>Create Campaign</h4>
+            </div>
+            <div class="user-stats">
+                <div class="level-info">
+                    <h3>Level: <span class="user-level">Bronze</span></h3>
+                    <div class="level-progress">
+                        <div class="level-bar"></div>
+                    </div>
+                    <p class="points-info">Points: <span class="user-points">0</span> / <span class="next-level-points">1000</span></p>
+                </div>
+                <div class="donation-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <div class="stat-details">
+                            <h4>Total Donated</h4>
+                            <p>$<span class="total-donated">0</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-details">
+                            <h4>People Helped</h4>
+                            <p><span class="people-helped">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="create-campaign-form">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Create New Campaign</h2>
+                <form id="campaignForm" onsubmit="return handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="title">Campaign Title</label>
+                        <input type="text" id="title" class="form-control" required
+                               placeholder="Enter a clear, descriptive title">
+                        <div class="error-message">Please enter a title</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Campaign Description</label>
+                        <textarea id="description" class="form-control" required
+                                  placeholder="Describe your campaign and why you need help..."></textarea>
+                        <div class="error-message">Please enter a description</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Target Amount ($)</label>
+                        <input type="number" id="amount" class="form-control" required min="1"
+                               placeholder="Enter the amount you need">
+                        <div class="error-message">Please enter a valid amount</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deadline">Campaign Deadline</label>
+                        <input type="date" id="deadline" class="form-control" required
+                               min="">
+                        <div class="error-message">Please select a future date</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Campaign Images</label>
+                        <div class="image-upload" onclick="document.getElementById('images').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload images (max 3)</p>
+                            <input type="file" id="images" multiple accept="image/*" style="display: none"
+                                   onchange="handleImageUpload(event)">
+                        </div>
+                        <div id="image-preview" style="display: flex; gap: 10px; margin-top: 10px;"></div>
+                        <div class="error-message">Please upload at least one image</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Create Campaign</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact Us</a>
+                <a href="/dashboard">Dashboard</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        Campaign created successfully!
+    </div>
+
+    <script>
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('deadline').min = today;
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+
+            if (files.length > 3) {
+                alert('You can only upload up to 3 images');
+                event.target.value = '';
+                return;
+            }
+
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '5px';
+                        preview.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        function getMaxAmountForLevel(level) {
+            const maxAmounts = {
+                'Bronze': 1000,
+                'Silver': 5000,
+                'Gold': 10000,
+                'Platinum': 50000
+            };
+            return maxAmounts[level] || 1000; // Default to Bronze limit if level not found
+        }
+
+        function validateAmount() {
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value);
+            const userLevel = document.querySelector('.user-level').textContent;
+            const maxAmount = getMaxAmountForLevel(userLevel);
+            
+            if (amount > maxAmount) {
+                alert(`Your ${userLevel} level can only request up to $${maxAmount}. Level up to request more!`);
+                amountInput.value = maxAmount;
+                return false;
+            }
+            return true;
+        }
+
+        // Add event listener to amount input
+        document.getElementById('amount').addEventListener('change', validateAmount);
+        
+        // Validate form before submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!validateAmount()) {
+                e.preventDefault();
+            }
+        });
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Validate form
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const amount = document.getElementById('amount').value;
+            const deadline = document.getElementById('deadline').value;
+            const images = document.getElementById('images').files;
+
+            let isValid = true;
+
+            // Show error messages if fields are empty
+            document.querySelectorAll('.form-control').forEach(input => {
+                if (!input.value) {
+                    input.nextElementSibling.style.display = 'block';
+                    isValid = false;
+                } else {
+                    input.nextElementSibling.style.display = 'none';
+                }
+            });
+
+            if (images.length === 0) {
+                document.querySelector('#images').parentElement.nextElementSibling.nextElementSibling.style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return false;
+
+            // If form is valid, show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+                // Redirect to dashboard after successful creation
+                window.location.href = '/dashboard';
+            }, 2000);
+
+            return false;
+        }
+
+        // Check authentication when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
+
+        function checkAuthStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Redirect to login page if not authenticated
+                window.location.href = '/login';
+                return;
+            }
+
+            // Update user name if available
+            const userName = localStorage.getItem('userName') || 'User';
+            document.querySelectorAll('.user-name').forEach(el => {
+                el.textContent = userName;
+            });
+
+            // Show authenticated elements
+            const authElements = document.querySelectorAll('.auth-required');
+            authElements.forEach(element => {
+                element.style.display = element.tagName === 'A' ? 'inline-flex' : 'flex';
+            });
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            window.location.href = '/';
+        }
+
+        // Form submission handling
+        const campaignForm = document.querySelector('.campaign-form');
+        if (campaignForm) {
+            campaignForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check authentication again before submission
+                if (localStorage.getItem('isLoggedIn') !== 'true') {
+                    alert('Please log in to create a campaign');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Process form submission
+                // Add your form submission logic here
+                alert('Campaign created successfully!');
+                window.location.href = '/dashboard';
+            });
+        }
+    </script>
+
+    <script>
+        class CampaignDataLoader {
+            constructor() {
+                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.initialize();
+            }
+
+            async initialize() {
+                if (!this.userId) return;
+                
+                this.showLoadingState();
+                
+                try {
+                    await Promise.all([
+                        this.loadUserLevel(),
+                        this.loadCampaignTemplates(),
+                        this.loadUserLimits(),
+                        this.loadDraftCampaigns()
+                    ]);
+                    this.setupFormValidation();
+                    this.setupImageUpload();
+                    this.setupAutoSave();
+                } catch (error) {
+                    console.error('Error loading campaign data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                form.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading campaign creation form...</p>
+                    </div>
+                `;
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading campaign creation form. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.campaign-container').prepend(errorMessage);
+            }
+
+            async loadUserLevel() {
+                // Load user level and permissions
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                const userLevel = userData.level || 'Bronze';
+                
+                // Update UI with user level information
+                const levelInfo = document.querySelector('.user-level-info');
+                if (levelInfo) {
+                    levelInfo.innerHTML = `
+                        <h3>Your Level: ${userLevel}</h3>
+                        <p>Maximum campaign amount: $${this.getMaxAmountForLevel(userLevel).toLocaleString()}</p>
+                        <p>Maximum active campaigns: ${this.getMaxCampaignsForLevel(userLevel)}</p>
+                    `;
+                }
+            }
+
+            async loadCampaignTemplates() {
+                // Load campaign templates
+                const templates = JSON.parse(localStorage.getItem('campaignTemplates') || '[]');
+                if (templates.length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const newTemplates = [
+                        { id: 1, name: 'Emergency Fund', description: 'Template for emergency funding campaigns' },
+                        { id: 2, name: 'Medical Support', description: 'Template for medical support campaigns' },
+                        { id: 3, name: 'Education Fund', description: 'Template for education funding campaigns' }
+                    ];
+                    localStorage.setItem('campaignTemplates', JSON.stringify(newTemplates));
+                }
+                this.updateTemplateSelector(templates);
+            }
+
+            async loadUserLimits() {
+                // Load user campaign limits
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                const activeCampaigns = JSON.parse(localStorage.getItem(`activeCampaigns_${this.userId}`) || '[]');
+                
+                const userLevel = userData.level || 'Bronze';
+                const maxCampaigns = this.getMaxCampaignsForLevel(userLevel);
+                const remainingCampaigns = maxCampaigns - activeCampaigns.length;
+
+                // Update UI with limit information
+                const limitsInfo = document.querySelector('.campaign-limits');
+                if (limitsInfo) {
+                    limitsInfo.innerHTML = `
+                        <p>Active Campaigns: ${activeCampaigns.length}/${maxCampaigns}</p>
+                        <p>Remaining Campaigns: ${remainingCampaigns}</p>
+                    `;
+                }
+            }
+
+            async loadDraftCampaigns() {
+                // Load draft campaigns
+                const drafts = JSON.parse(localStorage.getItem(`campaignDrafts_${this.userId}`) || '[]');
+                
+                // Update UI with drafts
+                const draftsContainer = document.querySelector('.draft-campaigns');
+                if (draftsContainer) {
+                    if (drafts.length === 0) {
+                        draftsContainer.innerHTML = '<p>No draft campaigns</p>';
+                        return;
+                    }
+
+                    draftsContainer.innerHTML = drafts.map(draft => `
+                        <div class="draft-item">
+                            <h4>${draft.title || 'Untitled Campaign'}</h4>
+                            <p>Last edited: ${this.formatDate(draft.lastEdited)}</p>
+                            <div class="draft-actions">
+                                <button onclick="loadDraft('${draft.id}')">Continue Editing</button>
+                                <button onclick="deleteDraft('${draft.id}')" class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            setupFormValidation() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (this.validateForm()) {
+                        this.submitCampaign();
+                    }
+                });
+
+                // Add real-time validation
+                form.querySelectorAll('input, textarea').forEach(input => {
+                    input.addEventListener('input', () => {
+                        this.validateField(input);
+                    });
+                });
+            }
+
+            setupImageUpload() {
+                const imageUpload = document.querySelector('.image-upload');
+                if (!imageUpload) return;
+
+                imageUpload.addEventListener('change', (e) => {
+                    this.handleImageUpload(e.target.files[0]);
+                });
+            }
+
+            setupAutoSave() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                // Auto-save every 30 seconds
+                setInterval(() => {
+                    this.autoSaveDraft();
+                }, 30000);
+
+                // Save on form change
+                form.addEventListener('input', () => {
+                    clearTimeout(this.autoSaveTimeout);
+                    this.autoSaveTimeout = setTimeout(() => {
+                        this.autoSaveDraft();
+                    }, 1000);
+                });
+            }
+
+            validateForm() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return false;
+
+                let isValid = true;
+                form.querySelectorAll('input, textarea').forEach(input => {
+                    if (!this.validateField(input)) {
+                        isValid = false;
+                    }
+                });
+
+                return isValid;
+            }
+
+            validateField(input) {
+                const value = input.value.trim();
+                const name = input.name;
+                let isValid = true;
+                let errorMessage = '';
+
+                switch (name) {
+                    case 'title':
+                        if (value.length < 5) {
+                            isValid = false;
+                            errorMessage = 'Title must be at least 5 characters long';
+                        }
+                        break;
+                    case 'amount':
+                        const amount = parseFloat(value);
+                        const maxAmount = this.getMaxAmountForLevel(this.getUserLevel());
+                        if (isNaN(amount) || amount <= 0) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid amount';
+                        } else if (amount > maxAmount) {
+                            isValid = false;
+                            errorMessage = `Amount cannot exceed $${maxAmount.toLocaleString()}`;
+                        }
+                        break;
+                    case 'deadline':
+                        const deadline = new Date(value);
+                        const minDate = new Date();
+                        minDate.setDate(minDate.getDate() + 1);
+                        const maxDate = new Date();
+                        maxDate.setDate(maxDate.getDate() + 90);
+                        
+                        if (deadline < minDate) {
+                            isValid = false;
+                            errorMessage = 'Deadline must be at least 1 day in the future';
+                        } else if (deadline > maxDate) {
+                            isValid = false;
+                            errorMessage = 'Deadline cannot be more than 90 days in the future';
+                        }
+                        break;
+                    // Add more validation cases as needed
+                }
+
+                this.showFieldValidation(input, isValid, errorMessage);
+                return isValid;
+            }
+
+            showFieldValidation(input, isValid, errorMessage) {
+                const errorElement = input.parentElement.querySelector('.error-message');
+                if (isValid) {
+                    input.classList.remove('invalid');
+                    input.classList.add('valid');
+                    if (errorElement) errorElement.remove();
+                } else {
+                    input.classList.remove('valid');
+                    input.classList.add('invalid');
+                    if (!errorElement) {
+                        const error = document.createElement('div');
+                        error.className = 'error-message';
+                        error.textContent = errorMessage;
+                        input.parentElement.appendChild(error);
+                    } else {
+                        errorElement.textContent = errorMessage;
+                    }
+                }
+            }
+
+            async handleImageUpload(file) {
+                if (!file) return;
+
+                // Validate file
+                if (!this.validateImage(file)) {
+                    return;
+                }
+
+                // Show upload preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.querySelector('.image-preview');
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            validateImage(file) {
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    this.showError('Please upload an image file');
+                    return false;
+                }
+
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showError('Image size must be less than 5MB');
+                    return false;
+                }
+
+                return true;
+            }
+
+            autoSaveDraft() {
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                const formData = new FormData(form);
+                const draft = {
+                    id: this.currentDraftId || Date.now().toString(),
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    amount: formData.get('amount'),
+                    deadline: formData.get('deadline'),
+                    lastEdited: new Date().toISOString()
+                };
+
+                // Save to localStorage
+                const drafts = JSON.parse(localStorage.getItem(`campaignDrafts_${this.userId}`) || '[]');
+                const existingDraftIndex = drafts.findIndex(d => d.id === draft.id);
+                
+                if (existingDraftIndex >= 0) {
+                    drafts[existingDraftIndex] = draft;
+                } else {
+                    drafts.push(draft);
+                }
+
+                localStorage.setItem(`campaignDrafts_${this.userId}`, JSON.stringify(drafts));
+                this.showAutoSaveNotification();
+            }
+
+            showAutoSaveNotification() {
+                const notification = document.createElement('div');
+                notification.className = 'autosave-notification';
+                notification.textContent = 'Draft saved';
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            }
+
+            submitCampaign() {
+                // Get form data
+                const form = document.querySelector('.campaign-form');
+                if (!form) return;
+
+                const formData = new FormData(form);
+                const campaignData = {
+                    id: Date.now().toString(),
+                    userId: this.userId,
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    amount: parseFloat(formData.get('amount')),
+                    deadline: formData.get('deadline'),
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+
+                // Save campaign
+                const campaigns = JSON.parse(localStorage.getItem(`campaigns`) || '[]');
+                campaigns.push(campaignData);
+                localStorage.setItem('campaigns', JSON.stringify(campaigns));
+
+                // Remove draft if exists
+                if (this.currentDraftId) {
+                    this.deleteDraft(this.currentDraftId);
+                }
+
+                // Show success message and redirect
+                this.showSuccess('Campaign created successfully!');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 2000);
+            }
+
+            getMaxAmountForLevel(level) {
+                const limits = {
+                    'Bronze': 1000,
+                    'Silver': 5000,
+                    'Gold': 10000,
+                    'Platinum': 50000
+                };
+                return limits[level] || limits['Bronze'];
+            }
+
+            getMaxCampaignsForLevel(level) {
+                const limits = {
+                    'Bronze': 1,
+                    'Silver': 3,
+                    'Gold': 5,
+                    'Platinum': 10
+                };
+                return limits[level] || limits['Bronze'];
+            }
+
+            getUserLevel() {
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                return userData.level || 'Bronze';
+            }
+
+            updateTemplateSelector(templates) {
+                const selector = document.querySelector('.template-selector');
+                if (!selector) return;
+
+                selector.innerHTML = `
+                    <option value="">Select a Template</option>
+                    ${templates.map(template => `
+                        <option value="${template.id}">${template.name}</option>
+                    `).join('')}
+                `;
+
+                selector.addEventListener('change', (e) => {
+                    const templateId = e.target.value;
+                    if (templateId) {
+                        this.loadTemplate(templateId);
+                    }
+                });
+            }
+
+            loadTemplate(templateId) {
+                const templates = JSON.parse(localStorage.getItem('campaignTemplates') || '[]');
+                const template = templates.find(t => t.id.toString() === templateId.toString());
+                
+                if (template) {
+                    // Fill form with template data
+                    const form = document.querySelector('.campaign-form');
+                    if (!form) return;
+
+                    form.querySelector('[name="title"]').value = template.title || '';
+                    form.querySelector('[name="description"]').value = template.description || '';
+                    // Add more field population as needed
+                }
+            }
+
+            formatDate(date) {
+                return new Date(date).toLocaleDateString();
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.campaign-container').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.campaign-container').prepend(successDiv);
+                setTimeout(() => successDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize campaign data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CampaignDataLoader();
+        });
+    </script>
+</body>
+</html>

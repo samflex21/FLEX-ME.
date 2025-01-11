@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Flex Me</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #f68b1e;
+            --secondary: #ff6b6b;
+            --dark: #111;
+            --light: #fff;
+            --gray: #f5f5f5;
+            --gradient: linear-gradient(45deg, #f68b1e, #ff6b6b);
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #e8e9eb;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 250px;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-nav {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #ff357a;
+        }
+
+        .website-name {
+            font-size: 3em;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .website-name span {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+
+        .website-name span::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .user-profile {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ff357a;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ff357a;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px;
+            }
+
+            .navbar-nav {
+                position: relative;
+                left: 0;
+                justify-content: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .website-name {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+            .user-profile {
+                position: relative;
+                right: 0;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .user-name {
+                display: none;
+            }
+        }
+
+        /* Contact Form Styles */
+        .contact-container {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 40px 20px;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .contact-header h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .contact-header p {
+            color: #666;
+            font-size: 1.1em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #ff357a;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: #ff357a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #e61e61;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .info-item i {
+            font-size: 1.5em;
+            color: #ff357a;
+            width: 24px;
+        }
+
+        .info-item .content h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .info-item .content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            color: #333;
+            font-size: 1.2em;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #ff357a;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-container {
+                margin-top: 60px;
+                padding: 20px;
+            }
+
+            .contact-header h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: #111;
+            color: #fff;
+            padding: 40px 0 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-section {
+            margin: 20px;
+            min-width: 250px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #ff357a;
+        }
+
+        .footer-section p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #ff357a;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer-section {
+                margin: 10px 0;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+            <a class="nav-link auth-required" href="/dashboard" style="display: none;"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link auth-required" href="/create-campaign" style="display: none;"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link auth-required" href="/history" style="display: none;"><i class="fas fa-history"></i> History</a>
+        </div>
+        <h1 class="website-name"><span>Flex</span> Me</h1>
+        <div class="user-profile auth-required" style="display: none;">
+            <span class="user-name">John Doe</span>
+            <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
+            <a href="#" class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+        <div class="guest-links" style="position: absolute; right: 20px;">
+            <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a class="nav-link" href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register</a>
+        </div>
+    </nav>
+
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>Get in Touch</h1>
+            <p>Have questions or need assistance? We're here to help! Fill out the form below and we'll get back to you as soon as possible.</p>
+        </div>
+        <div class="contact-content">
+            <div class="contact-form">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </div>
+            <div class="contact-info">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="content">
+                        <h3>Our Location</h3>
+                        <p>123 Business Street<br>San Francisco, CA 94111</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="content">
+                        <h3>Phone Number</h3>
+                        <p>+1 (555) 123-4567<br>+1 (555) 987-6543</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="content">
+                        <h3>Email Address</h3>
+                        <p>support@flexme.com<br>info@flexme.com</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="content">
+                        <h3>Working Hours</h3>
+                        <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM</p>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        // Check authentication status when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
+
+        function checkAuthStatus() {
+            // Check if user is logged in (you can use localStorage or your preferred method)
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            // Get all elements that require authentication
+            const authElements = document.querySelectorAll('.auth-required');
+            const guestLinks = document.querySelector('.guest-links');
+            
+            if (isLoggedIn) {
+                // Show authenticated elements
+                authElements.forEach(element => {
+                    element.style.display = element.tagName === 'A' ? 'inline-flex' : 'flex';
+                });
+                // Hide guest links
+                guestLinks.style.display = 'none';
+            } else {
+                // Hide authenticated elements
+                authElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+                // Show guest links
+                guestLinks.style.display = 'flex';
+            }
+        }
+
+        function handleLogout() {
+            // Clear authentication status
+            localStorage.removeItem('isLoggedIn');
+            // Redirect to home page
+            window.location.href = '/';
+        }
+    </script>
+    <script>
+        class ContactDataLoader {
+            constructor() {
+                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.initialize();
+            }
+
+            async initialize() {
+                this.showLoadingState();
+                try {
+                    await Promise.all([
+                        this.loadUserData(),
+                        this.loadPreviousTickets(),
+                        this.loadFAQs()
+                    ]);
+                    this.setupFormHandlers();
+                } catch (error) {
+                    console.error('Error loading contact data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const container = document.querySelector('.contact-container');
+                if (!container) return;
+
+                container.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading contact information...</p>
+                    </div>
+                `;
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading contact information. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.contact-container').prepend(errorMessage);
+            }
+
+            async loadUserData() {
+                if (!this.userId) return;
+
+                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
+                
+                // Pre-fill contact form if user is logged in
+                const contactForm = document.querySelector('.contact-form');
+                if (contactForm) {
+                    contactForm.querySelector('[name="name"]').value = userData.name || '';
+                    contactForm.querySelector('[name="email"]').value = userData.email || '';
+                }
+            }
+
+            async loadPreviousTickets() {
+                if (!this.userId) return;
+
+                const tickets = JSON.parse(localStorage.getItem(`supportTickets_${this.userId}`) || '[]');
+                
+                const ticketsContainer = document.querySelector('.previous-tickets');
+                if (ticketsContainer) {
+                    if (tickets.length === 0) {
+                        ticketsContainer.innerHTML = '<p>No previous support tickets</p>';
+                        return;
+                    }
+
+                    ticketsContainer.innerHTML = `
+                        <h3>Previous Support Tickets</h3>
+                        ${tickets.map(ticket => `
+                            <div class="ticket-item ${ticket.status.toLowerCase()}">
+                                <div class="ticket-header">
+                                    <h4>#${ticket.id} - ${ticket.subject}</h4>
+                                    <span class="ticket-status">${ticket.status}</span>
+                                </div>
+                                <p class="ticket-date">${this.formatDate(ticket.date)}</p>
+                                <p class="ticket-preview">${ticket.message.substring(0, 100)}...</p>
+                                <button onclick="viewTicket('${ticket.id}')" class="view-ticket-btn">View Details</button>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            }
+
+            async loadFAQs() {
+                const faqs = JSON.parse(localStorage.getItem('faqs') || '[]');
+                if (faqs.length === 0) {
+                    // Simulate API call - replace with actual API call
+                    const defaultFAQs = [
+                        {
+                            question: 'How do I start a campaign?',
+                            answer: 'Click on the "Create Campaign" button in your dashboard and follow the step-by-step guide.'
+                        },
+                        {
+                            question: 'What are the campaign limits?',
+                            answer: 'Campaign limits vary based on your user level. Bronze users can create 1 campaign, Silver 3, Gold 5, and Platinum 10.'
+                        },
+                        {
+                            question: 'How long can my campaign run?',
+                            answer: 'Campaigns can run from 1 to 90 days, depending on your campaign goals and strategy.'
+                        }
+                    ];
+                    localStorage.setItem('faqs', JSON.stringify(defaultFAQs));
+                }
+
+                const faqContainer = document.querySelector('.faq-section');
+                if (faqContainer) {
+                    faqContainer.innerHTML = `
+                        <h3>Frequently Asked Questions</h3>
+                        ${faqs.map(faq => `
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    <h4>${faq.question}</h4>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>${faq.answer}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            }
+
+            setupFormHandlers() {
+                const contactForm = document.querySelector('.contact-form');
+                if (contactForm) {
+                    contactForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.submitContactForm(e.target);
+                    });
+                }
+
+                // Setup FAQ toggles
+                window.toggleFAQ = (element) => {
+                    const answer = element.nextElementSibling;
+                    const icon = element.querySelector('i');
+                    
+                    answer.style.maxHeight = answer.style.maxHeight ? null : answer.scrollHeight + 'px';
+                    icon.classList.toggle('fa-chevron-up');
+                    icon.classList.toggle('fa-chevron-down');
+                };
+
+                // Setup ticket viewer
+                window.viewTicket = (ticketId) => {
+                    this.showTicketDetails(ticketId);
+                };
+            }
+
+            async submitContactForm(form) {
+                const formData = new FormData(form);
+                const ticketData = {
+                    id: Date.now().toString(),
+                    userId: this.userId,
+                    subject: formData.get('subject'),
+                    message: formData.get('message'),
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    date: new Date().toISOString(),
+                    status: 'Open'
+                };
+
+                // Save ticket
+                const tickets = JSON.parse(localStorage.getItem(`supportTickets_${this.userId}`) || '[]');
+                tickets.unshift(ticketData);
+                localStorage.setItem(`supportTickets_${this.userId}`, JSON.stringify(tickets));
+
+                // Show success message and reset form
+                this.showSuccess('Your message has been sent successfully! We will respond within 24 hours.');
+                form.reset();
+
+                // Reload tickets display
+                this.loadPreviousTickets();
+            }
+
+            showTicketDetails(ticketId) {
+                const tickets = JSON.parse(localStorage.getItem(`supportTickets_${this.userId}`) || '[]');
+                const ticket = tickets.find(t => t.id === ticketId);
+                
+                if (!ticket) return;
+
+                const modal = document.createElement('div');
+                modal.className = 'ticket-modal';
+                modal.innerHTML = `
+                    <div class="ticket-modal-content">
+                        <div class="ticket-modal-header">
+                            <h3>Ticket #${ticket.id}</h3>
+                            <button onclick="this.closest('.ticket-modal').remove()">&times;</button>
+                        </div>
+                        <div class="ticket-modal-body">
+                            <div class="ticket-info">
+                                <p><strong>Subject:</strong> ${ticket.subject}</p>
+                                <p><strong>Status:</strong> ${ticket.status}</p>
+                                <p><strong>Date:</strong> ${this.formatDate(ticket.date)}</p>
+                            </div>
+                            <div class="ticket-message">
+                                <h4>Message:</h4>
+                                <p>${ticket.message}</p>
+                            </div>
+                            ${ticket.response ? `
+                                <div class="ticket-response">
+                                    <h4>Response:</h4>
+                                    <p>${ticket.response}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+            }
+
+            formatDate(date) {
+                return new Date(date).toLocaleDateString();
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.contact-container').prepend(successDiv);
+                setTimeout(() => successDiv.remove(), 5000);
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                `;
+                document.querySelector('.contact-container').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+
+        // Initialize contact data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ContactDataLoader();
+        });
+    </script>
+</body>
+</html>

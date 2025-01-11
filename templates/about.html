@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Flex Me</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #f68b1e;
+            --secondary: #ff6b6b;
+            --dark: #111;
+            --light: #fff;
+            --gray: #f5f5f5;
+            --gradient: linear-gradient(45deg, #f68b1e, #ff6b6b);
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #e8e9eb;
+            color: var(--dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            margin-top: 80px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            padding-bottom: 40px;
+        }
+
+        /* Main Content Styles */
+        .about-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') center/cover;
+            padding: 80px 0;
+            text-align: center;
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        .about-hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .about-hero p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .mission-section {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mission-section h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .mission-item {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .mission-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .mission-item i {
+            font-size: 2.5em;
+            color: #ff357a;
+            margin-bottom: 20px;
+        }
+
+        .mission-item h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .mission-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .team-section {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .team-section h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .member-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 3px solid #ff357a;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-member h3 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .team-member p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .member-social {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .member-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .member-social a:hover {
+            background: #ff357a;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-nav {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #ff357a;
+        }
+
+        .website-name {
+            font-size: 3em;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .website-name span {
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+
+        .website-name span::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(45deg, #ff357a, #fff172);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .user-profile {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ff357a;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ff357a;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .footer-section {
+            margin: 20px;
+            min-width: 250px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #ff357a;
+        }
+
+        .footer-section p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #ff357a;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 400px;
+            }
+
+            .about-hero {
+                padding: 60px 0;
+            }
+
+            .about-hero h1 {
+                font-size: 2em;
+            }
+
+            .mission-section,
+            .team-section {
+                padding: 20px;
+            }
+
+            .mission-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-image {
+                width: 40px;
+                height: 40px;
+            }
+
+            .main-content {
+                padding: 20px;
+                margin-top: 60px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 0 10px;
+            }
+
+            .footer-section {
+                margin: 10px 0;
+                min-width: auto;
+                width: 100%;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
+            <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+            <a class="nav-link auth-required" href="/dashboard" style="display: none;"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link auth-required" href="/create-campaign" style="display: none;"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a class="nav-link auth-required" href="/history" style="display: none;"><i class="fas fa-history"></i> History</a>
+        </div>
+        <h1 class="website-name"><span>Flex</span> Me</h1>
+        <div class="user-profile auth-required" style="display: none;">
+            <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
+            <span class="user-name">John Doe</span>
+            <a href="#" class="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+        <div class="guest-links" style="position: absolute; right: 20px;">
+            <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> Register</a>
+        </div>
+    </nav>
+
+    <script>
+        // Check authentication status when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
+
+        function checkAuthStatus() {
+            // Check if user is logged in (you can use localStorage or your preferred method)
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            // Get all elements that require authentication
+            const authElements = document.querySelectorAll('.auth-required');
+            const guestLinks = document.querySelector('.guest-links');
+            
+            if (isLoggedIn) {
+                // Show authenticated elements
+                authElements.forEach(element => {
+                    element.style.display = element.tagName === 'A' ? 'inline-flex' : 'flex';
+                });
+                // Hide guest links
+                guestLinks.style.display = 'none';
+            } else {
+                // Hide authenticated elements
+                authElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+                // Show guest links
+                guestLinks.style.display = 'flex';
+            }
+        }
+
+        function handleLogout() {
+            // Clear authentication status
+            localStorage.removeItem('isLoggedIn');
+            // Redirect to home page
+            window.location.href = '/';
+        }
+    </script>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- About Hero Section -->
+        <section class="about-hero">
+            <h1>Empowering Change Through Community</h1>
+            <p>At Flex Me, we believe in the power of community to create meaningful change. Our platform connects passionate individuals with causes that matter.</p>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <h2>Our Mission</h2>
+            <div class="mission-grid">
+                <div class="mission-item">
+                    <i class="fas fa-hands-helping"></i>
+                    <h3>Community Support</h3>
+                    <p>Building a strong community of donors and campaigners who work together to make a difference in people's lives.</p>
+                </div>
+                <div class="mission-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Trust & Security</h3>
+                    <p>Ensuring safe and secure transactions while maintaining transparency in all our operations.</p>
+                </div>
+                <div class="mission-item">
+                    <i class="fas fa-heart"></i>
+                    <h3>Impact Creation</h3>
+                    <p>Facilitating meaningful connections that lead to real-world positive changes in communities.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section">
+            <h2>Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/samuel.jpg') }}" alt="Samuel Olumide Adebimpe">
+                    </div>
+                    <h3>Samuel Olumide Adebimpe</h3>
+                    <p>Founder & CEO</p>
+                    <div class="member-social">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        class AboutDataLoader {
+            constructor() {
+                this.initialize();
+            }
+
+            async initialize() {
+                this.showLoadingState();
+                try {
+                    await Promise.all([
+                        this.loadTeamMembers(),
+                        this.loadCompanyStats(),
+                        this.loadPartners(),
+                        this.loadAchievements()
+                    ]);
+                    this.setupEventHandlers();
+                } catch (error) {
+                    console.error('Error loading about page data:', error);
+                    this.showErrorState();
+                } finally {
+                    this.hideLoadingState();
+                }
+            }
+
+            showLoadingState() {
+                const sections = document.querySelectorAll('.dynamic-content');
+                sections.forEach(section => {
+                    section.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading...</p>
+                        </div>
+                    `;
+                });
+            }
+
+            hideLoadingState() {
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
+            }
+
+            showErrorState() {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Error loading content. Please try refreshing the page.</p>
+                    <button onclick="window.location.reload()">Refresh</button>
+                `;
+                document.querySelector('.main-content').prepend(errorMessage);
+            }
+
+            async loadTeamMembers() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const team = [
+                        {
+                            name: "Sarah Johnson",
+                            role: "CEO & Founder",
+                            image: "assets/team/sarah.jpg",
+                            bio: "Passionate about making a difference through technology.",
+                            social: {
+                                linkedin: "https://linkedin.com/in/sarah-johnson",
+                                twitter: "https://twitter.com/sarahj"
+                            }
+                        },
+                        {
+                            name: "Michael Chen",
+                            role: "CTO",
+                            image: "assets/team/michael.jpg",
+                            bio: "Tech innovator with 15 years of experience in fintech.",
+                            social: {
+                                linkedin: "https://linkedin.com/in/michael-chen",
+                                github: "https://github.com/mchen"
+                            }
+                        },
+                        {
+                            name: "Emma Rodriguez",
+                            role: "Head of Operations",
+                            image: "assets/team/emma.jpg",
+                            bio: "Expert in scaling social impact organizations.",
+                            social: {
+                                linkedin: "https://linkedin.com/in/emma-rodriguez"
+                            }
+                        }
+                    ];
+
+                    const teamContainer = document.querySelector('.team-members');
+                    if (teamContainer) {
+                        teamContainer.innerHTML = `
+                            <div class="team-grid">
+                                ${team.map(member => `
+                                    <div class="team-card">
+                                        <img src="${member.image}" alt="${member.name}">
+                                        <div class="member-info">
+                                            <h3>${member.name}</h3>
+                                            <h4>${member.role}</h4>
+                                            <p>${member.bio}</p>
+                                            <div class="social-links">
+                                                ${Object.entries(member.social).map(([platform, url]) => `
+                                                    <a href="${url}" target="_blank" rel="noopener noreferrer">
+                                                        <i class="fab fa-${platform}"></i>
+                                                    </a>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading team members:', error);
+                    this.showSectionError('.team-members', 'Unable to load team members');
+                }
+            }
+
+            async loadCompanyStats() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const stats = {
+                        yearsActive: 5,
+                        countriesServed: 25,
+                        successfulCampaigns: 1000,
+                        totalImpact: "50M+"
+                    };
+
+                    const statsContainer = document.querySelector('.company-stats');
+                    if (statsContainer) {
+                        statsContainer.innerHTML = `
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <h3>${stats.yearsActive}</h3>
+                                    <p>Years Active</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h3>${stats.countriesServed}</h3>
+                                    <p>Countries Served</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h3>${stats.successfulCampaigns}</h3>
+                                    <p>Successful Campaigns</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h3>${stats.totalImpact}</h3>
+                                    <p>Lives Impacted</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading company stats:', error);
+                    this.showSectionError('.company-stats', 'Unable to load company statistics');
+                }
+            }
+
+            async loadPartners() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const partners = [
+                        {
+                            name: "Global Impact Fund",
+                            logo: "assets/partners/gif-logo.png",
+                            description: "International development partner"
+                        },
+                        {
+                            name: "Tech for Good",
+                            logo: "assets/partners/tfg-logo.png",
+                            description: "Technology solutions provider"
+                        },
+                        {
+                            name: "Community First",
+                            logo: "assets/partners/cf-logo.png",
+                            description: "Local outreach partner"
+                        }
+                    ];
+
+                    const partnersContainer = document.querySelector('.partners');
+                    if (partnersContainer) {
+                        partnersContainer.innerHTML = `
+                            <div class="partners-grid">
+                                ${partners.map(partner => `
+                                    <div class="partner-card">
+                                        <img src="${partner.logo}" alt="${partner.name}">
+                                        <h3>${partner.name}</h3>
+                                        <p>${partner.description}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading partners:', error);
+                    this.showSectionError('.partners', 'Unable to load partners');
+                }
+            }
+
+            async loadAchievements() {
+                try {
+                    // Simulate API call - replace with actual data fetching
+                    const achievements = [
+                        {
+                            year: 2025,
+                            title: "Sustainability Award",
+                            organization: "Global Tech Awards",
+                            description: "Recognized for environmental impact initiatives"
+                        },
+                        {
+                            year: 2024,
+                            title: "Best Social Impact Platform",
+                            organization: "FinTech Innovation Awards",
+                            description: "Leading platform for social good"
+                        },
+                        {
+                            year: 2023,
+                            title: "Community Choice Award",
+                            organization: "Social Enterprise Summit",
+                            description: "Voted best platform by users"
+                        }
+                    ];
+
+                    const achievementsContainer = document.querySelector('.achievements');
+                    if (achievementsContainer) {
+                        achievementsContainer.innerHTML = `
+                            <div class="timeline">
+                                ${achievements.map(achievement => `
+                                    <div class="timeline-item">
+                                        <div class="year">${achievement.year}</div>
+                                        <div class="achievement-content">
+                                            <h3>${achievement.title}</h3>
+                                            <h4>${achievement.organization}</h4>
+                                            <p>${achievement.description}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading achievements:', error);
+                    this.showSectionError('.achievements', 'Unable to load achievements');
+                }
+            }
+
+            setupEventHandlers() {
+                // Team member card hover effects
+                document.querySelectorAll('.team-card').forEach(card => {
+                    card.addEventListener('mouseenter', () => {
+                        card.classList.add('expanded');
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        card.classList.remove('expanded');
+                    });
+                });
+
+                // Partner logo click handlers
+                document.querySelectorAll('.partner-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        this.showPartnerDetails(card.querySelector('h3').textContent);
+                    });
+                });
+            }
+
+            showPartnerDetails(partnerName) {
+                // Implement partner details modal or redirect to partner page
+                console.log(`Showing details for partner: ${partnerName}`);
+            }
+
+            showSectionError(selector, message) {
+                const section = document.querySelector(selector);
+                if (section) {
+                    section.innerHTML = `
+                        <div class="section-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>${message}</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Initialize about data loader when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AboutDataLoader();
+        });
+    </script>
+</body>
+</html>
