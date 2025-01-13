@@ -37,7 +37,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin-bottom: 20px;
+            height: 80px;
             padding: 10px 20px;
             position: fixed;
             top: 0;
@@ -155,9 +155,11 @@
 
         /* Dashboard specific styles */
         .dashboard-container {
-            display: none;
-            margin-top: 60px;
+            display: flex;
+            padding-top: 80px; /* Match navbar height */
+            min-height: calc(100vh - 80px); /* Subtract navbar height */
             background: #e8e9eb;
+            position: relative;
         }
 
         .authenticated .dashboard-container {
@@ -166,11 +168,14 @@
 
         .sidebar {
             width: 250px;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 80px); /* Subtract navbar height */
             background: var(--dark);
             padding: 20px;
             color: var(--light);
             position: fixed;
+            top: 80px; /* Match navbar height */
+            left: 0;
+            overflow-y: auto;
         }
 
         .sidebar-header {
@@ -288,9 +293,10 @@
         }
 
         .main-content {
-            margin-left: 250px;
+            margin-left: 250px; /* Match sidebar width */
             padding: 20px;
             width: calc(100% - 250px);
+            min-height: calc(100vh - 80px - 300px); /* Subtract navbar and footer height */
             display: grid;
             grid-template-columns: 2fr 1fr;
             grid-template-rows: 1fr auto;
@@ -668,7 +674,10 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
             color: #fff;
             padding: 40px 0 20px;
+            width: 100%;
+            position: relative;
             margin-top: auto;
+            min-height: 300px;
         }
 
         .footer-content {
@@ -969,23 +978,221 @@
         }
     </style>
 </head>
+</head>
 <body>
-    <div id="app">
-        <nav>
-            <div class="nav-content">
-                <h1>Welcome, {{ username }}!</h1>
-                <button onclick="logout()">Logout</button>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <a id="dashboard-link" class="nav-link" data-nav="/dashboard" onclick="checkAuthAndNavigate(event, '/dashboard')"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a id="profile-link" class="nav-link" data-nav="/profile" onclick="navigateToProfile(event)"><i class="fas fa-user"></i> Profile</a>
+            <a id="history-link" class="nav-link" data-nav="/history" onclick="checkAuthAndNavigate(event, '/history')"><i class="fas fa-history"></i> History</a>
+            <a id="campaign-link" class="nav-link" data-nav="/create-campaign" onclick="checkAuthAndNavigate(event, '/create-campaign')"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+        </div>
+        <h1 class="website-name">Flex <span>Me</span></h1>
+        <div class="user-profile">
+            <div class="profile-pic-container">
+                <img src="{{ user.profile_pic or url_for('static', filename='images/default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
             </div>
-        </nav>
-        asdsd
-        <main>
-            <div id="dashboard-content">
-                <!-- Dashboard content here -->
+            <span class="user-name">{{ user.username }}</span>
+            <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>Dashboard</h3>
             </div>
-        </main>
+            <div class="user-stats">
+                <div class="level-info">
+                    <h3>Level: <span class="user-level">{{ user.level }}</span></h3>
+                    <div class="level-tooltip">
+                        <h4>{{ user.level }} Level Benefits</h4>
+                        <div class="level-benefits">
+                            • Can request up to <span class="level-limit">$1,000</span> in campaigns
+                            • Can donate up to <span class="level-limit">$1,000</span> per donation
+                        </div>
+                        <div class="next-level">
+                            <h4>Next Level: Silver</h4>
+                            <div class="level-benefits">
+                                • Request up to <span class="level-limit">$5,000</span> in campaigns
+                                • Donate up to <span class="level-limit">$5,000</span> per donation
+                                • 25 XP needed to level up
+                            </div>
+                        </div>
+                    </div>
+                    <div class="level-progress">
+                        <div class="level-bar"></div>
+                    </div>
+                    <p class="points-info">Points: <span class="user-points">{{ user.points }}</span> / <span class="next-level-points">1000</span></p>
+                </div>
+                <div class="donation-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <div class="stat-details">
+                            <h4>Total Donated</h4>
+                            <p>$<span class="total-donated">{{ user.totalDonated }}</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-details">
+                            <h4>People Helped</h4>
+                            <p><span class="people-helped">{{ user.peopleHelped }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="campaign-list">
+                <h2>Active Campaigns</h2>
+            </div>
+
+            <div class="live-feed">
+                <h2>Live Updates</h2>
+                <div class="feed-items">
+                    <!-- Feed items will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Advertisement Section -->
+            <div class="ad-section">
+                <h2>Special Offers</h2>
+                <div class="ad-container">
+                    <div class="ad-card special-offer">
+                        <span class="ad-badge">Featured</span>
+                        <img src="https://via.placeholder.com/80" alt="Double Points" class="ad-image">
+                        <div class="ad-content">
+                            <h3>Double Your Impact!</h3>
+                            <p>Get 2x points on all donations today!</p>
+                        </div>
+                    </div>
+                    <div class="ad-card">
+                        <span class="ad-badge">New</span>
+                        <img src="https://via.placeholder.com/80" alt="Referral Bonus" class="ad-image">
+                        <div class="ad-content">
+                            <h3>Refer a Friend</h3>
+                            <p>Get 500 bonus points for each referral</p>
+                        </div>
+                    </div>
+                    <div class="ad-card">
+                        <img src="https://via.placeholder.com/80" alt="Level Up" class="ad-image">
+                        <div class="ad-content">
+                            <h3>Level Up Fast</h3>
+                            <p>Complete 3 donations to unlock Gold status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Flex Me. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closePayModal()">&times;</button>
+            <h2>Make a Payment</h2>
+            <p id="modal-campaign-name"></p>
+            <p id="modal-amount-left"></p>
+            <input type="number" class="amount-input" id="payment-amount" placeholder="Enter amount">
+            <button class="pay-button" onclick="processPayment()">Confirm Payment</button>
+        </div>
     </div>
 
     <script>
+        async function checkAuthAndNavigate(event, path) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            window.location.href = path;
+        }
+
+        async function navigateToProfile(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                // Store current user data in sessionStorage before navigating
+                const response = await fetch('/api/user/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error('Failed to fetch profile data');
+                }
+
+                const userData = await response.json();
+                // Store user data in sessionStorage for profile page
+                sessionStorage.setItem('profileData', JSON.stringify(userData));
+                window.location.href = '/profile';
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                window.location.href = '/profile'; // Still navigate, profile page will handle the error
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for navigation
+            document.querySelectorAll('[data-nav]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const path = link.getAttribute('data-nav');
+                    if (path === '/profile') {
+                        navigateToProfile(e);
+                    } else {
+                        checkAuthAndNavigate(e, path);
+                    }
+                });
+            });
+        });
+
         // Check token on page load
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOMContentLoaded event fired');
@@ -1053,6 +1260,9 @@
             localStorage.removeItem('username');
             window.location.href = '/login';
         }
+
+        
+
     </script>
 </body>
 </html>

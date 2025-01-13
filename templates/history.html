@@ -292,127 +292,89 @@
         /* History Specific Styles */
         .history-container {
             padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 60px;
         }
 
         .history-filters {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
         }
 
-        .filter-buttons {
+        .date-range {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: var(--light);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-        }
-
-        .transaction-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .summary-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .summary-card h3 {
-            margin-bottom: 10px;
-            color: var(--light);
-        }
-
-        .summary-card .amount {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-
-        .summary-card small {
-            color: #888;
-        }
-
-        .transaction-list {
-            margin-top: 30px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        th {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--light);
-            font-weight: 600;
-        }
-
-        td {
-            color: #ddd;
-        }
-
-        .status {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.9em;
-        }
-
-        .status.completed { background: #4CAF50; }
-        .status.pending { background: #FFC107; }
-        .status.failed { background: #f44336; }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 20px;
-            margin-top: 20px;
         }
 
-        .pagination button {
-            background: var(--primary);
+        .history-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .history-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            font-weight: 600;
+            color: #333;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
         }
 
-        .pagination button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .history-table td {
+            padding: 15px;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .history-table tr td:first-child {
+            border-left: 1px solid #e9ecef;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .history-table tr td:last-child {
+            border-right: 1px solid #e9ecef;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-cancelled {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .quick-links,
+        .quick-links h4,
+        .quick-link,
+        .quick-link:hover,
+        .quick-link i {
+            display: none;
         }
 
         /* Footer Styles */
@@ -598,167 +560,22 @@
             font-weight: bold;
             color: #4a90e2;
         }
-
-        .level-overview {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .level-badge {
-            font-size: 1.5rem;
-            margin: 15px 0;
-        }
-
-        .user-level {
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .level-rules {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .rule-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .rule-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .rule-card h4 {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .rule-card.bronze h4 { color: #CD7F32; }
-        .rule-card.silver h4 { color: #C0C0C0; }
-        .rule-card.gold h4 { color: #FFD700; }
-        .rule-card.platinum h4 { color: #E5E4E2; }
-
-        .rule-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .rule-card ul li {
-            margin: 10px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .rule-card ul li:before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--primary);
-        }
-
-        .points-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .points-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .points-item i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .points-item h5 {
-            margin: 10px 0;
-            color: var(--light);
-        }
-
-        .points-item p {
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .history-filters {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            color: var(--light);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-        }
-
-        .history-list {
-            margin-top: 20px;
-        }
-
-        .history-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .history-item .date {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .history-item .amount {
-            font-weight: bold;
-        }
-
-        .history-item.given .amount { color: #4CAF50; }
-        .history-item.received .amount { color: #2196F3; }
-        .history-item.points .amount { color: #FFC107; }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a class="nav-link" href="/profile"><i class="fas fa-user"></i> Profile</a>
-            <a class="nav-link" href="/history"><i class="fas fa-history"></i> History</a>
-            <a class="nav-link" href="/create-campaign"><i class="fas fa-plus-circle"></i> Create Campaign</a>
-            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
-            <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+            <a id="dashboard-link" class="nav-link" data-page="dashboard" onclick="navigateToDashboard(event)"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a id="profile-link" class="nav-link" data-page="profile" onclick="navigateToProfile(event)"><i class="fas fa-user"></i> Profile</a>
+            <a id="history-link" class="nav-link" data-page="history" onclick="navigateToHistory(event)"><i class="fas fa-history"></i> History</a>
+            <a id="campaign-link" class="nav-link" data-page="create-campaign" onclick="navigateToCampaign(event)"><i class="fas fa-plus-circle"></i> Create Campaign</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
             <span class="user-name">John Doe</span>
             <img src="images/profile-pic.jpg" alt="Profile Picture" class="profile-pic">
-            <a href="javascript:void(0)" onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -820,69 +637,81 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="history-container">
-                <h1>Transaction History</h1>
-
-                <!-- History Filters -->
                 <div class="history-filters">
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" data-filter="all">All Transactions</button>
-                        <button class="filter-btn" data-filter="donations">Donations Made</button>
-                        <button class="filter-btn" data-filter="received">Donations Received</button>
-                        <button class="filter-btn" data-filter="campaigns">My Campaigns</button>
+                    <div class="form-group">
+                        <label>Date Range</label>
+                        <div class="date-range">
+                            <input type="date" class="form-control" id="startDate">
+                            <span>to</span>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
                     </div>
-
-                    <div class="date-filter">
-                        <label>Date Range:</label>
-                        <select id="dateRange">
-                            <option value="7">Last 7 days</option>
-                            <option value="30">Last 30 days</option>
-                            <option value="90">Last 90 days</option>
-                            <option value="all">All time</option>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" class="form-control">
+                            <option value="all">All Status</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                     </div>
-                </div>
-
-                <!-- Transaction Summary -->
-                <div class="transaction-summary">
-                    <div class="summary-card">
-                        <h3>Total Donations Made</h3>
-                        <p class="amount" id="totalDonations">€0.00</p>
-                        <small>Amount you've donated</small>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Total Received</h3>
-                        <p class="amount" id="totalReceived">€0.00</p>
-                        <small>From your campaigns</small>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Active Campaigns</h3>
-                        <p class="amount" id="activeCampaigns">0</p>
-                        <small>Currently running</small>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button class="download-btn form-control" id="downloadPdf">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
                     </div>
                 </div>
 
-                <!-- Transaction List -->
-                <div class="transaction-list">
-                    <table id="transactionTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Description</th>
-                                <th>Campaign</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionBody"></tbody>
-                    </table>
-                </div>
+                <table class="history-table" id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-01-09</td>
+                            <td>Medical Support Campaign</td>
+                            <td>$500.00</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">View Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-08</td>
+                            <td>Education Fund</td>
+                            <td>$1,000.00</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">View Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-07</td>
+                            <td>Password Update</td>
+                            <td>-</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">View Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                <!-- Pagination -->
                 <div class="pagination">
-                    <button id="prevPage">Previous</button>
-                    <span id="pageInfo">Page 1 of 1</span>
-                    <button id="nextPage">Next</button>
+                    <button id="prevPage" class="page-btn">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span id="pageInfo">Page <span id="currentPage">1</span></span>
+                    <button id="nextPage" class="page-btn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -893,10 +722,8 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <a href="/">Home</a>
-                <a href="/about">About Us</a>
-                <a href="/contact">Contact Us</a>
-                <a href="/dashboard">Dashboard</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
             </div>
             <div class="footer-section">
                 <h4>Contact Us</h4>
@@ -922,314 +749,253 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script>
-        class HistoryDataLoader {
-            constructor() {
-                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
-                this.initialize();
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            const ROWS_PER_PAGE = 5; // Number of rows per page
+            let currentPage = 1;
+            
+            // Initialize date inputs with current date range
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 30);
 
-            async initialize() {
-                if (!this.userId) return;
+            document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+            document.getElementById('endDate').valueAsDate = today;
+
+            // Function to update pagination buttons state
+            function updatePaginationButtons() {
+                const rows = Array.from(document.querySelectorAll('#historyTable tbody tr')).filter(row => row.style.display !== 'none');
+                const totalPages = Math.ceil(rows.length / ROWS_PER_PAGE);
                 
-                this.showLoadingState();
-                
-                try {
-                    await Promise.all([
-                        this.loadCampaignHistory(),
-                        this.loadDonationHistory(),
-                        this.loadTransactionHistory()
-                    ]);
-                    this.initializeFilters();
-                    this.setupEventListeners();
-                } catch (error) {
-                    console.error('Error loading history data:', error);
-                    this.showErrorState();
-                } finally {
-                    this.hideLoadingState();
-                }
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+                document.getElementById('currentPage').textContent = totalPages === 0 ? '0' : currentPage;
             }
 
-            showLoadingState() {
-                const sections = document.querySelectorAll('.history-section');
-                sections.forEach(section => {
-                    section.innerHTML = `
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Loading ${section.dataset.type} history...</p>
-                        </div>
-                    `;
-                });
-            }
+            // Function to show rows for current page
+            function showCurrentPageRows() {
+                const rows = Array.from(document.querySelectorAll('#historyTable tbody tr')).filter(row => row.style.display !== 'none');
+                const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
+                const endIndex = startIndex + ROWS_PER_PAGE;
 
-            hideLoadingState() {
-                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
-            }
-
-            showErrorState() {
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.innerHTML = `
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>Error loading history data. Please try refreshing the page.</p>
-                    <button onclick="window.location.reload()">Refresh</button>
-                `;
-                document.querySelector('.history-container').prepend(errorMessage);
-            }
-
-            async loadCampaignHistory() {
-                const campaigns = JSON.parse(localStorage.getItem(`campaignHistory_${this.userId}`) || '[]');
-                if (campaigns.length === 0) {
-                    // Simulate API call - replace with actual API call
-                    const newCampaigns = [];
-                    localStorage.setItem(`campaignHistory_${this.userId}`, JSON.stringify(newCampaigns));
-                }
-                this.updateCampaignHistory(campaigns);
-            }
-
-            async loadDonationHistory() {
-                const donations = JSON.parse(localStorage.getItem(`donationHistory_${this.userId}`) || '[]');
-                if (donations.length === 0) {
-                    // Simulate API call - replace with actual API call
-                    const newDonations = [];
-                    localStorage.setItem(`donationHistory_${this.userId}`, JSON.stringify(newDonations));
-                }
-                this.updateDonationHistory(donations);
-            }
-
-            async loadTransactionHistory() {
-                const transactions = JSON.parse(localStorage.getItem(`transactionHistory_${this.userId}`) || '[]');
-                if (transactions.length === 0) {
-                    // Simulate API call - replace with actual API call
-                    const newTransactions = [];
-                    localStorage.setItem(`transactionHistory_${this.userId}`, JSON.stringify(newTransactions));
-                }
-                this.updateTransactionHistory(transactions);
-            }
-
-            updateCampaignHistory(campaigns) {
-                const container = document.querySelector('.campaign-history');
-                if (!container) return;
-
-                if (campaigns.length === 0) {
-                    container.innerHTML = '<p class="no-data">No campaign history available</p>';
-                    return;
-                }
-
-                container.innerHTML = campaigns.map(campaign => `
-                    <div class="history-item campaign-item">
-                        <div class="campaign-header">
-                            <h3>${campaign.title}</h3>
-                            <span class="status ${campaign.status.toLowerCase()}">${campaign.status}</span>
-                        </div>
-                        <div class="campaign-details">
-                            <p><strong>Goal:</strong> $${campaign.goal.toLocaleString()}</p>
-                            <p><strong>Raised:</strong> $${campaign.raised.toLocaleString()}</p>
-                            <p><strong>Duration:</strong> ${this.formatDateRange(campaign.startDate, campaign.endDate)}</p>
-                        </div>
-                        <div class="campaign-stats">
-                            <span><i class="fas fa-users"></i> ${campaign.donors} donors</span>
-                            <span><i class="fas fa-percentage"></i> ${Math.round((campaign.raised/campaign.goal)*100)}% achieved</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            updateDonationHistory(donations) {
-                const container = document.querySelector('.donation-history');
-                if (!container) return;
-
-                if (donations.length === 0) {
-                    container.innerHTML = '<p class="no-data">No donation history available</p>';
-                    return;
-                }
-
-                container.innerHTML = donations.map(donation => `
-                    <div class="history-item donation-item">
-                        <div class="donation-header">
-                            <h3>Donation to ${donation.campaignTitle}</h3>
-                            <span class="amount">$${donation.amount.toLocaleString()}</span>
-                        </div>
-                        <div class="donation-details">
-                            <p><strong>Date:</strong> ${this.formatDate(donation.date)}</p>
-                            <p><strong>Payment Method:</strong> ${donation.paymentMethod}</p>
-                            <p><strong>Status:</strong> <span class="status ${donation.status.toLowerCase()}">${donation.status}</span></p>
-                        </div>
-                        <div class="donation-receipt">
-                            <a href="#" onclick="downloadReceipt('${donation.id}')">
-                                <i class="fas fa-file-download"></i> Download Receipt
-                            </a>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            updateTransactionHistory(transactions) {
-                const container = document.querySelector('.transaction-history');
-                if (!container) return;
-
-                if (transactions.length === 0) {
-                    container.innerHTML = '<p class="no-data">No transaction history available</p>';
-                    return;
-                }
-
-                container.innerHTML = transactions.map(transaction => `
-                    <div class="history-item transaction-item">
-                        <div class="transaction-header">
-                            <h3>${transaction.type}</h3>
-                            <span class="amount ${transaction.type.toLowerCase()}">${transaction.type === 'Received' ? '+' : '-'}$${transaction.amount.toLocaleString()}</span>
-                        </div>
-                        <div class="transaction-details">
-                            <p><strong>Date:</strong> ${this.formatDate(transaction.date)}</p>
-                            <p><strong>Reference:</strong> ${transaction.reference}</p>
-                            <p><strong>Status:</strong> <span class="status ${transaction.status.toLowerCase()}">${transaction.status}</span></p>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            initializeFilters() {
-                const filterContainer = document.querySelector('.history-filters');
-                if (!filterContainer) return;
-
-                filterContainer.innerHTML = `
-                    <div class="filter-group">
-                        <label>Date Range:</label>
-                        <select id="dateFilter">
-                            <option value="all">All Time</option>
-                            <option value="today">Today</option>
-                            <option value="week">This Week</option>
-                            <option value="month">This Month</option>
-                            <option value="year">This Year</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Type:</label>
-                        <select id="typeFilter">
-                            <option value="all">All Types</option>
-                            <option value="campaigns">Campaigns</option>
-                            <option value="donations">Donations</option>
-                            <option value="transactions">Transactions</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Status:</label>
-                        <select id="statusFilter">
-                            <option value="all">All Status</option>
-                            <option value="completed">Completed</option>
-                            <option value="pending">Pending</option>
-                            <option value="failed">Failed</option>
-                        </select>
-                    </div>
-                `;
-            }
-
-            setupEventListeners() {
-                // Add filter change listeners
-                document.querySelectorAll('.history-filters select').forEach(select => {
-                    select.addEventListener('change', () => this.applyFilters());
+                rows.forEach((row, index) => {
+                    if (index >= startIndex && index < endIndex) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 });
 
-                // Add export button listener
-                const exportBtn = document.querySelector('.export-history');
-                if (exportBtn) {
-                    exportBtn.addEventListener('click', () => this.exportHistory());
-                }
-
-                // Add print button listener
-                const printBtn = document.querySelector('.print-history');
-                if (printBtn) {
-                    printBtn.addEventListener('click', () => this.printHistory());
-                }
+                updatePaginationButtons();
             }
 
-            applyFilters() {
-                const dateFilter = document.getElementById('dateFilter').value;
-                const typeFilter = document.getElementById('typeFilter').value;
-                const statusFilter = document.getElementById('statusFilter').value;
-
-                // Reload data with filters
-                this.loadFilteredData(dateFilter, typeFilter, statusFilter);
-            }
-
-            async loadFilteredData(dateFilter, typeFilter, statusFilter) {
-                this.showLoadingState();
+            // Function to filter table rows
+            function filterTable() {
+                const status = document.getElementById('status').value;
+                const startDate = new Date(document.getElementById('startDate').value);
+                const endDate = new Date(document.getElementById('endDate').value);
                 
-                try {
-                    // Apply filters to each data type
-                    if (typeFilter === 'all' || typeFilter === 'campaigns') {
-                        await this.loadCampaignHistory(dateFilter, statusFilter);
-                    }
-                    if (typeFilter === 'all' || typeFilter === 'donations') {
-                        await this.loadDonationHistory(dateFilter, statusFilter);
-                    }
-                    if (typeFilter === 'all' || typeFilter === 'transactions') {
-                        await this.loadTransactionHistory(dateFilter, statusFilter);
-                    }
-                } catch (error) {
-                    console.error('Error applying filters:', error);
-                    this.showErrorState();
-                } finally {
-                    this.hideLoadingState();
+                const rows = document.querySelectorAll('#historyTable tbody tr');
+                
+                rows.forEach(row => {
+                    const rowDate = new Date(row.cells[0].textContent);
+                    const rowStatus = row.querySelector('.status-badge').textContent.toLowerCase();
+                    
+                    const matchesStatus = status === 'all' || rowStatus === status.toLowerCase();
+                    const matchesDate = rowDate >= startDate && rowDate <= endDate;
+                    
+                    // Just mark visibility, don't actually hide yet
+                    row.style.display = matchesStatus && matchesDate ? '' : 'none';
+                });
+
+                // Reset to first page when filter changes
+                currentPage = 1;
+                showCurrentPageRows();
+            }
+
+            // Handle filter changes
+            const filters = document.querySelectorAll('select, input[type="date"]');
+            filters.forEach(filter => {
+                filter.addEventListener('change', filterTable);
+            });
+
+            // Handle pagination
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showCurrentPageRows();
                 }
-            }
+            });
 
-            exportHistory() {
-                // Get all history data
-                const historyData = {
-                    campaigns: JSON.parse(localStorage.getItem(`campaignHistory_${this.userId}`) || '[]'),
-                    donations: JSON.parse(localStorage.getItem(`donationHistory_${this.userId}`) || '[]'),
-                    transactions: JSON.parse(localStorage.getItem(`transactionHistory_${this.userId}`) || '[]')
-                };
+            document.getElementById('nextPage').addEventListener('click', () => {
+                const rows = Array.from(document.querySelectorAll('#historyTable tbody tr')).filter(row => row.style.display !== 'none');
+                const totalPages = Math.ceil(rows.length / ROWS_PER_PAGE);
+                
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showCurrentPageRows();
+                }
+            });
 
-                // Convert to CSV
-                const csv = this.convertToCSV(historyData);
+            // Rest of your existing code for PDF download...
+            const { jsPDF } = window.jspdf;
 
-                // Create download link
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `history_export_${new Date().toISOString().split('T')[0]}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }
+            document.getElementById('downloadPdf').addEventListener('click', function() {
+                const doc = new jsPDF();
 
-            printHistory() {
-                window.print();
-            }
+                // Add title
+                doc.setFontSize(20);
+                doc.text('Transaction History', 14, 20);
 
-            convertToCSV(data) {
-                // Implementation of CSV conversion
-                // This would format all history data into a CSV string
-                return '';
-            }
+                // Add date range and status filter
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const status = document.getElementById('status');
+                const selectedStatus = status.options[status.selectedIndex].text;
+                
+                doc.setFontSize(12);
+                doc.text(`Date Range: ${startDate} to ${endDate}`, 14, 30);
+                doc.text(`Status Filter: ${selectedStatus}`, 14, 37);
 
-            formatDate(date) {
-                return new Date(date).toLocaleDateString();
-            }
+                // Get table data
+                const table = document.getElementById('historyTable');
+                const tableData = [];
+                const headers = [];
 
-            formatDateRange(start, end) {
-                return `${this.formatDate(start)} - ${this.formatDate(end)}`;
-            }
-        }
+                // Get headers
+                table.querySelectorAll('thead th').forEach(header => {
+                    if (header.textContent !== 'Actions') {
+                        headers.push(header.textContent);
+                    }
+                });
 
-        // Initialize history data loader when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new HistoryDataLoader();
+                // Get visible table body data only
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const rowData = [];
+                        row.querySelectorAll('td').forEach((cell, index) => {
+                            if (index !== 4) { // Skip Actions column
+                                if (index === 3) { // Status column
+                                    const status = cell.querySelector('.status-badge').textContent;
+                                    rowData.push(status);
+                                } else {
+                                    rowData.push(cell.textContent);
+                                }
+                            }
+                        });
+                        tableData.push(rowData);
+                    }
+                });
+
+                // Add table to PDF
+                doc.autoTable({
+                    head: [headers],
+                    body: tableData,
+                    startY: 45,
+                    styles: {
+                        fontSize: 10,
+                        cellPadding: 3
+                    },
+                    headStyles: {
+                        fillColor: [74, 144, 226],
+                        textColor: 255
+                    },
+                    alternateRowStyles: {
+                        fillColor: [245, 245, 245]
+                    }
+                });
+
+                // Add footer with page numbers
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(10);
+                    doc.text(
+                        `Page ${i} of ${pageCount}`,
+                        doc.internal.pageSize.width / 2,
+                        doc.internal.pageSize.height - 10,
+                        { align: 'center' }
+                    );
+                }
+
+                // Generate filename based on filters
+                const statusText = selectedStatus.toLowerCase().replace(' ', '-');
+                const filename = `transaction-history-${statusText}-${startDate}-to-${endDate}.pdf`;
+
+                // Save the PDF
+                doc.save(filename);
+            });
+
+            // Initial filter and pagination
+            filterTable();
         });
 
-        function handleLogout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userName');
-            window.location.href = '/';
+        async function navigateToDashboard(event) {
+            console.log('Navigating to dashboard...');
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            console.log('Navigating to dashboard with token:', token);
+            await redirect('/dashboard', token);
         }
 
-        function checkAuthStatus() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            if (!isLoggedIn) {
+        async function navigateToProfile(event) {
+            console.log('Navigating to profile...');
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
                 window.location.href = '/login';
+                return;
+            }
+
+            console.log('Navigating to profile with token:', token);
+            await redirect('/profile', token);
+        }
+
+        async function navigateToHistory(event) {
+            console.log('Navigating to history...');
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            console.log('Navigating to history with token:', token);
+            await redirect('/history', token);
+        }
+
+        async function navigateToCampaign(event) {
+            console.log('Navigating to create campaign...');
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            console.log('Navigating to create campaign with token:', token);
+            await redirect('/create-campaign', token);
+        }
+
+        async function redirect(redirectUrl, localToken) {
+            console.log('Redirect function called with URL:', redirectUrl);
+            const response = await fetch(redirectUrl, {
+                headers: {
+                    'Authorization': `Bearer ${localToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                document.documentElement.innerHTML = html;
+                window.history.pushState({}, '', redirectUrl);
+            } else {
+                throw new Error('Failed to load ' + redirectUrl);
             }
         }
     </script>

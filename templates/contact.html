@@ -438,14 +438,14 @@
     <nav class="navbar">
         <div class="navbar-nav">
             <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+            <a class="nav-link auth-only" id="dashboard-link" style="display: none;" onclick="navigateToDashboard(event)">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
             <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
             <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
-            <a class="nav-link auth-required" href="/dashboard" style="display: none;"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a class="nav-link auth-required" href="/create-campaign" style="display: none;"><i class="fas fa-plus-circle"></i> Create Campaign</a>
-            <a class="nav-link auth-required" href="/history" style="display: none;"><i class="fas fa-history"></i> History</a>
         </div>
         <h1 class="website-name"><span>Flex</span> Me</h1>
-        <div class="user-profile auth-required" style="display: none;">
+        <div class="user-profile auth-only" style="display: none;">
             <span class="user-name">John Doe</span>
             <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
             <a href="#" class="logout-btn" onclick="handleLogout()">
@@ -555,6 +555,50 @@
     <script>
         // Check authentication status when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const authElements = document.querySelectorAll('.auth-only');
+            
+            // Show/hide elements based on auth status
+            authElements.forEach(element => {
+                element.style.display = token ? 'block' : 'none';
+            });
+        });
+
+        async function navigateToDashboard(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            await redirect('/dashboard', token);
+        }
+
+        async function redirect(redirectUrl, token) {
+            try {
+                const response = await fetch(redirectUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    document.documentElement.innerHTML = html;
+                    window.history.pushState({}, '', redirectUrl);
+                } else {
+                    throw new Error('Failed to load ' + redirectUrl);
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '/login';
+            }
+        }
+    </script>
+    <script>
+        // Check authentication status when page loads
+        document.addEventListener('DOMContentLoaded', function() {
             checkAuthStatus();
         });
 
@@ -563,7 +607,7 @@
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             
             // Get all elements that require authentication
-            const authElements = document.querySelectorAll('.auth-required');
+            const authElements = document.querySelectorAll('.auth-only');
             const guestLinks = document.querySelector('.guest-links');
             
             if (isLoggedIn) {

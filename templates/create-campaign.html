@@ -454,8 +454,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a id="dashboard-link" class="nav-link" data-page="dashboard" onclick="navigateToDashboard(event)"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a class="nav-link" href="/profile"><i class="fas fa-user"></i> Profile</a>
             <a class="nav-link" href="/history"><i class="fas fa-history"></i> History</a>
             <a class="nav-link" href="/create-campaign"><i class="fas fa-plus-circle"></i> Create Campaign</a>
@@ -561,10 +560,9 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
                 <a href="/about">About Us</a>
                 <a href="/contact">Contact Us</a>
-                <a href="/dashboard">Dashboard</a>
             </div>
             <div class="footer-section">
                 <h4>Contact Info</h4>

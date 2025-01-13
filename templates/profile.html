@@ -1022,13 +1022,41 @@
                 justify-content: center;
             }
         }
+
+        .editable-field {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .edit-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            display: none;
+        }
+
+        .editable-field:hover .edit-icon {
+            display: block;
+        }
+
+        .form-control {
+            padding-right: 30px;
+        }
+
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link" href="home.html"><i class="fas fa-home"></i> Home</a>
+            <a id="dashboard-link" class="nav-link" data-page="dashboard" onclick="navigateToDashboard(event)"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> About</a>
             <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
         </div>
@@ -1077,7 +1105,7 @@
         <div class="main-content">
             <div class="profile-section" id="personal-info">
                 <div class="form-container">
-                    <form id="profileForm">
+                    <form id="profileForm" class="profile-form" onsubmit="return false;">
                         <!-- Profile Info Section -->
                         <div class="profile-info">
                             <div class="profile-header">
@@ -1093,67 +1121,61 @@
                             <!-- Personal Information in Two Columns -->
                             <div class="two-column-layout">
                                 <div class="form-group editable-field">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group editable-field">
                                     <label for="firstName">First Name</label>
-                                    <input type="text" id="firstName" class="form-control" value="John" readonly>
+                                    <input type="text" id="firstName" name="firstName" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
                                     <label for="lastName">Last Name</label>
-                                    <input type="text" id="lastName" class="form-control" value="Doe" readonly>
+                                    <input type="text" id="lastName" name="lastName" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
                                     <label for="email">Email</label>
-                                    <input type="email" id="email" class="form-control" value="johndoe@example.com" readonly>
+                                    <input type="email" id="email" name="email" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
-                                    <label for="phone">Phone Number</label>
-                                    <input type="tel" id="phone" class="form-control" value="+1234567890" readonly>
+                                    <label for="phone">Phone</label>
+                                    <input type="tel" id="phone" name="phone" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
-                                    <label for="address">Street Address</label>
-                                    <input type="text" id="address" class="form-control" value="123 Main St" readonly>
-                                    <i class="fas fa-pencil-alt edit-icon"></i>
-                                </div>
-
-                                <div class="form-group editable-field">
-                                    <label for="address2">Address Line 2</label>
-                                    <input type="text" id="address2" class="form-control" value="Apt 4B" readonly>
+                                    <label for="address">Address</label>
+                                    <input type="text" id="address" name="address" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
                                     <label for="city">City</label>
-                                    <input type="text" id="city" class="form-control" value="New York" readonly>
+                                    <input type="text" id="city" name="city" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
-                                    <label for="state">State/Province</label>
-                                    <input type="text" id="state" class="form-control" value="NY" readonly>
+                                    <label for="state">State</label>
+                                    <input type="text" id="state" name="state" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
-                                    <label for="zipCode">ZIP/Postal Code</label>
-                                    <input type="text" id="zipCode" class="form-control" value="10001" readonly>
+                                    <label for="zipCode">Zip Code</label>
+                                    <input type="text" id="zipCode" name="zipCode" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
 
                                 <div class="form-group editable-field">
                                     <label for="country">Country</label>
-                                    <select id="country" class="form-control" readonly>
-                                        <option value="US">United States</option>
-                                        <option value="CA">Canada</option>
-                                        <option value="UK">United Kingdom</option>
-                                        <option value="AU">Australia</option>
-                                    </select>
+                                    <input type="text" id="country" name="country" class="form-control">
                                     <i class="fas fa-pencil-alt edit-icon"></i>
                                 </div>
                             </div>
@@ -1473,58 +1495,51 @@
             });
 
             // Form submission
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
                 
                 // Gather form data
-                const formData = {
-                    firstName: document.getElementById('firstName').value,
-                    lastName: document.getElementById('lastName').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value
+                const formData = new FormData(form);
+                const data = {
+                    full_name: `${formData.get('firstName')} ${formData.get('lastName')}`.trim(),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    location: [
+                        formData.get('address'),
+                        formData.get('city'),
+                        formData.get('state'),
+                        formData.get('zipCode'),
+                        formData.get('country')
+                    ].filter(Boolean).join(', ')
                 };
 
-                // Validate profile info
-                const infoValidation = validator.validateProfileInfo(formData);
-                if (!infoValidation.valid) {
-                    alert(infoValidation.message);
+                console.log('Saving profile data:', data); // Debug log
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login';
                     return;
                 }
 
-                // Validate security questions if they've been changed
-                const securityQuestions = Array.from(document.querySelectorAll('.security-question')).map(q => q.value);
-                const securityAnswers = Array.from(document.querySelectorAll('.security-answer')).map(a => a.value);
-                
-                if (securityAnswers.some(answer => !answer.includes('*'))) {
-                    const securityValidation = validator.validateSecurityQuestions(securityQuestions, securityAnswers);
-                    if (!securityValidation.valid) {
-                        alert(securityValidation.message);
-                        return;
-                    }
+                const response = await fetch('/api/user/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to update profile');
                 }
 
-                // Validate password if change is requested
-                if (document.getElementById('changePassword').checked) {
-                    const currentPassword = document.getElementById('currentPassword').value;
-                    const newPassword = document.getElementById('newPassword').value;
-                    const confirmPassword = document.getElementById('confirmPassword').value;
-
-                    const passwordValidation = validator.validatePassword(currentPassword, newPassword, confirmPassword);
-                    if (!passwordValidation.valid) {
-                        alert(passwordValidation.message);
-                        return;
-                    }
-
-                    // Add new password to history
-                    const passwordHistory = JSON.parse(localStorage.getItem('passwordHistory') || '[]');
-                    passwordHistory.push(newPassword);
-                    if (passwordHistory.length > 5) passwordHistory.shift(); // Keep last 5 passwords
-                    localStorage.setItem('passwordHistory', JSON.stringify(passwordHistory));
-                }
-
-                // If all validations pass, save changes
+                const result = await response.json();
                 alert('Profile updated successfully!');
-                // Here you would normally send the data to your backend
+                
+                // Reload profile data to show updated information
+                // await this.loadUserProfile();
             });
         });
 
@@ -1748,297 +1763,250 @@
         });
     </script>
     <script>
-        class ProfileDataLoader {
+        class ProfileManager {
             constructor() {
-                this.userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+                this.token = localStorage.getItem('token');
                 this.initialize();
             }
 
             async initialize() {
-                if (!this.userId) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                this.showLoadingState();
                 try {
-                    await Promise.all([
-                        this.loadUserProfile(),
-                        this.loadUserStats(),
-                        this.loadPreferences(),
-                        this.loadNotificationSettings()
-                    ]);
+                    if (!this.token) {
+                        console.error('No token found');
+                        window.location.href = '/login';
+                        return;
+                    }
+
+                    this.showLoadingState();
+
+                    // Try to get data from sessionStorage first (if navigating from dashboard)
+                    const storedData = sessionStorage.getItem('profileData');
+                    if (storedData) {
+                        console.log('Using stored profile data');
+                        const userData = JSON.parse(storedData);
+                        this.updateFormFields(userData);
+                        sessionStorage.removeItem('profileData'); // Clear stored data
+                    } else {
+                        console.log('Fetching fresh profile data');
+                        await this.loadUserProfile();
+                    }
+
                     this.setupFormHandlers();
                 } catch (error) {
-                    console.error('Error loading profile data:', error);
-                    this.showErrorState();
+                    console.error('Error initializing profile:', error);
+                    this.showError(error.message || 'Failed to load profile');
                 } finally {
                     this.hideLoadingState();
                 }
             }
 
-            showLoadingState() {
-                const container = document.querySelector('.profile-container');
-                if (!container) return;
-
-                container.innerHTML = `
-                    <div class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Loading profile data...</p>
-                    </div>
-                `;
-            }
-
-            hideLoadingState() {
-                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
-            }
-
-            showErrorState() {
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.innerHTML = `
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>Error loading profile data. Please try refreshing the page.</p>
-                    <button onclick="window.location.reload()">Refresh</button>
-                `;
-                document.querySelector('.profile-container').prepend(errorMessage);
-            }
-
             async loadUserProfile() {
-                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
-                
-                // Update profile information
-                const profileInfo = document.querySelector('.profile-info');
-                if (profileInfo) {
-                    profileInfo.innerHTML = `
-                        <div class="profile-header">
-                            <img src="${userData.avatar || 'assets/default-avatar.png'}" alt="Profile Picture" class="profile-picture">
-                            <div class="profile-details">
-                                <h2>${userData.name || 'Anonymous User'}</h2>
-                                <p class="user-level">Level: ${userData.level || 'Bronze'}</p>
-                                <p class="join-date">Member since: ${this.formatDate(userData.joinDate)}</p>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Update form fields
-                const form = document.querySelector('.profile-form');
-                if (form) {
-                    form.querySelector('[name="name"]').value = userData.name || '';
-                    form.querySelector('[name="email"]').value = userData.email || '';
-                    form.querySelector('[name="phone"]').value = userData.phone || '';
-                    form.querySelector('[name="bio"]').value = userData.bio || '';
-                }
-            }
-
-            async loadUserStats() {
-                const stats = JSON.parse(localStorage.getItem(`userStats_${this.userId}`) || '{}');
-                
-                const statsContainer = document.querySelector('.user-stats');
-                if (statsContainer) {
-                    statsContainer.innerHTML = `
-                        <div class="stat-item">
-                            <h3>Campaigns Created</h3>
-                            <p>${stats.campaignsCreated || 0}</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>Total Raised</h3>
-                            <p>$${(stats.totalRaised || 0).toLocaleString()}</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>Successful Campaigns</h3>
-                            <p>${stats.successfulCampaigns || 0}</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>Average Success Rate</h3>
-                            <p>${stats.successRate || 0}%</p>
-                        </div>
-                    `;
-                }
-            }
-
-            async loadPreferences() {
-                const preferences = JSON.parse(localStorage.getItem(`userPreferences_${this.userId}`) || '{}');
-                
-                const preferencesForm = document.querySelector('.preferences-form');
-                if (preferencesForm) {
-                    preferencesForm.querySelector('[name="theme"]').value = preferences.theme || 'light';
-                    preferencesForm.querySelector('[name="language"]').value = preferences.language || 'en';
-                    preferencesForm.querySelector('[name="currency"]').value = preferences.currency || 'USD';
-                    preferencesForm.querySelector('[name="timezone"]').value = preferences.timezone || 'UTC';
-                }
-            }
-
-            async loadNotificationSettings() {
-                const settings = JSON.parse(localStorage.getItem(`notificationSettings_${this.userId}`) || '{}');
-                
-                const settingsForm = document.querySelector('.notification-settings');
-                if (settingsForm) {
-                    settingsForm.querySelector('[name="emailNotifications"]').checked = settings.email || false;
-                    settingsForm.querySelector('[name="pushNotifications"]').checked = settings.push || false;
-                    settingsForm.querySelector('[name="smsNotifications"]').checked = settings.sms || false;
-                    settingsForm.querySelector('[name="campaignUpdates"]').checked = settings.updates || false;
-                }
-            }
-
-            setupFormHandlers() {
-                // Profile form handler
-                const profileForm = document.querySelector('.profile-form');
-                if (profileForm) {
-                    profileForm.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        this.saveProfileChanges(e.target);
+                try {
+                    console.log('Fetching user profile with token...');
+                    const response = await fetch('/api/user/profile', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`,
+                            'Accept': 'application/json'
+                        }
                     });
-                }
 
-                // Preferences form handler
-                const preferencesForm = document.querySelector('.preferences-form');
-                if (preferencesForm) {
-                    preferencesForm.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        this.savePreferences(e.target);
-                    });
-                }
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            localStorage.removeItem('token');
+                            window.location.href = '/login';
+                            return;
+                        }
+                        const error = await response.json();
+                        throw new Error(error.error || 'Failed to load profile');
+                    }
 
-                // Notification settings handler
-                const notificationForm = document.querySelector('.notification-settings');
-                if (notificationForm) {
-                    notificationForm.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        this.saveNotificationSettings(e.target);
-                    });
-                }
-
-                // Profile picture upload handler
-                const pictureUpload = document.querySelector('.profile-picture-upload');
-                if (pictureUpload) {
-                    pictureUpload.addEventListener('change', (e) => {
-                        this.handleProfilePictureUpload(e.target.files[0]);
-                    });
+                    const userData = await response.json();
+                    console.log('Received user data:', userData);
+                    this.updateFormFields(userData);
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                    throw error;
                 }
             }
 
-            async saveProfileChanges(form) {
-                const formData = new FormData(form);
-                const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
-                
-                const updatedData = {
-                    ...userData,
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    bio: formData.get('bio')
-                };
-
-                localStorage.setItem(`userData_${this.userId}`, JSON.stringify(updatedData));
-                this.showSuccess('Profile updated successfully!');
-            }
-
-            async savePreferences(form) {
-                const formData = new FormData(form);
-                const preferences = {
-                    theme: formData.get('theme'),
-                    language: formData.get('language'),
-                    currency: formData.get('currency'),
-                    timezone: formData.get('timezone')
-                };
-
-                localStorage.setItem(`userPreferences_${this.userId}`, JSON.stringify(preferences));
-                this.showSuccess('Preferences saved successfully!');
-                this.applyPreferences(preferences);
-            }
-
-            async saveNotificationSettings(form) {
-                const settings = {
-                    email: form.querySelector('[name="emailNotifications"]').checked,
-                    push: form.querySelector('[name="pushNotifications"]').checked,
-                    sms: form.querySelector('[name="smsNotifications"]').checked,
-                    updates: form.querySelector('[name="campaignUpdates"]').checked
-                };
-
-                localStorage.setItem(`notificationSettings_${this.userId}`, JSON.stringify(settings));
-                this.showSuccess('Notification settings updated successfully!');
-            }
-
-            async handleProfilePictureUpload(file) {
-                if (!file) return;
-
-                if (!this.validateImage(file)) {
+            updateFormFields(userData) {
+                if (!userData) {
+                    console.error('No user data provided');
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const userData = JSON.parse(localStorage.getItem(`userData_${this.userId}`) || '{}');
-                    userData.avatar = e.target.result;
-                    localStorage.setItem(`userData_${this.userId}`, JSON.stringify(userData));
-                    
-                    // Update profile picture in UI
-                    const profilePicture = document.querySelector('.profile-picture');
-                    if (profilePicture) {
-                        profilePicture.src = e.target.result;
-                    }
-                    
-                    this.showSuccess('Profile picture updated successfully!');
+                console.log('Updating form fields with data:', userData);
+                const form = document.getElementById('profileForm');
+                if (!form) {
+                    console.error('Profile form not found');
+                    return;
+                }
+
+                // Split full name into first and last name
+                const [firstName = '', lastName = ''] = (userData.full_name || '').split(' ');
+
+                // Update text fields
+                const fields = {
+                    'username': userData.username || '',
+                    'firstName': firstName,
+                    'lastName': lastName,
+                    'email': userData.email || '',
+                    'phone': userData.phone || ''
                 };
-                reader.readAsDataURL(file);
-            }
 
-            validateImage(file) {
-                if (!file.type.startsWith('image/')) {
-                    this.showError('Please upload an image file');
-                    return false;
+                // Update location fields if location exists
+                if (userData.location) {
+                    const [address = '', city = '', state = '', zipCode = '', country = ''] = 
+                        userData.location.split(',').map(item => item.trim());
+                    
+                    Object.assign(fields, {
+                        'address': address,
+                        'city': city,
+                        'state': state,
+                        'zipCode': zipCode,
+                        'country': country
+                    });
                 }
 
-                if (file.size > 5 * 1024 * 1024) {
-                    this.showError('Image size must be less than 5MB');
-                    return false;
+                // Update each field in the form
+                for (const [id, value] of Object.entries(fields)) {
+                    const field = form.querySelector(`#${id}`);
+                    if (field) {
+                        field.value = value;
+                        field.readOnly = id === 'username'; // Make username read-only
+                    }
                 }
 
-                return true;
+                // Update profile picture if it exists
+                const profilePic = document.querySelector('.profile-picture');
+                if (profilePic && userData.profile_pic) {
+                    profilePic.src = userData.profile_pic;
+                }
+
+                // Update level and points if they exist
+                const levelElement = document.querySelector('.user-level');
+                const pointsElement = document.querySelector('.user-points');
+                if (levelElement) levelElement.textContent = userData.level || 'Bronze';
+                if (pointsElement) pointsElement.textContent = userData.points || '0';
+
+                console.log('Form fields updated successfully');
             }
 
-            applyPreferences(preferences) {
-                // Apply theme
-                document.body.classList.remove('theme-light', 'theme-dark');
-                document.body.classList.add(`theme-${preferences.theme}`);
+            setupFormHandlers() {
+                const form = document.getElementById('profileForm');
+                if (!form) return;
 
-                // Apply other preferences as needed
-                document.documentElement.lang = preferences.language;
-                // Add more preference applications as needed
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    }
+                    try {
+                        await this.saveProfileChanges(form);
+                    } finally {
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = 'Save Changes';
+                        }
+                    }
+                });
             }
 
-            formatDate(date) {
-                return new Date(date).toLocaleDateString();
+            async saveProfileChanges(form) {
+                try {
+                    const formData = new FormData(form);
+                    const data = {
+                        full_name: `${formData.get('firstName')} ${formData.get('lastName')}`.trim(),
+                        email: formData.get('email'),
+                        phone: formData.get('phone'),
+                        location: [
+                            formData.get('address'),
+                            formData.get('city'),
+                            formData.get('state'),
+                            formData.get('zipCode'),
+                            formData.get('country')
+                        ].filter(Boolean).join(', ')
+                    };
+
+                    console.log('Saving profile data:', data);
+
+                    const response = await fetch('/api/user/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            localStorage.removeItem('token');
+                            window.location.href = '/login';
+                            return;
+                        }
+                        const error = await response.json();
+                        throw new Error(error.error || 'Failed to update profile');
+                    }
+
+                    const result = await response.json();
+                    console.log('Profile update response:', result);
+
+                    this.showSuccess('Profile updated successfully!');
+                    // Reload the latest data
+                    await this.loadUserProfile();
+                } catch (error) {
+                    console.error('Error saving profile:', error);
+                    this.showError(error.message || 'Failed to update profile');
+                }
+            }
+
+            showLoadingState() {
+                const form = document.getElementById('profileForm');
+                if (!form) return;
+                
+                form.style.opacity = '0.5';
+                form.insertAdjacentHTML('beforebegin', `
+                    <div class="loading-spinner" style="text-align: center; margin: 20px;">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Loading profile data...</p>
+                    </div>
+                `);
+            }
+
+            hideLoadingState() {
+                const form = document.getElementById('profileForm');
+                if (form) {
+                    form.style.opacity = '1';
+                }
+                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
             }
 
             showSuccess(message) {
-                const successDiv = document.createElement('div');
-                successDiv.className = 'success-message';
-                successDiv.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <p>${message}</p>
-                `;
-                document.querySelector('.profile-container').prepend(successDiv);
-                setTimeout(() => successDiv.remove(), 5000);
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success';
+                alert.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; z-index: 1000;';
+                alert.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
             }
 
             showError(message) {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.innerHTML = `
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>${message}</p>
-                `;
-                document.querySelector('.profile-container').prepend(errorDiv);
-                setTimeout(() => errorDiv.remove(), 5000);
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger';
+                alert.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; z-index: 1000;';
+                alert.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 5000);
             }
         }
 
-        // Initialize profile data loader when page loads
+        // Initialize profile manager when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new ProfileDataLoader();
+            new ProfileManager();
         });
     </script>
 </body>

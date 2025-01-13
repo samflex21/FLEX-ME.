@@ -628,7 +628,7 @@
 <body>
   <nav class="navbar">
     <div class="navbar-nav">
-      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/" onclick="navigateToHome(event)">Home</a>
       <a class="nav-link" href="/about">About</a>
       <a class="nav-link" href="/contact">Contact</a>
     </div>
@@ -672,50 +672,117 @@
       errorDiv.style.display = 'none';
       
       try {
+        console.log('Attempting login for user:', username);
         const response = await fetch('/login', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           },
-          body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+          body: JSON.stringify({
+            username: username,
+            password: password
+          })
         });
         
+        console.log('Login response status:', response.status);
         const data = await response.json();
+        console.log('Login response:', data);
         
         if (response.ok) {
-          console.log("login successful");
-          // Store token and username
+          console.log('Login successful');
+          // Store token and user data
           localStorage.setItem('token', data.token);
-          localStorage.setItem('username', data.username);
-          console.log("data.token", data.token);
-          console.log("data.username", data.username);
+          localStorage.setItem('username', data.user.username);
+          localStorage.setItem('userData', JSON.stringify(data.user));
+          
+          console.log('Stored token:', data.token);
+          console.log('Stored user data:', data.user);
 
-          // Instead of redirecting, fetch dashboard with token
-          const dashboardResponse = await fetch('/dashboard', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${data.token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-
-          if (dashboardResponse.ok) {
-            const html = await dashboardResponse.text();
-            document.documentElement.innerHTML = html;
-            // Update URL without reloading
-            window.history.pushState({}, '', '/dashboard');
-          } else {
-            throw new Error('Failed to load dashboard');
-          }
+          // Redirect to dashboard with token
+          await navigateToDashboard();
         } else {
-          errorDiv.textContent = data.error || 'Login failed';
+          const message = data.error || 'Login failed. Please try again.';
+          console.error('Login failed:', message);
+          errorDiv.textContent = message;
           errorDiv.style.display = 'block';
         }
       } catch (error) {
         console.error('Login error:', error);
-        errorDiv.textContent = 'An error occurred during login';
+        errorDiv.textContent = 'An error occurred during login. Please try again.';
         errorDiv.style.display = 'block';
       }
+    }
+
+    async function navigateWithAuth(url) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login';
+        return;
+      }
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            if (data.redirect) {
+              window.location.href = data.redirect;
+            } else {
+              window.location.href = url;
+            }
+          } else {
+            const html = await response.text();
+            document.documentElement.innerHTML = html;
+            // Execute any scripts in the new HTML
+            const scripts = document.getElementsByTagName('script');
+            for (let script of scripts) {
+              eval(script.innerHTML);
+            }
+            // Update URL without reloading
+            window.history.pushState({}, '', url);
+          }
+        } else if (response.status === 401) {
+          console.error('Authentication failed, redirecting to login');
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        } else {
+          throw new Error(`Navigation failed: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Navigation error:', error);
+        alert('An error occurred while navigating. Please try again.');
+      }
+    }
+
+    async function navigateToHome(event) {
+      if (event) event.preventDefault();
+      await navigateWithAuth('/');
+    }
+
+    async function navigateToProfile(event) {
+      if (event) event.preventDefault();
+      await navigateWithAuth('/profile');
+    }
+
+    async function navigateToHistory(event) {
+      if (event) event.preventDefault();
+      await navigateWithAuth('/history');
+    }
+
+    async function navigateToCampaign(event) {
+      if (event) event.preventDefault();
+      await navigateWithAuth('/create-campaign');
+    }
+
+    async function navigateToDashboard(event) {
+      if (event) event.preventDefault();
+      await navigateWithAuth('/dashboard');
     }
   </script>
 
