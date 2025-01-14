@@ -469,7 +469,7 @@
         <h1 class="website-name"><span>Flex</span> Me</h1>
         <div class="user-profile auth-only" style="display: none;">
             <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
-            <span class="user-name">John Doe</span>
+            <span class="user-name">Samuel Olumide Adebimpe</span>
             <a href="#" class="logout-btn" onclick="handleLogout()">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
@@ -526,9 +526,10 @@
 
         function handleLogout() {
             // Clear authentication status
+            localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('token');
             // Redirect to home page
-            window.location.href = '/';
+            window.location.href = 'home.html';
         }
     </script>
 

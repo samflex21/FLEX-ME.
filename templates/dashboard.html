@@ -978,23 +978,21 @@
         }
     </style>
 </head>
-</head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a id="dashboard-link" class="nav-link" data-nav="/dashboard" onclick="checkAuthAndNavigate(event, '/dashboard')"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a id="profile-link" class="nav-link" data-nav="/profile" onclick="navigateToProfile(event)"><i class="fas fa-user"></i> Profile</a>
-            <a id="history-link" class="nav-link" data-nav="/history" onclick="checkAuthAndNavigate(event, '/history')"><i class="fas fa-history"></i> History</a>
-            <a id="campaign-link" class="nav-link" data-nav="/create-campaign" onclick="checkAuthAndNavigate(event, '/create-campaign')"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+            <a href="/history" class="nav-link"><i class="fas fa-history"></i> History</a>
+            <a href="/create-campaign" class="nav-link"><i class="fas fa-plus-circle"></i> Create Campaign</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
-            <div class="profile-pic-container">
-                <img src="{{ user.profile_pic or url_for('static', filename='images/default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
+            <img src="/static/images/default-avatar.png" alt="Profile Picture" class="profile-picture">
+            <span class="user-name">Samuel Olumide Adebimpe</span>
+            <div class="dropdown-content">
+                <a href="{{ url_for('logout') }}">Logout</a>
             </div>
-            <span class="user-name">{{ user.username }}</span>
-            <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -1095,16 +1093,6 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Quick Links</h4>
-                <a href="about.html">About Us</a>
-                <a href="contact.html">Contact Us</a>
-            </div>
-            <div class="footer-section">
-                <h4>Contact Info</h4>
-                <p><i class="fas fa-envelope"></i> support@flexme.com</p>
-                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
-            </div>
-            <div class="footer-section">
                 <h4>Connect With Us</h4>
                 <div class="social-links">
                     <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -1132,28 +1120,15 @@
     </div>
 
     <script>
-        async function checkAuthAndNavigate(event, path) {
-            event.preventDefault();
+        async function loadUserData() {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            window.location.href = path;
-        }
-
-        async function navigateToProfile(event) {
-            event.preventDefault();
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '/login';
+                window.location.href = '/';
                 return;
             }
 
             try {
-                // Store current user data in sessionStorage before navigating
                 const response = await fetch('/api/user/profile', {
-                    method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -1163,106 +1138,32 @@
                 if (!response.ok) {
                     if (response.status === 401) {
                         localStorage.removeItem('token');
-                        window.location.href = '/login';
+                        window.location.href = '/';
                         return;
                     }
-                    throw new Error('Failed to fetch profile data');
+                    throw new Error('Failed to load user data');
                 }
 
                 const userData = await response.json();
-                // Store user data in sessionStorage for profile page
-                sessionStorage.setItem('profileData', JSON.stringify(userData));
-                window.location.href = '/profile';
-            } catch (error) {
-                console.error('Error fetching profile data:', error);
-                window.location.href = '/profile'; // Still navigate, profile page will handle the error
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add click handlers for navigation
-            document.querySelectorAll('[data-nav]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const path = link.getAttribute('data-nav');
-                    if (path === '/profile') {
-                        navigateToProfile(e);
-                    } else {
-                        checkAuthAndNavigate(e, path);
-                    }
-                });
-            });
-        });
-
-        // Check token on page load
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('DOMContentLoaded event fired');
-            
-            const token = localStorage.getItem('token');
-            console.log('Token from localStorage:', token);
-            
-            if (!token) {
-                console.log('No token found, redirecting to login');
-                window.location.href = '/login';
-                return;
-            }
-
-            // If this is a direct page load (refresh), fetch the dashboard content
-            if (document.referrer === '' || new URL(document.referrer).pathname === '/dashboard') {
-                try {
-                    const response = await fetch('/dashboard', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    console.log('Dashboard response status:', response.status);
-                    
-                    if (!response.ok) {
-                        const error = await response.json();
-                        throw new Error(error.message || error.error || 'Failed to load dashboard');
-                    }
-
-                    const html = await response.text();
-                    document.documentElement.innerHTML = html;
-                } catch (error) {
-                    console.error('Authentication error:', error);
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('username');
-                    window.location.href = '/login';
+                
+                // Update navbar user info
+                const userNameElement = document.querySelector('.user-name');
+                const profilePicElement = document.querySelector('.profile-picture');
+                
+                if (userNameElement) {
+                    userNameElement.textContent = userData.username || 'Samuel Olumide Adebimpe';
                 }
+                
+                if (profilePicElement && userData.profile_pic) {
+                    profilePicElement.src = userData.profile_pic;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
             }
-        });
-
-        // Override fetch to automatically add token
-        const originalFetch = window.fetch;
-        window.fetch = function() {
-            console.log('Fetch override called');
-            let [resource, config] = arguments;
-            
-            // Create new config object to avoid modifying the original
-            config = { ...config } || {};
-            config.headers = { ...config.headers } || {};
-            
-            const token = localStorage.getItem('token');
-            if (token) {
-                config.headers['Authorization'] = `Bearer ${token}`;
-                console.log('Added token to request:', config.headers['Authorization']);
-            }
-            
-            return originalFetch(resource, config);
-        };
-
-        function logout() {
-            console.log('Logging out...');
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            window.location.href = '/login';
         }
 
-        
-
+        // Load user data when page loads
+        document.addEventListener('DOMContentLoaded', loadUserData);
     </script>
 </body>
 </html>

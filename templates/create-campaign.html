@@ -458,14 +458,12 @@
             <a class="nav-link" href="/profile"><i class="fas fa-user"></i> Profile</a>
             <a class="nav-link" href="/history"><i class="fas fa-history"></i> History</a>
             <a class="nav-link" href="/create-campaign"><i class="fas fa-plus-circle"></i> Create Campaign</a>
-            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
-            <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
-        </div>
+                    </div>
         <h1 class="website-name"><span>Flex</span> Me</h1>
         <div class="user-profile auth-required">
-            <span class="user-name">John Doe</span>
+            <span class="user-name">Samuel Olumide Adebimpe</span>
             <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
-            <a href="#" class="logout-btn" onclick="handleLogout()">
+            <a href="{{ url_for('logout') }}" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>
@@ -699,7 +697,8 @@
 
         // Check authentication when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuthStatus();
+            // Removed authentication check to allow access without login
+            console.log('Accessing Create Campaign page without authentication.');
         });
 
         function checkAuthStatus() {
@@ -725,9 +724,11 @@
         }
 
         function handleLogout() {
+            // Clear authentication status
             localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userName');
-            window.location.href = '/';
+            localStorage.removeItem('token');
+            // Redirect to home page
+            window.location.href = 'home.html';
         }
 
         // Form submission handling

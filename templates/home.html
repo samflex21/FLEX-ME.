@@ -686,18 +686,18 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a class="nav-link auth-required" href="/dashboard" style="display: none;"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a class="nav-link auth-required" href="/profile" style="display: none;"><i class="fas fa-user"></i> Profile</a>
-            <a class="nav-link auth-required" href="/history" style="display: none;"><i class="fas fa-history"></i> History</a>
-            <a class="nav-link auth-required" href="/create-campaign" style="display: none;"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a href="/dashboard" class="nav-link auth-required" style="display: none;"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="/profile" class="nav-link auth-required" style="display: none;"><i class="fas fa-user"></i> Profile</a>
+            <a href="/history" class="nav-link auth-required" style="display: none;"><i class="fas fa-history"></i> History</a>
+            <a href="/create-campaign" class="nav-link auth-required" style="display: none;"><i class="fas fa-plus-circle"></i> Create Campaign</a>
             <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a>
             <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Contact</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile auth-required" style="display: none;">
-            <span class="user-name">John Doe</span>
+            <span class="user-name">Samuel Olumide Adebimpe</span>
             <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Profile Picture" class="profile-pic">
-            <a href="#" class="logout-btn" onclick="handleLogout()">
+            <a href="{{ url_for('logout') }}" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>
@@ -858,7 +858,7 @@
     <div class="auth-content auth-required" style="display: none;">
         <section class="dashboard-preview">
             <div class="welcome-section">
-                <h2>Welcome back, <span class="user-name-display">John</span>!</h2>
+                <h2>Welcome back, <span class="user-name-display">Samuel Olumide Adebimpe</span>!</h2>
                 <p>Thank you for being part of our community</p>
             </div>
             
@@ -1058,8 +1058,8 @@
 
         function handleLogout() {
             localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userName');
-            window.location.href = '/home';
+            localStorage.removeItem('token');
+            window.location.href = 'home.html';
         }
 
         function openAdminModal() {
@@ -1250,7 +1250,7 @@
                     // Simulate API call - replace with actual data fetching
                     const testimonials = [
                         {
-                            name: "John Doe",
+                            name: "Samuel Olumide Adebimpe",
                             role: "Campaign Creator",
                             image: "assets/testimonial1.jpg",
                             text: "This platform helped me raise funds for my medical treatment. Forever grateful!"

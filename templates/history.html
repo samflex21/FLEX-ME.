@@ -566,16 +566,16 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-nav">
-            <a id="dashboard-link" class="nav-link" data-page="dashboard" onclick="navigateToDashboard(event)"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a id="profile-link" class="nav-link" data-page="profile" onclick="navigateToProfile(event)"><i class="fas fa-user"></i> Profile</a>
-            <a id="history-link" class="nav-link" data-page="history" onclick="navigateToHistory(event)"><i class="fas fa-history"></i> History</a>
-            <a id="campaign-link" class="nav-link" data-page="create-campaign" onclick="navigateToCampaign(event)"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a href="/dashboard" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+            <a href="/history" class="nav-link"><i class="fas fa-history"></i> History</a>
+            <a href="/create-campaign" class="nav-link"><i class="fas fa-plus-circle"></i> Create Campaign</a>
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
-            <span class="user-name">John Doe</span>
+            <span class="user-name">Samuel Olumide Adebimpe</span>
             <img src="images/profile-pic.jpg" alt="Profile Picture" class="profile-pic">
-            <a href="login.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 

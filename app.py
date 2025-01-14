@@ -23,7 +23,20 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False  # Tokens don't expire
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_HEADER_NAME'] = 'Authorization'
 app.config['JWT_HEADER_TYPE'] = 'Bearer'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+# Define allowed file extensions
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Create uploads directory if it doesn't exist
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads', 'profile_pictures')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 jwt = JWTManager(app)
 
@@ -107,81 +120,119 @@ def home():
 @app.route('/dashboard')
 @jwt_required()
 def dashboard():
-    print("Dashboard endpoint")
-    print("Headers:", dict(request.headers))
     try:
-        # Get user ID from token
-        current_user_id = get_jwt_identity()
-        if not current_user_id:
-            print("No user ID in token")
-            return jsonify({"error": "Invalid token"}), 401
-
-        print(f"Current user ID: {current_user_id}")
-        
-        # Find user in database
-        user = db_mongo.users.find_one({'_id': ObjectId(current_user_id)})
+        current_user = get_jwt_identity()
+        user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
         if not user:
-            print("User not found in database")
-            return jsonify({"error": "User not found"}), 404
-            
-        print(f"User found: {user['username']}")
-        
-        # Convert ObjectId to string for JSON serialization
+            return redirect(url_for('login'))
+
         user_data = {
-            '_id': str(current_user_id),
-            'username': user['username'],
-            'email': user.get('email', ''),
-            'full_name': user.get('full_name', ''),
+            'username': user.get('username', ''),
+            'profile_pic': user.get('profile_pic', ''),
             'level': user.get('level', 'Bronze'),
-            'points': user.get('points', 0),
-            'totalDonated': user.get('totalDonated', 0),
-            'peopleHelped': user.get('peopleHelped', 0)
+            'points': user.get('points', 0)
         }
-        
-        # Get campaigns for this user
-        campaigns = list(db_mongo.campaigns.find({'user_id': ObjectId(current_user_id)}))
-        campaign_data = []
-        for campaign in campaigns:
-            campaign_data.append({
-                'id': str(campaign['_id']),
-                'title': campaign.get('title', ''),
-                'goal': campaign.get('goal', 0),
-                'raised': campaign.get('raised', 0),
-                'status': campaign.get('status', 'active')
-            })
-            
-        # Get recent donations
-        donations = list(db_mongo.donations.find(
-            {'user_id': ObjectId(current_user_id)}
-        ).sort('date', -1).limit(5))
-        donation_data = []
-        for donation in donations:
-            donation_data.append({
-                'id': str(donation['_id']),
-                'amount': donation.get('amount', 0),
-                'campaign': donation.get('campaign_title', ''),
-                'date': donation.get('date', '')
-            })
-        
-        # Check if request wants JSON
-        if request.headers.get('Accept') == 'application/json':
-            return jsonify({
-                'user': user_data,
-                'campaigns': campaign_data,
-                'recent_donations': donation_data
-            })
-        
-        # Otherwise render template
-        return render_template(
-            'dashboard.html',
-            user=user_data,
-            campaigns=campaign_data,
-            recent_donations=donation_data
-        )
-        
+        return render_template('dashboard.html', user=user_data)
     except Exception as e:
-        print(f"Dashboard error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        print(f"Error in dashboard route: {str(e)}")
+        return redirect(url_for('login'))
+
+@app.route('/profile')
+def profile():
+    try:
+        # Serve the profile page without requiring user data
+        return render_template('profile.html')
+    except Exception as e:
+        print(f"Error in profile route: {str(e)}")
+        return redirect(url_for('home'))
+
+@app.route('/api/user/profile', methods=['GET', 'POST'])
+@jwt_required()
+def user_profile():
+    try:
+        current_user = get_jwt_identity()
+        user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+        
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        if request.method == 'GET':
+            # Parse name components
+            full_name = user.get('full_name', '')
+            name_parts = full_name.split(' ', 1)
+            first_name = name_parts[0] if name_parts else ''
+            last_name = name_parts[1] if len(name_parts) > 1 else ''
+
+            # Parse location components
+            location = user.get('location', '')
+            loc_parts = [x.strip() for x in location.split(',')]
+            address = loc_parts[0] if len(loc_parts) > 0 else ''
+            city = loc_parts[1] if len(loc_parts) > 1 else ''
+            state = loc_parts[2] if len(loc_parts) > 2 else ''
+            zip_code = loc_parts[3] if len(loc_parts) > 3 else ''
+            country = loc_parts[4] if len(loc_parts) > 4 else ''
+
+            # Return formatted user data
+            return jsonify({
+                'username': user.get('username', ''),
+                'email': user.get('email', ''),
+                'first_name': first_name,
+                'last_name': last_name,
+                'phone': user.get('phone', ''),
+                'address': address,
+                'city': city,
+                'state': state,
+                'zip_code': zip_code,
+                'country': country,
+                'profile_pic': user.get('profile_pic', ''),
+                'level': user.get('level', 'Bronze'),
+                'points': user.get('points', 0)
+            })
+
+        elif request.method == 'POST':
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'No data provided'}), 400
+
+            # Build location string
+            location_parts = [
+                data.get('address', '').strip(),
+                data.get('city', '').strip(),
+                data.get('state', '').strip(),
+                data.get('zip_code', '').strip(),
+                data.get('country', '').strip()
+            ]
+            location = ', '.join(filter(None, location_parts))
+
+            # Build full name
+            first_name = data.get('first_name', '').strip()
+            last_name = data.get('last_name', '').strip()
+            full_name = ' '.join(filter(None, [first_name, last_name]))
+
+            # Update user data
+            update_data = {
+                'full_name': full_name,
+                'email': data.get('email'),
+                'phone': data.get('phone'),
+                'location': location
+            }
+
+            # Remove empty values
+            update_data = {k: v for k, v in update_data.items() if v}
+
+            # Update in database
+            result = db_mongo.users.update_one(
+                {'_id': ObjectId(current_user)},
+                {'$set': update_data}
+            )
+
+            if result.modified_count > 0:
+                return jsonify({'message': 'Profile updated successfully'})
+            return jsonify({'message': 'No changes made to profile'})
+
+    except Exception as e:
+        print(f"Error in user_profile: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/dashboard-data')
 @jwt_required()
@@ -230,165 +281,6 @@ def dashboard_data_old():
         })
     return jsonify({'error': 'User not found'}), 404
 
-@app.route('/profile')
-@jwt_required()
-def profile():
-    try:
-        current_user = get_jwt_identity()
-        print(f"Loading profile page for user: {current_user}")
-        return render_template('profile.html')
-    except Exception as e:
-        print(f"Error loading profile page: {str(e)}")
-        return redirect(url_for('login'))
-
-@app.route('/api/user/profile', methods=['GET', 'POST'])
-@jwt_required()
-def user_profile():
-    try:
-        current_user = get_jwt_identity()
-        print(f"Processing {request.method} request for user: {current_user}")
-
-        # Get user from database
-        user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
-        if not user:
-            print(f"User not found: {current_user}")
-            return jsonify({'error': 'User not found'}), 404
-
-        if request.method == 'GET':
-            # Format user data
-            user_data = {
-                'id': str(user['_id']),
-                'username': user['username'],
-                'email': user.get('email', ''),
-                'full_name': user.get('full_name', ''),
-                'phone': user.get('phone', ''),
-                'location': user.get('location', ''),
-                'profile_pic': user.get('profile_pic', ''),
-                'level': user.get('level', 'Bronze'),
-                'points': user.get('points', 0)
-            }
-            print(f"Sending user data: {user_data}")
-            return jsonify(user_data)
-
-        elif request.method == 'POST':
-            data = request.get_json()
-            if not data:
-                return jsonify({'error': 'No data provided'}), 400
-
-            # Update user data
-            update_data = {
-                'full_name': data.get('full_name'),
-                'email': data.get('email'),
-                'phone': data.get('phone'),
-                'location': data.get('location')
-            }
-
-            # Remove None values
-            update_data = {k: v for k, v in update_data.items() if v is not None}
-            print(f"Updating user with data: {update_data}")
-
-            # Update in database
-            result = db_mongo.users.update_one(
-                {'_id': ObjectId(current_user)},
-                {'$set': update_data}
-            )
-
-            if result.modified_count > 0:
-                # Get updated user data to return
-                updated_user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
-                return jsonify({
-                    'message': 'Profile updated successfully',
-                    'data': {
-                        'id': str(updated_user['_id']),
-                        'username': updated_user['username'],
-                        'email': updated_user.get('email', ''),
-                        'full_name': updated_user.get('full_name', ''),
-                        'phone': updated_user.get('phone', ''),
-                        'location': updated_user.get('location', ''),
-                        'profile_pic': updated_user.get('profile_pic', ''),
-                        'level': updated_user.get('level', 'Bronze'),
-                        'points': updated_user.get('points', 0)
-                    }
-                })
-            else:
-                return jsonify({
-                    'message': 'No changes made to profile',
-                    'data': update_data
-                })
-
-    except Exception as e:
-        print(f"Error in user_profile: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/update-profile', methods=['POST'])
-@jwt_required()
-def update_profile():
-    try:
-        current_user_id = get_jwt_identity()
-        data = request.get_json()
-        
-        # Validate the data
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
-            
-        # Fields that can be updated
-        allowed_fields = ['full_name', 'bio', 'phone', 'location']
-        update_data = {k: v.strip() for k, v in data.items() if k in allowed_fields and v}
-        
-        # Update the user document
-        result = db_mongo.users.update_one(
-            {'_id': ObjectId(current_user_id)},
-            {'$set': update_data}
-        )
-        
-        if result.modified_count > 0:
-            return jsonify({'message': 'Profile updated successfully'}), 200
-        return jsonify({'message': 'No changes made'}), 200
-            
-    except Exception as e:
-        print(f"Update profile error: {str(e)}")
-        return jsonify({'error': 'Failed to update profile'}), 500
-
-@app.route('/api/update-profile-pic', methods=['POST'])
-@jwt_required()
-def update_profile_pic():
-    try:
-        current_user_id = get_jwt_identity()
-        
-        if 'profile_pic' not in request.files:
-            return jsonify({'error': 'No file provided'}), 400
-            
-        file = request.files['profile_pic']
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
-            
-        if file and allowed_file(file.filename):
-            # Create a secure filename
-            filename = secure_filename(file.filename)
-            # Add timestamp to filename to make it unique
-            filename = f"{int(time.time())}_{filename}"
-            
-            # Save file to uploads directory
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-            
-            # Update user's profile pic in database
-            db_mongo.users.update_one(
-                {'_id': ObjectId(current_user_id)},
-                {'$set': {'profile_pic': filename}}
-            )
-            
-            return jsonify({
-                'message': 'Profile picture updated successfully',
-                'profile_pic_url': url_for('static', filename=f'uploads/{filename}')
-            }), 200
-            
-        return jsonify({'error': 'Invalid file type'}), 400
-        
-    except Exception as e:
-        print(f"Update profile picture error: {str(e)}")
-        return jsonify({'error': 'Failed to update profile picture'}), 500
-
 @app.route('/api/user/profile-picture', methods=['POST'])
 @jwt_required()
 def upload_profile_picture():
@@ -435,19 +327,132 @@ def upload_profile_picture():
         print(f"Profile picture upload error: {str(e)}")
         return jsonify({'error': 'Failed to upload profile picture'}), 500
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+@app.route('/api/update-profile', methods=['POST'])
+@jwt_required()
+def update_profile():
+    try:
+        current_user = get_jwt_identity()
+        
+        # Initialize update data
+        update_data = {
+            'first_name': request.form.get('firstName'),
+            'last_name': request.form.get('lastName'),
+            'email': request.form.get('email'),
+            'phone': request.form.get('phone'),
+            'address': request.form.get('address'),
+            'city': request.form.get('city'),
+            'state': request.form.get('state'),
+            'zip_code': request.form.get('zipCode'),
+            'country': request.form.get('country')
+        }
+        
+        # Handle profile picture upload
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename and allowed_file(file.filename):
+                # Generate secure filename with user ID
+                filename = secure_filename(f"{current_user}_{file.filename}")
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                
+                # Save file to disk
+                file.save(filepath)
+                
+                # Add profile picture path to update data
+                update_data['profile_picture'] = f'/static/uploads/profile_pictures/{filename}'
+                
+                # Remove old profile picture if exists
+                user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+                if user and 'profile_picture' in user:
+                    old_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                              user['profile_picture'].lstrip('/'))
+                    if os.path.exists(old_filepath):
+                        os.remove(old_filepath)
+
+        # Handle security questions
+        if 'security_question1' in request.form and 'security_answer1' in request.form:
+            update_data['security_questions'] = [
+                {
+                    'question': request.form.get('security_question1'),
+                    'answer': request.form.get('security_answer1')
+                }
+            ]
+            if 'security_question2' in request.form and 'security_answer2' in request.form:
+                update_data['security_questions'].append({
+                    'question': request.form.get('security_question2'),
+                    'answer': request.form.get('security_answer2')
+                })
+
+        # Update user profile in MongoDB
+        result = db_mongo.users.update_one(
+            {'_id': ObjectId(current_user)},
+            {'$set': update_data}
+        )
+
+        if result.modified_count > 0:
+            return jsonify({'message': 'Profile updated successfully'}), 200
+        else:
+            return jsonify({'message': 'No changes made to profile'}), 200
+
+    except Exception as e:
+        print(f"Error updating profile: {str(e)}")
+        return jsonify({'error': 'Failed to update profile'}), 500
+
+@app.route('/api/get-profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    try:
+        current_user = get_jwt_identity()
+        user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+        
+        if user:
+            # Convert ObjectId to string for JSON serialization
+            user['_id'] = str(user['_id'])
+            
+            # Prepare response data
+            profile_data = {
+                'username': user.get('username'),
+                'firstName': user.get('first_name'),
+                'lastName': user.get('last_name'),
+                'email': user.get('email'),
+                'phone': user.get('phone'),
+                'address': user.get('address'),
+                'city': user.get('city'),
+                'state': user.get('state'),
+                'zipCode': user.get('zip_code'),
+                'country': user.get('country'),
+                'profile_picture': user.get('profile_picture')
+            }
+
+            # Add security questions if they exist
+            if 'security_questions' in user:
+                for i, q in enumerate(user['security_questions'], 1):
+                    profile_data[f'security_question{i}'] = q.get('question')
+                    profile_data[f'security_answer{i}'] = q.get('answer')
+
+            return jsonify(profile_data), 200
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    except Exception as e:
+        print(f"Error getting profile: {str(e)}")
+        return jsonify({'error': 'Failed to get profile'}), 500
 
 @app.route('/history')
-@jwt_required()
 def history():
-    return render_template('history.html')
+    try:
+        # Serve the history page without requiring user data
+        return render_template('history.html')
+    except Exception as e:
+        print(f"Error in history route: {str(e)}")
+        return redirect(url_for('home'))
 
 @app.route('/create-campaign')
-@jwt_required()
-def create_campaign_page():
-    return render_template('create-campaign.html')
+def create_campaign():
+    try:
+        # Serve the create-campaign page without requiring user data
+        return render_template('create-campaign.html')
+    except Exception as e:
+        print(f"Error in create_campaign route: {str(e)}")
+        return redirect(url_for('home'))
 
 @app.route('/about')
 def about():
@@ -690,6 +695,11 @@ def get_user_stats():
         'activeCampaigns': 3,
         'totalSupporters': 150
     })
+
+@app.route('/logout')
+def logout():
+    # Clear any server-side session data if needed
+    return render_template('home.html')
 
 # Error handlers
 @app.errorhandler(404)
