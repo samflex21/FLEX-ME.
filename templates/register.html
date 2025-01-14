@@ -1126,12 +1126,26 @@
     <script src="{{ url_for('static', filename='js/db.js') }}"></script>
     <script src="{{ url_for('static', filename='js/migrate.js') }}"></script>
     <script>
+        /**
+         * RegisterDataLoader Class
+         * Handles all registration-related functionality including:
+         * - Form validation
+         * - Multi-step navigation
+         * - API interactions
+         * - User feedback
+         */
         class RegisterDataLoader {
+            /**
+             * Initialize the registration form and set up event handlers
+             */
             constructor() {
                 this.initialize();
             }
 
-            async initialize() {
+            /**
+             * Initialize the registration form and set up event handlers
+             */
+            initialize() {
                 this.showLoadingState();
                 try {
                     await Promise.all([
@@ -1148,6 +1162,9 @@
                 }
             }
 
+            /**
+             * Display loading state during async operations
+             */
             showLoadingState() {
                 const container = document.querySelector('.register-container');
                 if (!container) return;
@@ -1160,10 +1177,16 @@
                 `;
             }
 
+            /**
+             * Hide loading state after async operations
+             */
             hideLoadingState() {
                 document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
             }
 
+            /**
+             * Display error state if async operations fail
+             */
             showErrorState() {
                 const errorMessage = document.createElement('div');
                 errorMessage.className = 'error-message';
@@ -1175,6 +1198,9 @@
                 document.querySelector('.register-container').prepend(errorMessage);
             }
 
+            /**
+             * Check if user has an existing session
+             */
             async checkExistingSession() {
                 const token = localStorage.getItem('authToken');
                 const userData = JSON.parse(localStorage.getItem('userData') || '{}');
@@ -1188,11 +1214,19 @@
                 }
             }
 
+            /**
+             * Verify token validity
+             * @param {string} token - Token to verify
+             * @returns {boolean} - Whether the token is valid
+             */
             async verifyToken(token) {
                 // Simulate token verification - replace with actual API call
                 return token && token.length > 0;
             }
 
+            /**
+             * Load referral data if referral code is present in URL
+             */
             async loadReferralData() {
                 // Get referral code from URL if present
                 const urlParams = new URLSearchParams(window.location.search);
@@ -1208,12 +1242,21 @@
                 }
             }
 
+            /**
+             * Validate referral code
+             * @param {string} code - Referral code to validate
+             * @returns {Object} - Referrer data if code is valid
+             */
             async validateReferralCode(code) {
                 // Simulate referral validation - replace with actual API call
                 const referrals = JSON.parse(localStorage.getItem('referrals') || '[]');
                 return referrals.find(ref => ref.code === code);
             }
 
+            /**
+             * Display referral information
+             * @param {Object} referrerData - Referrer data to display
+             */
             showReferralInfo(referrerData) {
                 const referralInfo = document.querySelector('.referral-info');
                 if (referralInfo) {
@@ -1226,6 +1269,9 @@
                 }
             }
 
+            /**
+             * Load registration quota data
+             */
             async loadRegistrationQuota() {
                 // Check if registrations are within daily limit
                 const registrations = JSON.parse(localStorage.getItem('dailyRegistrations') || '[]');
@@ -1240,6 +1286,9 @@
                 }
             }
 
+            /**
+             * Display quota exceeded message
+             */
             showQuotaExceeded() {
                 const container = document.querySelector('.register-container');
                 if (!container) return;
@@ -1255,6 +1304,9 @@
                 `;
             }
 
+            /**
+             * Set up form event handlers
+             */
             setupFormHandlers() {
                 const registerForm = document.querySelector('.register-form');
                 if (registerForm) {
@@ -1300,6 +1352,10 @@
                 }
             }
 
+            /**
+             * Handle registration form submission
+             * @param {HTMLFormElement} form - Form to handle
+             */
             async handleRegistration(form) {
                 const formData = {
                     username: form.querySelector('input[name="email"]').value,
@@ -1331,6 +1387,11 @@
                 }
             }
 
+            /**
+             * Validate registration form inputs
+             * @param {Object} formData - Form data to validate
+             * @returns {boolean} - Whether the form is valid
+             */
             validateRegistrationInputs(formData) {
                 const email = formData.get('email');
                 const password = formData.get('password');
@@ -1365,15 +1426,24 @@
                 return true;
             }
 
+            /**
+             * Check password strength against security requirements
+             * @param {string} password - Password to validate
+             * @returns {boolean} - Whether the password meets requirements
+             */
             isPasswordStrong(password) {
-                const hasUpperCase = /[A-Z]/.test(password);
-                const hasLowerCase = /[a-z]/.test(password);
-                const hasNumbers = /\d/.test(password);
-                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+                const minLength = 8;
+                const hasNumber = /\d/.test(password);
+                const hasSpecial = /[!@#$%^&*]/.test(password);
+                const hasUppercase = /[A-Z]/.test(password);
                 
-                return hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
+                return password.length >= minLength && hasNumber && hasSpecial && hasUppercase;
             }
 
+            /**
+             * Update password strength indicator
+             * @param {string} password - Password to validate
+             */
             updatePasswordStrength(password) {
                 const strengthIndicator = document.querySelector('.password-strength');
                 if (!strengthIndicator) return;
@@ -1388,17 +1458,26 @@
                 `;
             }
 
+            /**
+             * Calculate password strength
+             * @param {string} password - Password to validate
+             * @returns {number} - Password strength (0-3)
+             */
             calculatePasswordStrength(password) {
                 let strength = 0;
                 
                 if (password.length >= 8) strength++;
                 if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
                 if (/\d/.test(password)) strength++;
-                if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+                if (/[!@#$%^&*]/.test(password)) strength++;
 
                 return Math.min(strength, 3);
             }
 
+            /**
+             * Check email availability
+             * @param {string} email - Email to check
+             */
             async checkEmailAvailability(email) {
                 if (!email || !email.includes('@')) return;
 
@@ -1424,6 +1503,10 @@
                 }
             }
 
+            /**
+             * Check username availability
+             * @param {string} username - Username to check
+             */
             async checkUsernameAvailability(username) {
                 if (!username || username.length < 3) return;
 
@@ -1449,6 +1532,11 @@
                 }
             }
 
+            /**
+             * Create user account
+             * @param {Object} formData - Form data to create account
+             * @returns {Object} - User data
+             */
             async createUserAccount(formData) {
                 // Simulate user creation - replace with actual API call
                 const userData = {
@@ -1470,6 +1558,10 @@
                 return userData;
             }
 
+            /**
+             * Record registration
+             * @param {string} email - Email to record
+             */
             recordRegistration(email) {
                 const registrations = JSON.parse(localStorage.getItem('dailyRegistrations') || '[]');
                 registrations.push({
@@ -1479,6 +1571,10 @@
                 localStorage.setItem('dailyRegistrations', JSON.stringify(registrations));
             }
 
+            /**
+             * Display success message
+             * @param {string} message - Message to display
+             */
             showSuccess(message) {
                 const successDiv = document.createElement('div');
                 successDiv.className = 'success-message';
@@ -1490,6 +1586,10 @@
                 setTimeout(() => successDiv.remove(), 5000);
             }
 
+            /**
+             * Display error message
+             * @param {string} message - Message to display
+             */
             showError(message) {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'error-message';
