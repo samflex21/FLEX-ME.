@@ -109,13 +109,18 @@ def check_db_connection():
     if db_mongo is None and request.endpoint not in ['static', 'home', 'login', 'register', 'about', 'contact']:
         return jsonify({'error': 'Database connection failed'}), 500
 
-# Routes for pages
+# Public routes that don't require authentication
 @app.route('/')
 def home():
-    token = request.cookies.get('token')
-    if token:
-        return redirect('/dashboard')
     return render_template('home.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 @app.route('/dashboard')
 @jwt_required()
@@ -332,6 +337,7 @@ def upload_profile_picture():
 def update_profile():
     try:
         current_user = get_jwt_identity()
+        print(f"Current user: {current_user}")
         
         # Initialize update data
         update_data = {
@@ -345,14 +351,17 @@ def update_profile():
             'zip_code': request.form.get('zipCode'),
             'country': request.form.get('country')
         }
+        print(f"Update data: {update_data}")
         
         # Handle profile picture upload
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
+            print(f"Profile picture received: {file.filename}")
             if file and file.filename and allowed_file(file.filename):
                 # Generate secure filename with user ID
                 filename = secure_filename(f"{current_user}_{file.filename}")
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                print(f"Saving file to: {filepath}")
                 
                 # Save file to disk
                 file.save(filepath)
@@ -367,6 +376,7 @@ def update_profile():
                                               user['profile_picture'].lstrip('/'))
                     if os.path.exists(old_filepath):
                         os.remove(old_filepath)
+                        print(f"Removed old profile picture: {old_filepath}")
 
         # Handle security questions
         if 'security_question1' in request.form and 'security_answer1' in request.form:
@@ -381,12 +391,17 @@ def update_profile():
                     'question': request.form.get('security_question2'),
                     'answer': request.form.get('security_answer2')
                 })
+            print(f"Security questions: {update_data['security_questions']}")
 
+        print(f"Updating user {current_user} with data: {update_data}")
+        
         # Update user profile in MongoDB
         result = db_mongo.users.update_one(
             {'_id': ObjectId(current_user)},
             {'$set': update_data}
         )
+
+        print(f"MongoDB update result: {result.modified_count} documents modified")
 
         if result.modified_count > 0:
             return jsonify({'message': 'Profile updated successfully'}), 200
@@ -395,7 +410,7 @@ def update_profile():
 
     except Exception as e:
         print(f"Error updating profile: {str(e)}")
-        return jsonify({'error': 'Failed to update profile'}), 500
+        return jsonify({'error': f'Failed to update profile: {str(e)}'}), 500
 
 @app.route('/api/get-profile', methods=['GET'])
 @jwt_required()
@@ -453,14 +468,6 @@ def create_campaign():
     except Exception as e:
         print(f"Error in create_campaign route: {str(e)}")
         return redirect(url_for('home'))
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
 
 @app.route('/admin')
 def admin():
@@ -594,22 +601,64 @@ def get_campaigns():
 @jwt_required()
 def create_campaign_api():
     try:
-        data = request.get_json()
+        current_user = get_jwt_identity()
+        
+        # Get form data
+        title = request.form.get('title')
+        description = request.form.get('description')
+        goal_amount = float(request.form.get('goal_amount'))
+        category = request.form.get('category')
+        
+        # Initialize campaign data
         campaign = {
-            'creator_id': get_jwt_identity(),
-            'title': data['title'],
-            'description': data['description'],
-            'goal_amount': data['goalAmount'],
+            'creator_id': current_user,
+            'title': title,
+            'description': description,
+            'goal_amount': goal_amount,
             'current_amount': 0,
+            'category': category,
             'status': 'active',
-            'created_at': datetime.utcnow()
+            'created_at': datetime.utcnow(),
+            'supporters': [],
+            'updates': []
         }
+        
+        # Handle campaign image
+        if 'campaign_image' in request.files:
+            file = request.files['campaign_image']
+            if file and file.filename:
+                # Generate secure filename
+                filename = secure_filename(f"{current_user}_{int(time.time())}_{file.filename}")
+                
+                # Ensure upload directory exists
+                if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                    os.makedirs(app.config['UPLOAD_FOLDER'])
+                
+                # Save file
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                
+                # Store image path in campaign data
+                campaign['image_url'] = f'/static/uploads/{filename}'
+        
+        # Save campaign to database
         result = db_mongo.campaigns.insert_one(campaign)
-        return jsonify({'message': 'Campaign created', 'id': str(result.inserted_id)}), 201
+        
+        # Update user's active campaigns
+        db_mongo.users.update_one(
+            {'_id': ObjectId(current_user)},
+            {'$push': {'active_campaigns': str(result.inserted_id)}}
+        )
+        
+        return jsonify({
+            'message': 'Campaign created successfully',
+            'campaign_id': str(result.inserted_id)
+        }), 201
+        
     except Exception as e:
+        print(f"Error creating campaign: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-# Donation routes
 @app.route('/api/donations', methods=['POST'])
 @jwt_required()
 def create_donation():
