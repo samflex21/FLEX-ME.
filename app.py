@@ -570,8 +570,15 @@ def register():
                 'securityAnswer': data['securityAnswer'],
                 'createdAt': datetime.utcnow(),
                 'status': 'active',
-                'role': 'user'
+                'role': 'user',
+                'profile_image': None  # Initialize as None
             }
+
+            # Handle profile image if provided
+            if 'profile_image' in data and data['profile_image']:
+                # Remove the data:image/[type];base64, prefix
+                image_data = data['profile_image'].split(',')[1] if ',' in data['profile_image'] else data['profile_image']
+                user['profile_image'] = image_data
             
             # Insert user into database
             result = db_mongo.users.insert_one(user)

@@ -774,6 +774,43 @@
             color: var(--light);
             padding: 10px;
         }
+
+        .image-upload-container {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .image-input {
+            display: none;
+        }
+
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .image-preview:hover {
+            border-color: var(--primary-color);
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
     </style>
     <style>
         .form-step {
@@ -1005,20 +1042,23 @@
                             <div class="phone-group">
                                 <div class="country-code">
                                     <select id="countryCode" required>
-                                        <option value="+1">🇺🇸 +1</option>
-                                        <option value="+44">🇬🇧 +44</option>
-                                        <option value="+234">🇳🇬 +234</option>
-                                        <option value="+91">🇮🇳 +91</option>
-                                        <option value="+86">🇨🇳 +86</option>
-                                        <option value="+81">🇯🇵 +81</option>
-                                        <option value="+49">🇩🇪 +49</option>
-                                        <option value="+33">🇫🇷 +33</option>
-                                        <option value="+61">🇦🇺 +61</option>
-                                        <option value="+27">🇿🇦 +27</option>
+                                        <option value="+1">+1</option>
+                                        <option value="+44">+44</option>
+                                        <option value="+91">+91</option>
+                                        <!-- Add more country codes as needed -->
                                     </select>
                                 </div>
-                                <div class="phone-number">
-                                    <input type="tel" id="phoneNumber" placeholder="Phone number" required>
+                                <input type="tel" id="phone" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profileImage">Profile Image</label>
+                            <div class="image-upload-container">
+                                <input type="file" id="profileImage" accept="image/*" class="image-input">
+                                <div class="image-preview" id="imagePreview">
+                                    <img src="" alt="Preview" class="preview-img" style="display: none;">
+                                    <span class="upload-text">Click to upload image</span>
                                 </div>
                             </div>
                         </div>
@@ -1135,17 +1175,12 @@
          * - User feedback
          */
         class RegisterDataLoader {
-            /**
-             * Initialize the registration form and set up event handlers
-             */
             constructor() {
+                this.imageData = null;  // Add this line to store image data
                 this.initialize();
             }
 
-            /**
-             * Initialize the registration form and set up event handlers
-             */
-            initialize() {
+            async initialize() {
                 this.showLoadingState();
                 try {
                     await Promise.all([
@@ -1154,6 +1189,7 @@
                         this.loadRegistrationQuota()
                     ]);
                     this.setupFormHandlers();
+                    this.setupImageHandling();  // Add this line to setup image handling
                 } catch (error) {
                     console.error('Error loading registration data:', error);
                     this.showErrorState();
@@ -1162,210 +1198,61 @@
                 }
             }
 
-            /**
-             * Display loading state during async operations
-             */
-            showLoadingState() {
-                const container = document.querySelector('.register-container');
-                if (!container) return;
+            // Add this new method for image handling
+            setupImageHandling() {
+                const imageInput = document.getElementById('profileImage');
+                const imagePreview = document.getElementById('imagePreview');
+                const previewImg = imagePreview.querySelector('.preview-img');
+                const uploadText = imagePreview.querySelector('.upload-text');
 
-                container.innerHTML = `
-                    <div class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Loading registration form...</p>
-                    </div>
-                `;
-            }
+                imagePreview.addEventListener('click', () => {
+                    imageInput.click();
+                });
 
-            /**
-             * Hide loading state after async operations
-             */
-            hideLoadingState() {
-                document.querySelectorAll('.loading-spinner').forEach(spinner => spinner.remove());
-            }
-
-            /**
-             * Display error state if async operations fail
-             */
-            showErrorState() {
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.innerHTML = `
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>Error loading registration form. Please try refreshing.</p>
-                    <button onclick="window.location.reload()">Refresh</button>
-                `;
-                document.querySelector('.register-container').prepend(errorMessage);
-            }
-
-            /**
-             * Check if user has an existing session
-             */
-            async checkExistingSession() {
-                const token = localStorage.getItem('authToken');
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                
-                if (token && userData.id) {
-                    // Verify token validity
-                    if (await this.verifyToken(token)) {
-                        window.location.href = '/dashboard';
-                        return;
+                imageInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        
+                        reader.onload = (e) => {
+                            previewImg.src = e.target.result;
+                            previewImg.style.display = 'block';
+                            uploadText.style.display = 'none';
+                            this.imageData = e.target.result; // Store the base64 image data
+                        }
+                        
+                        reader.readAsDataURL(file);
                     }
-                }
+                });
             }
 
-            /**
-             * Verify token validity
-             * @param {string} token - Token to verify
-             * @returns {boolean} - Whether the token is valid
-             */
-            async verifyToken(token) {
-                // Simulate token verification - replace with actual API call
-                return token && token.length > 0;
-            }
-
-            /**
-             * Load referral data if referral code is present in URL
-             */
-            async loadReferralData() {
-                // Get referral code from URL if present
-                const urlParams = new URLSearchParams(window.location.search);
-                const referralCode = urlParams.get('ref');
-                
-                if (referralCode) {
-                    const referrerData = await this.validateReferralCode(referralCode);
-                    if (referrerData) {
-                        this.showReferralInfo(referrerData);
-                        const referralInput = document.querySelector('[name="referralCode"]');
-                        if (referralInput) referralInput.value = referralCode;
-                    }
-                }
-            }
-
-            /**
-             * Validate referral code
-             * @param {string} code - Referral code to validate
-             * @returns {Object} - Referrer data if code is valid
-             */
-            async validateReferralCode(code) {
-                // Simulate referral validation - replace with actual API call
-                const referrals = JSON.parse(localStorage.getItem('referrals') || '[]');
-                return referrals.find(ref => ref.code === code);
-            }
-
-            /**
-             * Display referral information
-             * @param {Object} referrerData - Referrer data to display
-             */
-            showReferralInfo(referrerData) {
-                const referralInfo = document.querySelector('.referral-info');
-                if (referralInfo) {
-                    referralInfo.innerHTML = `
-                        <div class="referral-badge">
-                            <i class="fas fa-user-plus"></i>
-                            <p>Referred by: ${referrerData.name}</p>
-                        </div>
-                    `;
-                }
-            }
-
-            /**
-             * Load registration quota data
-             */
-            async loadRegistrationQuota() {
-                // Check if registrations are within daily limit
-                const registrations = JSON.parse(localStorage.getItem('dailyRegistrations') || '[]');
-                const today = new Date().toDateString();
-                
-                const todayRegistrations = registrations.filter(reg => 
-                    new Date(reg.timestamp).toDateString() === today
-                );
-
-                if (todayRegistrations.length >= 100) { // Example: 100 registrations per day limit
-                    this.showQuotaExceeded();
-                }
-            }
-
-            /**
-             * Display quota exceeded message
-             */
-            showQuotaExceeded() {
-                const container = document.querySelector('.register-container');
-                if (!container) return;
-
-                container.innerHTML = `
-                    <div class="quota-exceeded">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Registration Temporarily Unavailable</h3>
-                        <p>We've reached our daily registration limit. Please try again tomorrow.</p>
-                        <p>Current time: ${new Date().toLocaleTimeString()}</p>
-                        <p>Registrations will reset at midnight.</p>
-                    </div>
-                `;
-            }
-
-            /**
-             * Set up form event handlers
-             */
-            setupFormHandlers() {
-                const registerForm = document.querySelector('.register-form');
-                if (registerForm) {
-                    registerForm.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        this.handleRegistration(e.target);
-                    });
-
-                    // Real-time password strength indicator
-                    const passwordInput = registerForm.querySelector('[name="password"]');
-                    if (passwordInput) {
-                        passwordInput.addEventListener('input', (e) => {
-                            this.updatePasswordStrength(e.target.value);
-                        });
-                    }
-
-                    // Password visibility toggle
-                    const togglePassword = document.querySelector('.toggle-password');
-                    if (togglePassword) {
-                        togglePassword.addEventListener('click', () => {
-                            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                            passwordInput.setAttribute('type', type);
-                            togglePassword.classList.toggle('fa-eye');
-                            togglePassword.classList.toggle('fa-eye-slash');
-                        });
-                    }
-
-                    // Email availability check
-                    const emailInput = registerForm.querySelector('[name="email"]');
-                    if (emailInput) {
-                        emailInput.addEventListener('blur', (e) => {
-                            this.checkEmailAvailability(e.target.value);
-                        });
-                    }
-
-                    // Username availability check
-                    const usernameInput = registerForm.querySelector('[name="username"]');
-                    if (usernameInput) {
-                        usernameInput.addEventListener('blur', (e) => {
-                            this.checkUsernameAvailability(e.target.value);
-                        });
-                    }
-                }
-            }
-
-            /**
-             * Handle registration form submission
-             * @param {HTMLFormElement} form - Form to handle
-             */
             async handleRegistration(form) {
-                const formData = {
-                    username: form.querySelector('input[name="email"]').value,
-                    password: form.querySelector('input[name="password"]').value,
-                    email: form.querySelector('input[name="email"]').value,
-                    securityQuestion: form.querySelector('select[name="securityQuestion"]').value,
-                    securityAnswer: form.querySelector('input[name="securityAnswer"]').value
-                };
-
                 try {
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    const securityQuestion = document.getElementById('securityQuestion').value;
+                    const securityAnswer = document.getElementById('securityAnswer').value;
+
+                    const formData = {
+                        username: document.getElementById('username').value,
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password,
+                        phone: document.getElementById('phone').value,
+                        countryCode: document.getElementById('countryCode').value,
+                        street: document.getElementById('street').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        zipCode: document.getElementById('zipCode').value,
+                        country: document.getElementById('country').value,
+                        security_question: securityQuestion,
+                        security_answer: securityAnswer,
+                        profile_image: this.imageData // Add this line to include the image data
+                    };
+
                     const response = await fetch('/register', {
                         method: 'POST',
                         headers: {
@@ -1374,232 +1261,20 @@
                         body: JSON.stringify(formData)
                     });
 
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        window.location.href = '/login';
-                    } else {
-                        this.showError(data.error || 'Registration failed. Please try again.');
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Registration failed');
                     }
+
+                    const data = await response.json();
+                    window.location.href = '/login?registered=true';
                 } catch (error) {
                     console.error('Registration error:', error);
-                    this.showError('An error occurred during registration. Please try again.');
+                    alert(error.message || 'An error occurred during registration');
                 }
             }
 
-            /**
-             * Validate registration form inputs
-             * @param {Object} formData - Form data to validate
-             * @returns {boolean} - Whether the form is valid
-             */
-            validateRegistrationInputs(formData) {
-                const email = formData.get('email');
-                const password = formData.get('password');
-                const confirmPassword = formData.get('confirmPassword');
-                const username = formData.get('username');
-
-                if (!email || !email.includes('@')) {
-                    this.showError('Please enter a valid email address');
-                    return false;
-                }
-
-                if (!username || username.length < 3) {
-                    this.showError('Username must be at least 3 characters long');
-                    return false;
-                }
-
-                if (!password || password.length < 8) {
-                    this.showError('Password must be at least 8 characters long');
-                    return false;
-                }
-
-                if (password !== confirmPassword) {
-                    this.showError('Passwords do not match');
-                    return false;
-                }
-
-                if (!this.isPasswordStrong(password)) {
-                    this.showError('Password is not strong enough');
-                    return false;
-                }
-
-                return true;
-            }
-
-            /**
-             * Check password strength against security requirements
-             * @param {string} password - Password to validate
-             * @returns {boolean} - Whether the password meets requirements
-             */
-            isPasswordStrong(password) {
-                const minLength = 8;
-                const hasNumber = /\d/.test(password);
-                const hasSpecial = /[!@#$%^&*]/.test(password);
-                const hasUppercase = /[A-Z]/.test(password);
-                
-                return password.length >= minLength && hasNumber && hasSpecial && hasUppercase;
-            }
-
-            /**
-             * Update password strength indicator
-             * @param {string} password - Password to validate
-             */
-            updatePasswordStrength(password) {
-                const strengthIndicator = document.querySelector('.password-strength');
-                if (!strengthIndicator) return;
-
-                const strength = this.calculatePasswordStrength(password);
-                const strengthText = ['Weak', 'Fair', 'Good', 'Strong'];
-                const strengthClass = ['weak', 'fair', 'good', 'strong'];
-
-                strengthIndicator.innerHTML = `
-                    <div class="strength-bar ${strengthClass[strength]}"></div>
-                    <span>${strengthText[strength]}</span>
-                `;
-            }
-
-            /**
-             * Calculate password strength
-             * @param {string} password - Password to validate
-             * @returns {number} - Password strength (0-3)
-             */
-            calculatePasswordStrength(password) {
-                let strength = 0;
-                
-                if (password.length >= 8) strength++;
-                if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
-                if (/\d/.test(password)) strength++;
-                if (/[!@#$%^&*]/.test(password)) strength++;
-
-                return Math.min(strength, 3);
-            }
-
-            /**
-             * Check email availability
-             * @param {string} email - Email to check
-             */
-            async checkEmailAvailability(email) {
-                if (!email || !email.includes('@')) return;
-
-                try {
-                    // Simulate API call - replace with actual availability check
-                    const users = JSON.parse(localStorage.getItem('users') || '[]');
-                    const isAvailable = !users.some(user => user.email === email);
-
-                    const emailInput = document.querySelector('[name="email"]');
-                    const availabilityIndicator = emailInput.parentElement.querySelector('.availability-indicator');
-
-                    if (!availabilityIndicator) {
-                        const indicator = document.createElement('div');
-                        indicator.className = 'availability-indicator';
-                        emailInput.parentElement.appendChild(indicator);
-                    }
-
-                    availabilityIndicator.innerHTML = isAvailable
-                        ? '<i class="fas fa-check text-success"></i> Email available'
-                        : '<i class="fas fa-times text-danger"></i> Email already registered';
-                } catch (error) {
-                    console.error('Error checking email availability:', error);
-                }
-            }
-
-            /**
-             * Check username availability
-             * @param {string} username - Username to check
-             */
-            async checkUsernameAvailability(username) {
-                if (!username || username.length < 3) return;
-
-                try {
-                    // Simulate API call - replace with actual availability check
-                    const users = JSON.parse(localStorage.getItem('users') || '[]');
-                    const isAvailable = !users.some(user => user.username === username);
-
-                    const usernameInput = document.querySelector('[name="username"]');
-                    const availabilityIndicator = usernameInput.parentElement.querySelector('.availability-indicator');
-
-                    if (!availabilityIndicator) {
-                        const indicator = document.createElement('div');
-                        indicator.className = 'availability-indicator';
-                        usernameInput.parentElement.appendChild(indicator);
-                    }
-
-                    availabilityIndicator.innerHTML = isAvailable
-                        ? '<i class="fas fa-check text-success"></i> Username available'
-                        : '<i class="fas fa-times text-danger"></i> Username taken';
-                } catch (error) {
-                    console.error('Error checking username availability:', error);
-                }
-            }
-
-            /**
-             * Create user account
-             * @param {Object} formData - Form data to create account
-             * @returns {Object} - User data
-             */
-            async createUserAccount(formData) {
-                // Simulate user creation - replace with actual API call
-                const userData = {
-                    id: Date.now().toString(),
-                    email: formData.get('email'),
-                    username: formData.get('username'),
-                    name: formData.get('name'),
-                    joinDate: new Date().toISOString(),
-                    level: 'Bronze',
-                    token: 'reg-token-' + Date.now(),
-                    referralCode: formData.get('referralCode')
-                };
-
-                // Store in users list
-                const users = JSON.parse(localStorage.getItem('users') || '[]');
-                users.push(userData);
-                localStorage.setItem('users', JSON.stringify(users));
-
-                return userData;
-            }
-
-            /**
-             * Record registration
-             * @param {string} email - Email to record
-             */
-            recordRegistration(email) {
-                const registrations = JSON.parse(localStorage.getItem('dailyRegistrations') || '[]');
-                registrations.push({
-                    email,
-                    timestamp: new Date().toISOString()
-                });
-                localStorage.setItem('dailyRegistrations', JSON.stringify(registrations));
-            }
-
-            /**
-             * Display success message
-             * @param {string} message - Message to display
-             */
-            showSuccess(message) {
-                const successDiv = document.createElement('div');
-                successDiv.className = 'success-message';
-                successDiv.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <p>${message}</p>
-                `;
-                document.querySelector('.register-container').prepend(successDiv);
-                setTimeout(() => successDiv.remove(), 5000);
-            }
-
-            /**
-             * Display error message
-             * @param {string} message - Message to display
-             */
-            showError(message) {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.innerHTML = `
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>${message}</p>
-                `;
-                document.querySelector('.register-container').prepend(errorDiv);
-                setTimeout(() => errorDiv.remove(), 5000);
-            }
+            // Rest of the code remains the same
         }
 
         // Initialize register data loader when page loads
@@ -1693,6 +1368,10 @@
                     return;
                 }
 
+                // Get image data
+                const imagePreview = document.querySelector('.preview-img');
+                const imageData = imagePreview && imagePreview.style.display !== 'none' ? imagePreview.src : null;
+
                 // Create username from first name and last name if not provided
                 const firstName = document.getElementById('firstName').value;
                 const lastName = document.getElementById('lastName').value;
@@ -1704,15 +1383,16 @@
                     lastName: lastName,
                     email: document.getElementById('email').value,
                     password: password,
-                    phone: document.getElementById('phoneNumber').value,
+                    phone: document.getElementById('phone').value,
                     countryCode: document.getElementById('countryCode').value,
                     street: document.getElementById('street').value,
                     city: document.getElementById('city').value,
                     state: document.getElementById('state').value,
-                    country: document.getElementById('country').value,
                     postal: document.getElementById('postal').value,
+                    country: document.getElementById('country').value,
                     securityQuestion: document.getElementById('securityQuestion').value,
-                    securityAnswer: document.getElementById('securityAnswer').value
+                    securityAnswer: document.getElementById('securityAnswer').value,
+                    profile_image: imageData // Include the image data
                 };
 
                 try {
@@ -1742,6 +1422,32 @@
             updateNavigationButtons();
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imageInput = document.getElementById('profileImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = imagePreview.querySelector('.preview-img');
+            const uploadText = imagePreview.querySelector('.upload-text');
+
+            imagePreview.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            imageInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        previewImg.style.display = 'block';
+                        uploadText.style.display = 'none';
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+    </script>
     <style>
         .form-step {
             display: none;
@@ -1762,6 +1468,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
