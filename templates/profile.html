@@ -1317,115 +1317,98 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="profile-section" id="personal-info">
-                <form id="profileForm" onsubmit="return false;">
-                    <!-- Profile Info Section -->
-                    <div class="section-box">
-                        <h3>Personal Information</h3>
-                        <div class="profile-header">
-                            <div class="profile-picture-section">
-                                <img src="/static/images/default-avatar.png" alt="Profile Picture" class="profile-picture">
-                                <label for="profile-upload" class="edit-picture">
-                                    <i class="fas fa-camera"></i>
-                                </label>
-                                <input type="file" id="profile-upload" accept="image/*" style="display: none;">
-                            </div>
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-image-container">
+                        {% if user and user.profile_image %}
+                            <img src="data:image/jpeg;base64,{{ user.profile_image }}" alt="{{ user.username }}'s Profile" id="profile-image">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Default Profile" id="profile-image">
+                        {% endif %}
+                        <div class="image-upload">
+                            <label for="profile-image-input" class="upload-btn">Change Photo</label>
+                            <input type="file" id="profile-image-input" accept="image/*" style="display: none;">
                         </div>
+                    </div>
+                    <div class="profile-info">
+                        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+                        <p>Member since {{ user.created_at }}</p>
+                    </div>
+                </div>
 
+                <form id="profile-form" class="profile-form">
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" id="username" name="username" class="form-control" readonly>
+                            <input type="text" id="username" value="{{ user.username }}" readonly>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" name="first_name" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" name="last_name" class="form-control" required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input type="tel" id="phone" name="phone" class="form-control">
-                            </div>
-                        </div>
-
                         <div class="form-group">
-                            <label for="address">Address</label>
-                            <input type="text" id="address" name="address" class="form-control">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" value="{{ user.firstName }}" required>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="city">City</label>
-                                <input type="text" id="city" name="city" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="state">State</label>
-                                <input type="text" id="state" name="state" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="zipCode">Zip Code</label>
-                                <input type="text" id="zipCode" name="zip_code" class="form-control">
-                            </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" value="{{ user.lastName }}" required>
                         </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" value="{{ user.email }}" required>
+                        </div>
+                    </div>
 
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+                        <div class="form-group">
+                            <label for="countryCode">Country Code</label>
+                            <input type="text" id="countryCode" value="{{ user.phone.countryCode }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" value="{{ user.phone.number }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Address</h3>
+                        <div class="form-group">
+                            <label for="street">Street Address</label>
+                            <input type="text" id="street" value="{{ user.address.street }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" value="{{ user.address.city }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" value="{{ user.address.state }}" required>
+                        </div>
                         <div class="form-group">
                             <label for="country">Country</label>
-                            <input type="text" id="country" name="country" class="form-control">
+                            <input type="text" id="country" value="{{ user.address.country }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal">Postal Code</label>
+                            <input type="text" id="postal" value="{{ user.address.postal }}" required>
                         </div>
                     </div>
 
-                    <!-- Security Questions Section -->
-                    <div class="section-box">
-                        <h3>Security Questions</h3>
+                    <div class="form-section">
+                        <h3>Security</h3>
                         <div class="form-group">
-                            <label for="security_question1">Security Question 1</label>
-                            <select id="security_question1" class="form-control">
-                                <option>What was your first pet's name?</option>
-                                <option>What is your mother's maiden name?</option>
-                                <option>What city were you born in?</option>
-                            </select>
-                            <input type="text" id="security_answer1" class="form-control" placeholder="Answer" style="margin-top: 10px;">
+                            <label for="securityQuestion">Security Question</label>
+                            <input type="text" id="securityQuestion" value="{{ user.securityQuestion }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="security_question2">Security Question 2</label>
-                            <select id="security_question2" class="form-control">
-                                <option>What was your first car?</option>
-                                <option>What is your favorite book?</option>
-                                <option>What is your favorite movie?</option>
-                            </select>
-                            <input type="text" id="security_answer2" class="form-control" placeholder="Answer" style="margin-top: 10px;">
+                            <label for="securityAnswer">Security Answer</label>
+                            <input type="password" id="securityAnswer" value="{{ user.securityAnswer }}" required>
                         </div>
                     </div>
 
-                    <!-- Password Section -->
-                    <div class="section-box">
-                        <h3>Change Password</h3>
-                        <div class="form-group">
-                            <label for="currentPassword">Current Password</label>
-                            <input type="password" id="currentPassword" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="newPassword">New Password</label>
-                            <input type="password" id="newPassword" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm New Password</label>
-                            <input type="password" id="confirmPassword" class="form-control">
-                        </div>
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">Save Changes</button>
                     </div>
                 </form>
-                <button type="submit" class="save-button">Save Changes</button>
             </div>
         </div>
 
@@ -1630,7 +1613,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const validator = new ProfileValidator();
             const form = document.getElementById('profileForm');
-            const profilePicInput = document.getElementById('profile-upload');
+            const profilePicInput = document.getElementById('profile-image-input');
             const passwordStrengthIndicator = document.createElement('div');
             passwordStrengthIndicator.className = 'password-strength';
 
@@ -1959,35 +1942,107 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const profileForm = document.getElementById('profileForm');
-            const saveButton = document.querySelector('.save-button');
-            let imageFile = null;
+            const profileForm = document.getElementById('profile-form');
+            const profileImageInput = document.getElementById('profile-image-input');
+            const profileImage = document.getElementById('profile-image');
+            let base64Image = null;
 
-            // Handle profile picture upload
-            document.getElementById('profile-upload').addEventListener('change', function(e) {
-                imageFile = e.target.files[0];
-                if (imageFile) {
+            // Handle image upload
+            profileImageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        document.querySelector('.profile-picture').src = e.target.result;
+                        profileImage.src = e.target.result;
+                        base64Image = e.target.result;
                     };
-                    reader.readAsDataURL(imageFile);
+                    reader.readAsDataURL(file);
                 }
             });
 
             // Handle form submission
-            saveButton.addEventListener('click', async function(e) {
+            profileForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                // Show loading state
-                saveButton.disabled = true;
-                saveButton.textContent = 'Saving...';
+
+                const formData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    countryCode: document.getElementById('countryCode').value,
+                    phone: document.getElementById('phone').value,
+                    street: document.getElementById('street').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    country: document.getElementById('country').value,
+                    postal: document.getElementById('postal').value,
+                    securityQuestion: document.getElementById('securityQuestion').value,
+                    securityAnswer: document.getElementById('securityAnswer').value
+                };
+
+                if (base64Image) {
+                    formData.profile_image = base64Image;
+                }
+
+                try {
+                    // Get token from localStorage
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        throw new Error('No authentication token found');
+                    }
+
+                    const response = await fetch('/update-profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Profile updated successfully!');
+                        window.location.reload();
+                    } else {
+                        alert(data.error || 'Failed to update profile');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    if (error.message === 'No authentication token found') {
+                        window.location.href = '/login';
+                    } else {
+                        alert('Failed to update profile');
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileUpload = document.getElementById('profile-image-input');
+            const profileImage = document.querySelector('.profile-picture');
+            let imageFile = null;
+
+            profileUpload.addEventListener('change', function(e) {
+                imageFile = e.target.files[0];
+                if (imageFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileImage.src = e.target.result;
+                    }
+                    reader.readAsDataURL(imageFile);
+                }
+            });
+
+            document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
                 const formData = new FormData();
                 
                 // Add form fields to FormData
-                formData.append('firstName', document.getElementById('firstName').value);
-                formData.append('lastName', document.getElementById('lastName').value);
+                formData.append('username', document.getElementById('username').value);
+                formData.append('first_name', document.getElementById('firstName').value);
+                formData.append('last_name', document.getElementById('lastName').value);
                 formData.append('email', document.getElementById('email').value);
                 formData.append('phone', document.getElementById('phone').value);
                 formData.append('address', document.getElementById('address').value);
@@ -1997,22 +2052,22 @@
                 formData.append('country', document.getElementById('country').value);
                 
                 // Add security questions
-                const securityQuestion1 = document.getElementById('security_question1').value;
-                const securityAnswer1 = document.getElementById('security_answer1').value;
+                const securityQuestion1 = document.getElementById('securityQuestion').value;
+                const securityAnswer1 = document.getElementById('securityAnswer').value;
                 if (securityQuestion1 && securityAnswer1) {
                     formData.append('security_question1', securityQuestion1);
                     formData.append('security_answer1', securityAnswer1);
                 }
                 
-                const securityQuestion2 = document.getElementById('security_question2').value;
-                const securityAnswer2 = document.getElementById('security_answer2').value;
+                const securityQuestion2 = document.getElementById('securityQuestion2').value;
+                const securityAnswer2 = document.getElementById('securityAnswer2').value;
                 if (securityQuestion2 && securityAnswer2) {
                     formData.append('security_question2', securityQuestion2);
                     formData.append('security_answer2', securityAnswer2);
                 }
 
                 // Add profile picture if selected
-                const fileInput = document.getElementById('profile-upload');
+                const fileInput = document.getElementById('profile-image-input');
                 if (fileInput.files[0]) {
                     formData.append('profile_picture', fileInput.files[0]);
                 }
@@ -2025,8 +2080,6 @@
                 if (currentPassword && newPassword && confirmPassword) {
                     if (newPassword !== confirmPassword) {
                         alert('New passwords do not match!');
-                        saveButton.disabled = false;
-                        saveButton.textContent = 'Save Changes';
                         return;
                     }
                     formData.append('current_password', currentPassword);
@@ -2062,130 +2115,142 @@
                 } catch (error) {
                     console.error('Error:', error);
                     alert('An error occurred while updating your profile');
-                } finally {
-                    saveButton.disabled = false;
-                    saveButton.textContent = 'Save Changes';
                 }
             });
+        });
+    </script>
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-            // Load profile data when page loads
-            async function loadProfileData() {
-                try {
-                    const token = localStorage.getItem('token');
-                    if (!token) {
-                        window.location.href = '/login';
-                        return;
-                    }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
 
-                    const response = await fetch('/api/get-profile', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+        .profile-image-container {
+            position: relative;
+            margin-right: 30px;
+        }
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('Loaded profile data:', data); // Debug log
-                        
-                        // Update form fields
-                        document.getElementById('username').value = data.username || '';
-                        document.getElementById('firstName').value = data.first_name || '';
-                        document.getElementById('lastName').value = data.last_name || '';
-                        document.getElementById('email').value = data.email || '';
-                        document.getElementById('phone').value = data.phone || '';
-                        document.getElementById('address').value = data.address || '';
-                        document.getElementById('city').value = data.city || '';
-                        document.getElementById('state').value = data.state || '';
-                        document.getElementById('zipCode').value = data.zip_code || '';
-                        document.getElementById('country').value = data.country || '';
+        #profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
 
-                        // Update profile picture if exists
-                        if (data.profile_picture) {
-                            document.querySelector('.profile-picture').src = data.profile_picture;
-                        }
+        .image-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
 
-                        // Update security questions if they exist
-                        if (data.security_questions && data.security_questions.length > 0) {
-                            if (data.security_questions[0]) {
-                                document.getElementById('security_question1').value = data.security_questions[0].question || '';
-                                document.getElementById('security_answer1').value = data.security_questions[0].answer || '';
-                            }
-                            if (data.security_questions[1]) {
-                                document.getElementById('security_question2').value = data.security_questions[1].question || '';
-                                document.getElementById('security_answer2').value = data.security_questions[1].answer || '';
-                            }
-                        }
-                    } else {
-                        const error = await response.json();
-                        console.error('Failed to load profile:', error);
-                    }
-                } catch (error) {
-                    console.error('Error loading profile:', error);
-                }
+        .upload-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: var(--secondary);
+        }
+
+        .profile-info h2 {
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .profile-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .form-group input[readonly] {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            text-align: right;
+            margin-top: 30px;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
             }
 
-            // Load profile data when page loads
-            loadProfileData();
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const profileUpload = document.getElementById('profile-upload');
-            const profileImage = document.querySelector('.profile-picture');
-            let imageFile = null;
-
-            profileUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    imageFile = file;
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profileImage.src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            document.getElementById('profileForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData();
-                formData.append('username', document.getElementById('username').value);
-                formData.append('first_name', document.getElementById('firstName').value);
-                formData.append('last_name', document.getElementById('lastName').value);
-                formData.append('email', document.getElementById('email').value);
-                formData.append('phone', document.getElementById('phone').value);
-                formData.append('address', document.getElementById('address').value);
-                formData.append('city', document.getElementById('city').value);
-                formData.append('state', document.getElementById('state').value);
-                formData.append('zip_code', document.getElementById('zipCode').value);
-                formData.append('country', document.getElementById('country').value);
-                formData.append('security_question1', document.getElementById('security_question1').value);
-                formData.append('security_answer1', document.getElementById('security_answer1').value);
-                formData.append('security_question2', document.getElementById('security_question2').value);
-                formData.append('security_answer2', document.getElementById('security_answer2').value);
-                
-                if (imageFile) {
-                    formData.append('profile_picture', imageFile);
-                }
-
-                try {
-                    const response = await fetch('/update_profile', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        alert('Profile updated successfully!');
-                    } else {
-                        alert('Failed to update profile. Please try again.');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
-                }
-            });
-        });
-    </script>
+            .profile-image-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 </body>
 </html>

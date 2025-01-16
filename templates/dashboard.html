@@ -1128,10 +1128,9 @@
     <nav class="navbar">
         <div class="navbar-nav">
             <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Profile</a>
-            <a href="/history" class="nav-link"><i class="fas fa-history"></i> History</a>
-            <a href="/create-campaign" class="nav-link"><i class="fas fa-plus-circle"></i> Create Campaign</a>
+            <a href="/dashboard" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/create-campaign" class="nav-link"><i class="fas fa-plus"></i> Create Campaign</a>
         </div>
-        <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
             {% if user and user.profile_image %}
                 <img src="data:image/jpeg;base64,{{ user.profile_image }}" alt="{{ user.username }}'s Profile" class="profile-pic">
@@ -1142,6 +1141,42 @@
             <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // No need to get token from localStorage anymore as we're using cookies
+            const userDataElement = document.getElementById('userData');
+            if (userDataElement) {
+                const userData = {
+                    username: "{{ user.username }}",
+                    email: "{{ user.email }}",
+                    firstName: "{{ user.firstName }}",
+                    lastName: "{{ user.lastName }}",
+                    level: "{{ user.level }}",
+                    points: {{ user.points }},
+                    totalDonated: {{ user.totalDonated }},
+                    peopleHelped: {{ user.peopleHelped }}
+                };
+                
+                // Update user info in the dashboard
+                document.getElementById('userFullName').textContent = `${userData.firstName} ${userData.lastName}`;
+                document.getElementById('userEmail').textContent = userData.email;
+                document.getElementById('userLevel').textContent = userData.level;
+                document.getElementById('userPoints').textContent = userData.points;
+                document.getElementById('totalDonated').textContent = `$${userData.totalDonated}`;
+                document.getElementById('peopleHelped').textContent = userData.peopleHelped;
+            }
+
+            // Handle logout
+            document.getElementById('logoutButton').addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear any local storage data
+                localStorage.clear();
+                // Redirect to logout route which will clear the cookie
+                window.location.href = '/logout';
+            });
+        });
+    </script>
 
     <div class="dashboard-container">
         <!-- Sidebar -->
@@ -1286,52 +1321,5 @@
             <button class="pay-button" onclick="processPayment()">Confirm Payment</button>
         </div>
     </div>
-
-    <script>
-        async function loadUserData() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '/';
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/user/profile', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        localStorage.removeItem('token');
-                        window.location.href = '/';
-                        return;
-                    }
-                    throw new Error('Failed to load user data');
-                }
-
-                const userData = await response.json();
-                
-                // Update navbar user info
-                const userNameElement = document.querySelector('.user-name');
-                const profilePicElement = document.querySelector('.profile-picture');
-                
-                if (userNameElement) {
-                    userNameElement.textContent = userData.username || 'Samuel Olumide Adebimpe';
-                }
-                
-                if (profilePicElement && userData.profile_pic) {
-                    profilePicElement.src = userData.profile_pic;
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            }
-        }
-
-        // Load user data when page loads
-        document.addEventListener('DOMContentLoaded', loadUserData);
-    </script>
 </body>
 </html>

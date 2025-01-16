@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required, decode_token
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 import bcrypt
 from database import db
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 from werkzeug.utils import secure_filename
 
@@ -123,54 +123,111 @@ def contact():
     return render_template('contact.html')
 
 @app.route('/dashboard')
-@jwt_required()
 def dashboard():
     try:
-        current_user = get_jwt_identity()
-        user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
-        if not user:
+        # Get token from cookie
+        token = request.cookies.get('token')
+        if not token:
+            print("No token in cookies")
             return redirect(url_for('login'))
 
-        # Get user's campaigns
-        campaigns = list(db_mongo.campaigns.find({}).sort('created_at', -1).limit(10))
-        
-        # Format campaigns for display
-        formatted_campaigns = []
-        for campaign in campaigns:
-            formatted_campaigns.append({
-                'id': str(campaign['_id']),
-                'title': campaign.get('title', ''),
-                'description': campaign.get('description', ''),
-                'goal_amount': campaign.get('goal_amount', 0),
-                'current_amount': campaign.get('current_amount', 0),
-                'status': campaign.get('status', 'active'),
-                'created_at': campaign.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
-            })
+        try:
+            # Verify and decode the token
+            decoded_token = decode_token(token)
+            current_user = decoded_token['sub']
+            
+            # Get user data from database
+            user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+            if not user:
+                print("User not found in database")
+                return redirect(url_for('login'))
 
-        user_data = {
-            'username': user.get('username', ''),
-            'firstName': user.get('firstName', ''),
-            'lastName': user.get('lastName', ''),
-            'profile_image': user.get('profile_image', ''),
-            'email': user.get('email', ''),
-            'role': user.get('role', 'user'),
-            'status': user.get('status', 'active'),
-            'created_at': user.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
-        }
-        
-        return render_template('dashboard.html', user=user_data, campaigns=formatted_campaigns)
+            # Format user data
+            user_data = {
+                'username': user['username'],
+                'email': user.get('email', ''),
+                'firstName': user.get('firstName', ''),
+                'lastName': user.get('lastName', ''),
+                'profile_image': user.get('profile_image', ''),
+                'level': user.get('level', 'Bronze'),
+                'points': user.get('points', 0),
+                'totalDonated': user.get('totalDonated', 0),
+                'peopleHelped': user.get('peopleHelped', 0)
+            }
+
+            # Get user's campaigns
+            campaigns = list(db_mongo.campaigns.find({'user_id': ObjectId(current_user)}).limit(5))
+            
+            # Format campaign data
+            campaign_data = []
+            for campaign in campaigns:
+                campaign_data.append({
+                    'id': str(campaign['_id']),
+                    'title': campaign.get('title', ''),
+                    'description': campaign.get('description', ''),
+                    'goal': campaign.get('goal', 0),
+                    'current': campaign.get('current', 0),
+                    'status': campaign.get('status', 'active'),
+                    'created_at': campaign.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
+                })
+
+            print("Dashboard loaded successfully for user:", user['username'])
+            return render_template('dashboard.html', user=user_data, campaigns=campaign_data)
+
+        except Exception as e:
+            print("Token verification error:", str(e))
+            return redirect(url_for('login'))
+
     except Exception as e:
-        print(f"Error in dashboard route: {str(e)}")
+        print(f"Dashboard error: {str(e)}")
         return redirect(url_for('login'))
 
 @app.route('/profile')
 def profile():
     try:
-        # Serve the profile page without requiring user data
-        return render_template('profile.html')
+        # Get token from cookie
+        token = request.cookies.get('token')
+        if not token:
+            return redirect(url_for('login'))
+
+        try:
+            # Verify and decode the token
+            decoded_token = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            current_user = decoded_token['sub']
+            
+            # Get user data from database
+            user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+            if not user:
+                return redirect(url_for('login'))
+
+            # Format user data for template
+            user_data = {
+                'username': user.get('username'),
+                'firstName': user.get('firstName'),
+                'lastName': user.get('lastName'),
+                'email': user.get('email'),
+                'profile_image': user.get('profile_image'),
+                'phone': user.get('phone'),
+                'address': user.get('address'),
+                'city': user.get('city'),
+                'state': user.get('state'),
+                'zipCode': user.get('zip_code'),
+                'country': user.get('country'),
+                'securityQuestion': user.get('securityQuestion'),
+                'securityAnswer': user.get('securityAnswer'),
+                'role': user.get('role', 'user'),
+                'status': user.get('status', 'active'),
+                'created_at': user.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
+            }
+
+            return render_template('profile.html', user=user_data)
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for('login'))
+        except jwt.InvalidTokenError:
+            return redirect(url_for('login'))
     except Exception as e:
         print(f"Error in profile route: {str(e)}")
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
 
 @app.route('/api/user/profile', methods=['GET', 'POST'])
 @jwt_required()
@@ -358,80 +415,50 @@ def upload_profile_picture():
 def update_profile():
     try:
         current_user = get_jwt_identity()
-        print(f"Current user: {current_user}")
+        user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        data = request.get_json()
         
-        # Initialize update data
+        # Update user document
         update_data = {
-            'first_name': request.form.get('firstName'),
-            'last_name': request.form.get('lastName'),
-            'email': request.form.get('email'),
-            'phone': request.form.get('phone'),
-            'address': request.form.get('address'),
-            'city': request.form.get('city'),
-            'state': request.form.get('state'),
-            'zip_code': request.form.get('zipCode'),
-            'country': request.form.get('country')
+            'firstName': data.get('firstName'),
+            'lastName': data.get('lastName'),
+            'email': data.get('email'),
+            'phone': {
+                'countryCode': data.get('countryCode'),
+                'number': data.get('phone')
+            },
+            'address': {
+                'street': data.get('street'),
+                'city': data.get('city'),
+                'state': data.get('state'),
+                'country': data.get('country'),
+                'postal': data.get('postal')
+            },
+            'securityQuestion': data.get('securityQuestion'),
+            'securityAnswer': data.get('securityAnswer')
         }
-        print(f"Update data: {update_data}")
         
-        # Handle profile picture upload
-        if 'profile_picture' in request.files:
-            file = request.files['profile_picture']
-            print(f"Profile picture received: {file.filename}")
-            if file and file.filename and allowed_file(file.filename):
-                # Generate secure filename with user ID
-                filename = secure_filename(f"{current_user}_{file.filename}")
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                print(f"Saving file to: {filepath}")
-                
-                # Save file to disk
-                file.save(filepath)
-                
-                # Add profile picture path to update data
-                update_data['profile_picture'] = f'/static/uploads/profile_pictures/{filename}'
-                
-                # Remove old profile picture if exists
-                user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
-                if user and 'profile_picture' in user:
-                    old_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                                              user['profile_picture'].lstrip('/'))
-                    if os.path.exists(old_filepath):
-                        os.remove(old_filepath)
-                        print(f"Removed old profile picture: {old_filepath}")
+        # Handle profile image if provided
+        if 'profile_image' in data and data['profile_image']:
+            image_data = data['profile_image'].split(',')[1] if ',' in data['profile_image'] else data['profile_image']
+            update_data['profile_image'] = image_data
 
-        # Handle security questions
-        if 'security_question1' in request.form and 'security_answer1' in request.form:
-            update_data['security_questions'] = [
-                {
-                    'question': request.form.get('security_question1'),
-                    'answer': request.form.get('security_answer1')
-                }
-            ]
-            if 'security_question2' in request.form and 'security_answer2' in request.form:
-                update_data['security_questions'].append({
-                    'question': request.form.get('security_question2'),
-                    'answer': request.form.get('security_answer2')
-                })
-            print(f"Security questions: {update_data['security_questions']}")
-
-        print(f"Updating user {current_user} with data: {update_data}")
-        
-        # Update user profile in MongoDB
+        # Update in database
         result = db_mongo.users.update_one(
             {'_id': ObjectId(current_user)},
             {'$set': update_data}
         )
-
-        print(f"MongoDB update result: {result.modified_count} documents modified")
-
+        
         if result.modified_count > 0:
             return jsonify({'message': 'Profile updated successfully'}), 200
-        else:
-            return jsonify({'message': 'No changes made to profile'}), 200
-
+        return jsonify({'message': 'No changes made'}), 200
+        
     except Exception as e:
         print(f"Error updating profile: {str(e)}")
-        return jsonify({'error': f'Failed to update profile: {str(e)}'}), 500
+        return jsonify({'error': 'Failed to update profile'}), 500
 
 @app.route('/api/get-profile', methods=['GET'])
 @jwt_required()
@@ -498,58 +525,75 @@ def admin():
 def login():
     if request.method == 'POST':
         try:
-            # Get JSON data
             data = request.get_json()
-            if not data:
-                print("No JSON data received")
-                return jsonify({'error': 'No data received'}), 400
-
-            username = data.get('username')
+            print("Login request data:", data)
+            
+            email = data.get('email')
             password = data.get('password')
 
-            # Validate input
-            if not username or not password:
-                print("Missing username or password")
-                return jsonify({'error': 'Missing username or password'}), 400
+            if not email or not password:
+                print("Missing email/username or password")
+                return jsonify({'error': 'Email/username and password are required'}), 400
 
-            print(f"Login attempt for user: {username}")
-
-            # Find user
-            user = db_mongo.users.find_one({'username': username})
+            # Try to find user by email or username
+            user = db_mongo.users.find_one({
+                '$or': [
+                    {'email': email},
+                    {'username': email}  # Try username if email fails
+                ]
+            })
+            print("Found user:", user is not None)
+            
             if not user:
-                print(f"User not found: {username}")
-                return jsonify({'error': 'Invalid username or password'}), 401
+                print("User not found for:", email)
+                return jsonify({'error': 'Invalid email/username or password'}), 401
 
-            # Verify password
-            if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
-                print(f"Invalid password for user: {username}")
-                return jsonify({'error': 'Invalid username or password'}), 401
+            # Verify password using bcrypt
+            try:
+                is_valid = bcrypt.checkpw(password.encode('utf-8'), user['password'])
+                print("Password verification result:", is_valid)
+            except Exception as e:
+                print("Password verification error:", str(e))
+                return jsonify({'error': 'Invalid email/username or password'}), 401
 
-            # Create access token
-            access_token = create_access_token(identity=str(user['_id']))
-            print(f"Created token for user: {username}")
-
-            # Prepare response
-            response_data = {
-                'token': access_token,
-                'user': {
-                    'id': str(user['_id']),
-                    'username': user['username'],
-                    'email': user.get('email', ''),
-                    'full_name': user.get('full_name', ''),
-                    'level': user.get('level', 'Bronze'),
-                    'points': user.get('points', 0)
-                }
-            }
-
-            print(f"Login successful for user: {username}")
-            return jsonify(response_data), 200
+            if is_valid:
+                # Create access token with 1 hour expiry
+                expires = timedelta(hours=1)
+                access_token = create_access_token(
+                    identity=str(user['_id']),
+                    expires_delta=expires
+                )
+                print("Created access token")
+                
+                # Create response
+                response = jsonify({
+                    'message': 'Login successful',
+                    'user': {
+                        'username': user['username'],
+                        'email': user.get('email', '')
+                    }
+                })
+                
+                # Set token as HTTP-only cookie
+                response.set_cookie(
+                    'token',
+                    access_token,
+                    httponly=True,
+                    secure=False,  # Set to True in production with HTTPS
+                    samesite='Lax',
+                    max_age=3600  # 1 hour
+                )
+                
+                print("Login successful for user:", user['username'])
+                return response, 200
+            else:
+                print("Invalid password for user:", user['username'])
+                return jsonify({'error': 'Invalid email/username or password'}), 401
 
         except Exception as e:
             print(f"Login error: {str(e)}")
-            return jsonify({'error': 'An error occurred during login'}), 500
+            return jsonify({'error': 'Login failed'}), 500
 
-    # GET request - render login page
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -777,6 +821,24 @@ def get_user_stats():
 def logout():
     # Clear any server-side session data if needed
     return render_template('home.html')
+
+@app.route('/debug/check-user/<username>')
+def check_user(username):
+    try:
+        # Find user by username
+        user = db_mongo.users.find_one({'username': username})
+        if user:
+            return jsonify({
+                'found': True,
+                'username': user['username'],
+                'email': user.get('email', 'No email'),
+                'has_password': bool(user.get('password')),
+                'firstName': user.get('firstName', 'No first name'),
+                'lastName': user.get('lastName', 'No last name')
+            })
+        return jsonify({'found': False, 'message': 'User not found'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 # Error handlers
 @app.errorhandler(404)
