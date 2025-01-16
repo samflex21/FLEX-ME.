@@ -2252,5 +2252,84 @@
             }
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // No need to fetch user data, it's already passed from the server
+            const userData = {
+                username: "{{ user.username }}",
+                firstName: "{{ user.firstName }}",
+                lastName: "{{ user.lastName }}",
+                email: "{{ user.email }}",
+                phone: "{{ user.phone }}",
+                address: "{{ user.address }}",
+                city: "{{ user.city }}",
+                state: "{{ user.state }}",
+                zipCode: "{{ user.zipCode }}",
+                country: "{{ user.country }}"
+            };
+
+            // Update profile fields
+            document.getElementById('username').value = userData.username;
+            document.getElementById('firstName').value = userData.firstName;
+            document.getElementById('lastName').value = userData.lastName;
+            document.getElementById('email').value = userData.email;
+            document.getElementById('phone').value = userData.phone;
+            document.getElementById('address').value = userData.address;
+            document.getElementById('city').value = userData.city;
+            document.getElementById('state').value = userData.state;
+            document.getElementById('zipCode').value = userData.zipCode;
+            document.getElementById('country').value = userData.country;
+
+            // Handle profile update
+            document.getElementById('updateProfileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    username: document.getElementById('username').value,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zipCode: document.getElementById('zipCode').value,
+                    country: document.getElementById('country').value
+                };
+
+                try {
+                    const response = await fetch('/api/profile/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert('Profile updated successfully!');
+                        // Refresh the page to show updated data
+                        window.location.reload();
+                    } else {
+                        const error = await response.json();
+                        alert(error.message || 'Failed to update profile');
+                    }
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    alert('An error occurred while updating your profile');
+                }
+            });
+
+            // Handle logout
+            document.getElementById('logoutButton').addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear any local storage data
+                localStorage.clear();
+                // Redirect to logout route which will clear the cookie
+                window.location.href = '/logout';
+            });
+        });
+    </script>
 </body>
 </html>

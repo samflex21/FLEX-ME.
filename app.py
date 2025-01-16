@@ -188,43 +188,47 @@ def profile():
         # Get token from cookie
         token = request.cookies.get('token')
         if not token:
+            print("No token in cookies for profile")
             return redirect(url_for('login'))
 
         try:
             # Verify and decode the token
-            decoded_token = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            decoded_token = decode_token(token)
             current_user = decoded_token['sub']
             
             # Get user data from database
             user = db_mongo.users.find_one({'_id': ObjectId(current_user)})
             if not user:
+                print("User not found in database for profile")
                 return redirect(url_for('login'))
 
             # Format user data for template
             user_data = {
-                'username': user.get('username'),
-                'firstName': user.get('firstName'),
-                'lastName': user.get('lastName'),
-                'email': user.get('email'),
-                'profile_image': user.get('profile_image'),
-                'phone': user.get('phone'),
-                'address': user.get('address'),
-                'city': user.get('city'),
-                'state': user.get('state'),
-                'zipCode': user.get('zip_code'),
-                'country': user.get('country'),
-                'securityQuestion': user.get('securityQuestion'),
-                'securityAnswer': user.get('securityAnswer'),
+                'username': user.get('username', ''),
+                'firstName': user.get('firstName', ''),
+                'lastName': user.get('lastName', ''),
+                'email': user.get('email', ''),
+                'profile_image': user.get('profile_image', ''),
+                'phone': user.get('phone', ''),
+                'address': user.get('address', ''),
+                'city': user.get('city', ''),
+                'state': user.get('state', ''),
+                'zipCode': user.get('zip_code', ''),
+                'country': user.get('country', ''),
+                'securityQuestion': user.get('securityQuestion', ''),
+                'securityAnswer': user.get('securityAnswer', ''),
                 'role': user.get('role', 'user'),
                 'status': user.get('status', 'active'),
                 'created_at': user.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
             }
 
+            print("Profile loaded successfully for user:", user['username'])
             return render_template('profile.html', user=user_data)
-        except jwt.ExpiredSignatureError:
+
+        except Exception as e:
+            print("Token verification error in profile:", str(e))
             return redirect(url_for('login'))
-        except jwt.InvalidTokenError:
-            return redirect(url_for('login'))
+
     except Exception as e:
         print(f"Error in profile route: {str(e)}")
         return redirect(url_for('login'))
