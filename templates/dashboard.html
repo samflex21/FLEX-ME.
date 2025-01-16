@@ -976,6 +976,151 @@
             color: #888;
             margin-top: 5px;
         }
+
+        /* User Profile and Campaigns Styles */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+            padding-right: 20px;
+        }
+
+        .user-profile .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-profile .username {
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-info .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            color: var(--light);
+        }
+
+        .user-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .user-role {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--primary);
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .campaigns-list {
+            margin-top: 15px;
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+
+        .campaign-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .campaign-item h5 {
+            color: var(--light);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .campaign-progress {
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--light);
+            margin-top: 5px;
+        }
+
+        .campaign-amount {
+            display: flex;
+            justify-content: space-between;
+            color: var(--light);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .campaign-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .campaign-status.active {
+            background: #28a745;
+            color: var(--light);
+        }
+
+        .campaign-status.completed {
+            background: #17a2b8;
+            color: var(--light);
+        }
+
+        .welcome-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-section h1 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -988,11 +1133,13 @@
         </div>
         <h1 class="website-name">Flex <span>Me</span></h1>
         <div class="user-profile">
-            <img src="/static/images/default-avatar.png" alt="Profile Picture" class="profile-picture">
-            <span class="user-name">Samuel Olumide Adebimpe</span>
-            <div class="dropdown-content">
-                <a href="{{ url_for('logout') }}">Logout</a>
-            </div>
+            {% if user and user.profile_image %}
+                <img src="data:image/jpeg;base64,{{ user.profile_image }}" alt="{{ user.username }}'s Profile" class="profile-pic">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Default Profile" class="profile-pic">
+            {% endif %}
+            <span class="username">{{ user.username }}</span>
+            <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -1000,7 +1147,17 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h3>Dashboard</h3>
+                <div class="user-info">
+                    {% if user and user.profile_image %}
+                        <img src="data:image/jpeg;base64,{{ user.profile_image }}" alt="{{ user.username }}'s Profile" class="profile-pic">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Default Profile" class="profile-pic">
+                    {% endif %}
+                    <div class="user-details">
+                        <h3>{{ user.username }}</h3>
+                        <p>Level {{ user.level }}</p>
+                    </div>
+                </div>
             </div>
             <div class="user-stats">
                 <div class="level-info">

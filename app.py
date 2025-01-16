@@ -131,13 +131,34 @@ def dashboard():
         if not user:
             return redirect(url_for('login'))
 
+        # Get user's campaigns
+        campaigns = list(db_mongo.campaigns.find({}).sort('created_at', -1).limit(10))
+        
+        # Format campaigns for display
+        formatted_campaigns = []
+        for campaign in campaigns:
+            formatted_campaigns.append({
+                'id': str(campaign['_id']),
+                'title': campaign.get('title', ''),
+                'description': campaign.get('description', ''),
+                'goal_amount': campaign.get('goal_amount', 0),
+                'current_amount': campaign.get('current_amount', 0),
+                'status': campaign.get('status', 'active'),
+                'created_at': campaign.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
+            })
+
         user_data = {
             'username': user.get('username', ''),
-            'profile_pic': user.get('profile_pic', ''),
-            'level': user.get('level', 'Bronze'),
-            'points': user.get('points', 0)
+            'firstName': user.get('firstName', ''),
+            'lastName': user.get('lastName', ''),
+            'profile_image': user.get('profile_image', ''),
+            'email': user.get('email', ''),
+            'role': user.get('role', 'user'),
+            'status': user.get('status', 'active'),
+            'created_at': user.get('created_at', datetime.utcnow()).strftime('%Y-%m-%d')
         }
-        return render_template('dashboard.html', user=user_data)
+        
+        return render_template('dashboard.html', user=user_data, campaigns=formatted_campaigns)
     except Exception as e:
         print(f"Error in dashboard route: {str(e)}")
         return redirect(url_for('login'))
